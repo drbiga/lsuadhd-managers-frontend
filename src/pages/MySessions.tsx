@@ -1,6 +1,6 @@
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import Sidebar from "../components/Sidebar";
-import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionItemView, SessionListView, SessionStartButton } from "@/components/sessionExecution/Session";
+import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionItemView, SessionListTitle, SessionListView, SessionStartButton } from "@/components/sessionExecution/Session";
 import { useEffect, useState } from "react";
 import sessionExecutionService, { Session } from "@/services/sessionExecution";
 import { Role, useAuth } from "@/hooks/auth";
@@ -33,29 +33,43 @@ export default function MySessions() {
         <PageTitle>My Sessions</PageTitle>
 
         <div className="flex flex-col gap-8">
-          <h2 className="text-xl text-slate-800 dark:text-slate-200 opacity-50">Sessions already done</h2>
-          <SessionListView>
-            {sessionsDone.map(s => (
-              <SessionItemView>
-                <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
-                <SessionItemStage>{s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}</SessionItemStage>
-              </SessionItemView>
-            ))}
-          </SessionListView>
-          <h2 className="text-xl text-slate-800 dark:text-slate-200 opacity-50">Remaining sessions</h2>
-          <SessionListView>
-            {remainingSessions.map(s => (
-              <SessionItemView className="relative">
-                <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
-                <SessionItemComment>Upcoming...</SessionItemComment>
-                <p className="absolute top-4 right-4">
-                  {s.seqnum === sessionsDone.length + 1 && (
-                    <SessionStartButton onClick={() => alert('Starting new session')}>Start next session</SessionStartButton>
-                  )}
-                </p>
-              </SessionItemView>
-            ))}
-          </SessionListView>
+          {sessionsDone.length === 0 ? (
+            <SessionListTitle className="text-md text-slate-400 dark:text-slate-600">
+              You have not started your sessions yet. Please proceed and start the first one.
+            </SessionListTitle>
+          ) : (
+            <>
+              <SessionListTitle>Sessions already done</SessionListTitle>
+              <SessionListView>
+                {sessionsDone.map(s => (
+                  <SessionItemView>
+                    <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
+                    <SessionItemStage>{s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}</SessionItemStage>
+                  </SessionItemView>
+                ))}
+              </SessionListView>
+            </>
+          )}
+          {remainingSessions.length === 0 ? (
+            <SessionListTitle>You don't have any remaining sessions left to do. Congratulations, you've done it all!!</SessionListTitle>
+          ) : (
+            <>
+              <SessionListTitle>Remaining sessions</SessionListTitle>
+              <SessionListView>
+                {remainingSessions.map(s => (
+                  <SessionItemView className="relative">
+                    <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
+                    <SessionItemComment>Upcoming...</SessionItemComment>
+                    <p className="absolute top-4 right-4">
+                      {s.seqnum === sessionsDone.length + 1 && (
+                        <SessionStartButton onClick={() => alert('Starting new session')}>Start next session</SessionStartButton>
+                      )}
+                    </p>
+                  </SessionItemView>
+                ))}
+              </SessionListView>
+            </>
+          )}
         </div>
       </PageMainContent>
     </PageContainer>

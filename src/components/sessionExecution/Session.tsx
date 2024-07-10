@@ -1,6 +1,10 @@
-import { forwardRef, LiHTMLAttributes, PropsWithChildren } from "react";
+import { forwardRef, HtmlHTMLAttributes, LiHTMLAttributes, PropsWithChildren } from "react";
 import { Button } from "../Button";
 import { cn } from "@/lib/utils";
+
+export const SessionListTitle = forwardRef<HTMLHeadingElement, HtmlHTMLAttributes<HTMLHeadingElement>>(function SessionListTitle({ children, className }) {
+  return <h2 className={cn("text-2xl text-slate-800 dark:text-slate-200 opacity-50", className)}>{children}</h2>
+});
 
 export function SessionListView({ children }: PropsWithChildren) {
 
