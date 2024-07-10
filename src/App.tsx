@@ -6,6 +6,7 @@ import MySessions from "./pages/MySessions";
 import Management from "./pages/Management";
 import Login from "./pages/Login";
 import { AuthRequired, useAuth } from "./hooks/auth";
+import SignUp from "./pages/SignUp";
 
 function App() {
     const { authState } = useAuth();
@@ -14,6 +15,10 @@ function App() {
         {
             path: "/login",
             element: <Login />
+        },
+        {
+            path: "/signup",
+            element: <SignUp />
         },
         {
             path: "/",
