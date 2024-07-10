@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "./DarkModeButton";
 import { useAuth } from "@/hooks/auth";
 import iamService from "@/services/iam";
-import LogOutButton from "./LogOutButton";
+import { LogOutButton } from "./LogOutButton";
 import { Button } from "./Button";
 
 function SidebarLink({ active, collapsed, children, icon, to }: { active?: boolean; collapsed: boolean, icon: ReactNode, to: string, children: ReactNode }) {
@@ -73,14 +73,14 @@ export default function Sidebar() {
                 }
             </ul>
 
-            <div>
+            <div className="text-white">
                 <div className={`mb-16 flex gap-2 ${collapsed ? "flex-col items-center" : "items-center"}`}>
-                    <DarkModeButton />
-                    <LogOutButton />
+                    <DarkModeButton className="bg-slate-800 text-slate-200 hover:bg-slate-900 border-0" />
+                    <LogOutButton className="bg-slate-800 text-slate-200 hover:bg-slate-900 border-0" />
                 </div>
 
                 <div className="flex justify-center">
-                    <Button onClick={() => setCollapsed(!collapsed)}>
+                    <Button className="bg-slate-800 text-slate-200 hover:bg-slate-900 border-0" onClick={() => setCollapsed(!collapsed)}>
                         {collapsed ? (
                             <ChevronRight />
                         ) : (

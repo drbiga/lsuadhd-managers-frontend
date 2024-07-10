@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+import { forwardRef, useCallback, useState } from "react";
 import { Button } from "./Button";
 import { Moon, Sun } from "lucide-react";
+import { ButtonProps } from "./ui/button";
 
-export function DarkModeButton() {
+export const DarkModeButton = forwardRef<HTMLButtonElement, ButtonProps>(function DarkModeButton({ className, ...rest }) {
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const html = document.getElementById('html');
         if (html) {
@@ -22,7 +23,7 @@ export function DarkModeButton() {
     }, [isDarkMode])
 
     return (
-        <Button type="button" onClick={() => toggleDarkMode()}>
+        <Button {...rest} className={className} type="button" onClick={() => toggleDarkMode()}>
             {isDarkMode ? (
                 <Moon />
             ) : (
@@ -30,4 +31,4 @@ export function DarkModeButton() {
             )}
         </Button>
     )
-}
+});

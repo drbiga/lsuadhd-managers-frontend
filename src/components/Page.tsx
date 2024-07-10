@@ -15,6 +15,6 @@ export function PageTitle({ children }: PropsWithChildren) {
 
 export function PageMainContent({ children }: PropsWithChildren) {
     return (
-        <div className="px-16 py-8 flex flex-col gap-8">{children}</div>
+        <div className="w-full pl-16 py-8 flex flex-col gap-8 overflow-y-auto">{children}</div>
     )
 }

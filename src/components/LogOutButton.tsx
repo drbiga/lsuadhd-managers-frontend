@@ -1,10 +1,11 @@
 import { useAuth } from "@/hooks/auth";
 import { LogOut } from "lucide-react";
 import { Button } from "./Button";
-import { useCallback } from "react";
+import { forwardRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { ButtonProps } from "./ui/button";
 
-export default function LogOutButton() {
+export const LogOutButton = forwardRef<HTMLButtonElement, ButtonProps>(function LogOutButton({ className, ...rest }) {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
@@ -14,8 +15,8 @@ export default function LogOutButton() {
     }, [logout]);
 
     return (
-        <Button onClick={() => handleLogout()}>
+        <Button {...rest} className={className} onClick={() => handleLogout()}>
             <LogOut />
         </Button>
     )
-}
+});
