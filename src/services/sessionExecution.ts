@@ -24,6 +24,14 @@ class SessionExecutionService {
 
     }
 
+    public async createStudent(studentName: string, studentPassword: string): Promise<Student> {
+        const response = await api.post('/session_execution/student', {}, {params: {
+            student_name: studentName,
+            password: studentPassword
+        }});
+        return response.data;
+    }
+
     public async getStudent(studentName: string): Promise<Student> {
         const response = await api.get('/session_execution/student', { params: { student_name: studentName } });
         return response.data;
