@@ -1,5 +1,5 @@
 export enum Item {
-    SESSION_TOKEN = 'ADHD::SessionToken',
+    // SESSION_TOKEN = 'ADHD::SessionToken',
     SESSION_OBJ = 'ADHD::Session'
 }
 

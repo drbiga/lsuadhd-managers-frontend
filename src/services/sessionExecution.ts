@@ -4,6 +4,7 @@ import iamService from "./iam";
 export type Student = {
     name: string;
     sessions_done: Session[];
+    active_session: Session;
 }
 
 export type Session = {
@@ -64,6 +65,20 @@ class SessionExecutionService {
         });
 
         return response.data;
+    }
+
+    public setUpdateCallback(studentName: string, updateCallback: (sessionProgressData: SessionProgressData) => void) {
+        if (this.websocket === null) {
+            this.websocket = createWebSocket(studentName);
+        }
+        this.websocket.addEventListener('message', (event) => {
+            const data = JSON.parse(event.data);
+            console.log(data);
+            updateCallback({
+                stage: data.stage,
+                remainingTimeSeconds: data.remaining_time
+            });
+        });
     }
 }
 

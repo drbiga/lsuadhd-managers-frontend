@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Clock, File, Goal, LayoutGrid, Settings, Target } from "lucide-react";
+import { ChevronLeft, ChevronRight, Goal, LayoutGrid, Milestone, Target } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "./DarkModeButton";
@@ -64,15 +64,15 @@ export default function Sidebar() {
                     <SidebarLink active={pathname === '/management'} to='/management' collapsed={collapsed} icon={<LayoutGrid />}>Management</SidebarLink>
                 }
                 {
-                    allowedContexts.includes('session_execution') &&
-                    <SidebarLink active={pathname === '/'} to='/' collapsed={collapsed} icon={<Clock />}>My Sessions</SidebarLink>
-                }
-                {
                     allowedContexts.includes('session_execution') && authState.session?.user.role === Role.STUDENT && (
-                        <SidebarLink active={pathname === '/next-session'} to='/next-session' collapsed={collapsed} icon={<Target />}>
+                        <SidebarLink active={pathname === '/'} to='/' collapsed={collapsed} icon={<Target />}>
                             Next Session
                         </SidebarLink>
                     )
+                }
+                {
+                    allowedContexts.includes('session_execution') &&
+                    <SidebarLink active={pathname === '/session-progress'} to='/session-progress' collapsed={collapsed} icon={<Milestone />}>Session Progress</SidebarLink>
                 }
                 {
                     allowedContexts.includes('goals') &&

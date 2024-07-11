@@ -7,7 +7,7 @@ import { Role, useAuth } from "@/hooks/auth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-export default function MySessions() {
+export default function SessionProgress() {
   const [sessionsDone, setSessionsDone] = useState<Session[]>([]);
   const [remainingSessions, setRemainingSessions] = useState<Session[]>([]);
   const { authState } = useAuth();
@@ -33,7 +33,7 @@ export default function MySessions() {
     <PageContainer>
       <Sidebar />
       <PageMainContent>
-        <PageTitle>My Sessions</PageTitle>
+        <PageTitle>Session Progress</PageTitle>
 
         <div className="flex flex-col gap-8">
           {sessionsDone.length === 0 ? (
@@ -65,7 +65,7 @@ export default function MySessions() {
                     <SessionItemComment>Upcoming...</SessionItemComment>
                     <p className="absolute top-4 right-4">
                       {s.seqnum === sessionsDone.length + 1 && (
-                        <SessionStartButton onClick={() => navigate('/next-session')}>Start next session</SessionStartButton>
+                        <SessionStartButton onClick={() => navigate('/')}>Start next session</SessionStartButton>
                       )}
                     </p>
                   </SessionItemView>

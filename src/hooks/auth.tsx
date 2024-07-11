@@ -70,20 +70,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     });
 
-    useEffect(() => {
-        (async () => {
-            const sessionString = getLocalStorage(Item.SESSION_OBJ);
-            const session = sessionString ? JSON.parse(sessionString) : null;
-            if (session !== null) {
-                setAuthState({
-                    session,
-                    isLoggedIn: true
-                })
-            } else {
-                setAuthState({ isLoggedIn: false });
-            }
-        })()
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         const sessionString = getLocalStorage(Item.SESSION_OBJ);
+    //         const session = sessionString ? JSON.parse(sessionString) : null;
+    //         if (session !== null) {
+    //             setAuthState({
+    //                 session,
+    //                 isLoggedIn: true
+    //             })
+    //         } else {
+    //             setAuthState({ isLoggedIn: false });
+    //         }
+    //     })()
+    // }, []);
 
     const login = useCallback(async (credentials: LoginCredentials) => {
         try {

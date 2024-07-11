@@ -1,13 +1,12 @@
-import { RouterProvider, createBrowserRouter, redirect } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { useCallback, useEffect } from "react";
-import MySessions from "./pages/MySessions";
 import Management from "./pages/Management";
 import Login from "./pages/Login";
 import { AuthRequired } from "./hooks/auth";
 import SignUp from "./pages/SignUp";
 import NextSession from "./pages/NextSession";
+import SessionProgress from "./pages/SessionProgress";
 
 function App() {
     const router = createBrowserRouter([
@@ -20,15 +19,15 @@ function App() {
             element: <SignUp />
         },
         {
-            path: "/",
+            path: "/session-progress",
             element: (
                 <AuthRequired authRoute="/login">
-                    <MySessions />
+                    <SessionProgress />
                 </AuthRequired>
             )
         },
         {
-            path: "/next-session",
+            path: "/",
             element: (
                 <AuthRequired authRoute="/login">
                     <NextSession />

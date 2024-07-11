@@ -1,4 +1,4 @@
-import { getLocalStorage, Item } from "@/localstorage";
+import { getLocalStorage, Item, setLocalStorage } from "@/localstorage";
 import api from "./api";
 
 enum Role {
@@ -27,14 +27,11 @@ class IamService {
     private authenticatedUser: User | null;
 
     public constructor() {
-        const sessionToken = getLocalStorage(Item.SESSION_TOKEN);
-        this.authenticatedUser = null;
-        this.currentSession = null;
-        if (sessionToken !== null) {
-            this.getSession(sessionToken).then((session) => {
-                this.currentSession = session;
-                this.authenticatedUser = session.user;
-            });
+        const sessionString = getLocalStorage(Item.SESSION_OBJ);
+        this.currentSession = sessionString ? JSON.parse(sessionString) : null;
+        this.authenticatedUser = this.currentSession ? this.currentSession.user : null;
+        if (this.currentSession) {
+            api.defaults.headers.common.Authorization = `Bearer ${this.currentSession.token}`;
         }
     }
 
@@ -58,6 +55,7 @@ class IamService {
     public async createSession(username: string, password: string): Promise<Session> {
         const response = await api.post('/iam/session', {username, password})
         this.currentSession = response.data;
+        setLocalStorage(Item.SESSION_OBJ, JSON.stringify(this.currentSession));
         this.authenticatedUser = this.currentSession?.user || null;
         return response.data;
     }
