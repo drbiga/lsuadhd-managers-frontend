@@ -5,7 +5,7 @@ import { forwardRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ButtonProps } from "./ui/button";
 
-export const LogOutButton = forwardRef<HTMLButtonElement, ButtonProps>(function LogOutButton({ className, ...rest }) {
+export const LogOutButton = forwardRef<HTMLButtonElement, ButtonProps>(function LogOutButton({ className, ...rest }, ref) {
     const { logout } = useAuth();
     const navigate = useNavigate();
 

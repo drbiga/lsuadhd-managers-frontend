@@ -2,9 +2,11 @@ import { forwardRef, HtmlHTMLAttributes, LiHTMLAttributes, PropsWithChildren } f
 import { Button } from "../Button";
 import { cn } from "@/lib/utils";
 
-export const SessionListTitle = forwardRef<HTMLHeadingElement, HtmlHTMLAttributes<HTMLHeadingElement>>(function SessionListTitle({ children, className }) {
-  return <h2 className={cn("text-2xl text-slate-800 dark:text-slate-200 opacity-50", className)}>{children}</h2>
-});
+export const SessionListTitle = forwardRef<HTMLHeadingElement, HtmlHTMLAttributes<HTMLHeadingElement>>(
+  function SessionListTitle({ children, className }, ref) {
+    return <h2 className={cn("text-2xl text-slate-800 dark:text-slate-200 opacity-50", className)}>{children}</h2>
+  }
+);
 
 export function SessionListView({ children }: PropsWithChildren) {
 
@@ -15,7 +17,7 @@ export function SessionListView({ children }: PropsWithChildren) {
   )
 }
 
-export const SessionItemView = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLIElement>>(function SessionItemView({ children, className }) {
+export const SessionItemView = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLIElement>>(function SessionItemView({ children, className }, ref) {
   return (
     <li className={cn("bg-card p-4 h-[80vh] w-[70vw] rounded-lg flex flex-col gap-2", className)}>
       {children}
@@ -50,8 +52,8 @@ export function SessionStartButton({ children, onClick }: PropsWithChildren & { 
   return (
     <Button
       className={`
-        bg-slate-300 hover:bg-slate-500 hover:text-slate-100
-        dark:bg-slate-700 dark:hover:bg-slate-400 dark:hover:text-slate-900
+        bg-slate-300 dark:bg-slate-700
+        hover:bg-slate-700 hover:text-slate-100 dark:hover:bg-slate-400 dark:hover:text-slate-900
         transition-all duration-100
       `}
       onClick={onClick}
@@ -60,11 +62,3 @@ export function SessionStartButton({ children, onClick }: PropsWithChildren & { 
     </Button>
   )
 }
-
-// export function SessionAttributeLabel({ children }: PropsWithChildren) {
-//     return <span className="text-lg text-slate-700 dark:text-slate-200">{children}</span>
-// }
-
-// export function SessionAttributeText({ children }: PropsWithChildren) {
-//     return <span className="text-slate-400">{children}</span>
-// }

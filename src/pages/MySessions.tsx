@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import sessionExecutionService, { Session } from "@/services/sessionExecution";
 import { Role, useAuth } from "@/hooks/auth";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function MySessions() {
   const [sessionsDone, setSessionsDone] = useState<Session[]>([]);
   const [remainingSessions, setRemainingSessions] = useState<Session[]>([]);
   const { authState } = useAuth();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -62,7 +65,7 @@ export default function MySessions() {
                     <SessionItemComment>Upcoming...</SessionItemComment>
                     <p className="absolute top-4 right-4">
                       {s.seqnum === sessionsDone.length + 1 && (
-                        <SessionStartButton onClick={() => alert('Starting new session')}>Start next session</SessionStartButton>
+                        <SessionStartButton onClick={() => navigate('/next-session')}>Start next session</SessionStartButton>
                       )}
                     </p>
                   </SessionItemView>

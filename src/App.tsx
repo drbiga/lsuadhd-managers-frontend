@@ -7,6 +7,7 @@ import Management from "./pages/Management";
 import Login from "./pages/Login";
 import { AuthRequired } from "./hooks/auth";
 import SignUp from "./pages/SignUp";
+import NextSession from "./pages/NextSession";
 
 function App() {
     const router = createBrowserRouter([
@@ -23,6 +24,14 @@ function App() {
             element: (
                 <AuthRequired authRoute="/login">
                     <MySessions />
+                </AuthRequired>
+            )
+        },
+        {
+            path: "/next-session",
+            element: (
+                <AuthRequired authRoute="/login">
+                    <NextSession />
                 </AuthRequired>
             )
         },

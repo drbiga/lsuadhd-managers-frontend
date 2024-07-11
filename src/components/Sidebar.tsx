@@ -1,8 +1,8 @@
-import { ChevronLeft, ChevronRight, Clock, File, Goal, LayoutGrid, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, File, Goal, LayoutGrid, Settings, Target } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "./DarkModeButton";
-import { useAuth } from "@/hooks/auth";
+import { Role, useAuth } from "@/hooks/auth";
 import iamService from "@/services/iam";
 import { LogOutButton } from "./LogOutButton";
 import { Button } from "./Button";
@@ -66,6 +66,13 @@ export default function Sidebar() {
                 {
                     allowedContexts.includes('session_execution') &&
                     <SidebarLink active={pathname === '/'} to='/' collapsed={collapsed} icon={<Clock />}>My Sessions</SidebarLink>
+                }
+                {
+                    allowedContexts.includes('session_execution') && authState.session?.user.role === Role.STUDENT && (
+                        <SidebarLink active={pathname === '/next-session'} to='/next-session' collapsed={collapsed} icon={<Target />}>
+                            Next Session
+                        </SidebarLink>
+                    )
                 }
                 {
                     allowedContexts.includes('goals') &&

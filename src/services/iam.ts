@@ -47,6 +47,13 @@ class IamService {
         const response = await api.get(`/iam/session/${sessionToken}`);
         return response.data;
     }
+
+    public getCurrentSession(): Session {
+        if (this.currentSession)
+            return this.currentSession;
+        else
+            throw Error('No running session');
+    }
     
     public async createSession(username: string, password: string): Promise<Session> {
         const response = await api.post('/iam/session', {username, password})
