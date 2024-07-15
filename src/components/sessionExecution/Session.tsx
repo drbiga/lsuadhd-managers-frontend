@@ -27,7 +27,7 @@ export const SessionItemView = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLI
 
 export function SessionItemStage({ children }: PropsWithChildren) {
   return (
-    <p className="text-sm text-slate-500">
+    <p className="text-sm text-slate-400 dark:text-slate-600">
       Stage: {children}
     </p>
   )
@@ -44,7 +44,7 @@ export function SessionItemSeqnum({ children }: PropsWithChildren) {
 
 export function SessionItemComment({ children }: PropsWithChildren) {
   return (
-    <p className="text-sm text-slate-500">{children}</p>
+    <p className="text-sm text-slate-400 dark:text-slate-600">{children}</p>
   )
 }
 
@@ -62,3 +62,35 @@ export function SessionStartButton({ children, onClick }: PropsWithChildren & { 
     </Button>
   )
 }
+
+export const SessionItemNumFeedbacks = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+  return (
+    <div className={cn(className, "text-sm text-slate-400 dark:text-slate-600")}>
+      Number of feedbacks given: {children}
+    </div>
+  )
+});
+
+export const SessionItemPctTimeFocused = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+  return (
+    <div className={cn(className, "text-sm text-slate-800 dark:text-slate-200")}>
+      Percentage of time focused: {children}
+    </div>
+  )
+});
+
+export const SessionItemPctTimeNormal = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+  return (
+    <div className={cn(className, "text-sm text-slate-400 dark:text-slate-600")}>
+      Percentage of time normal: {children}
+    </div>
+  )
+});
+
+export const SessionItemPctTimeDistracted = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+  return (
+    <div className={cn(className, "text-sm text-slate-400 dark:text-slate-600")}>
+      Percentage of time distracted: {children}
+    </div>
+  )
+});

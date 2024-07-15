@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./api";
 import iamService from "./iam";
 
@@ -11,6 +12,32 @@ export type Session = {
     seqnum: number;
     is_passthrough: boolean;
     stage: Stage;
+    feedbacks: Feedback[];
+}
+
+export type Feedback = {
+    personal_analytics_data: PersonalAnalyticsData;
+    classifier_data: ClassifierData;
+    output?: FeedbackType;
+}
+
+export enum FeedbackType {
+    FOCUSED = 'focused',
+    NORMAL = 'normal',
+    DISTRACTED = 'distracted'
+}
+
+export type PersonalAnalyticsData = {
+    num_mouse_clicks: number;
+    mouse_move_distance: number;
+    mouse_scroll_distance: number;
+    num_keyboard_strokes: number;
+    attention_feedback: FeedbackType;
+}
+
+export type ClassifierData = {
+    screenshot: string;
+    prediction: FeedbackType;
 }
 
 export type SessionProgressData = {
@@ -28,7 +55,7 @@ export enum Stage {
 
 class SessionExecutionService {
     private websocket: WebSocket | null;
-    
+
     public constructor() {
         this.websocket = null;
     }
@@ -63,6 +90,8 @@ class SessionExecutionService {
                 remainingTimeSeconds: data.remaining_time
             });
         });
+
+        await axios.post('http://localhost:8001/collection');
 
         return response.data;
     }

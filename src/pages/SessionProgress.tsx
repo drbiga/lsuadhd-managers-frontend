@@ -1,6 +1,6 @@
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import Sidebar from "../components/Sidebar";
-import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionItemView, SessionListTitle, SessionListView, SessionStartButton } from "@/components/sessionExecution/Session";
+import { SessionItemComment, SessionItemNumFeedbacks, SessionItemPctTimeDistracted, SessionItemPctTimeFocused, SessionItemPctTimeNormal, SessionItemSeqnum, SessionItemStage, SessionItemView, SessionListTitle, SessionListView, SessionStartButton } from "@/components/sessionExecution/Session";
 import { useEffect, useState } from "react";
 import sessionExecutionService, { Session } from "@/services/sessionExecution";
 import { Role, useAuth } from "@/hooks/auth";
@@ -47,7 +47,14 @@ export default function SessionProgress() {
                 {sessionsDone.map(s => (
                   <SessionItemView>
                     <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
+                    <p>
+                      <span className="text-slate-600 dark:text-slate-400 border-b-[1px]">Overview</span>
+                    </p>
                     <SessionItemStage>{s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}</SessionItemStage>
+                    <SessionItemNumFeedbacks>{s.feedbacks.length}</SessionItemNumFeedbacks>
+                    <SessionItemPctTimeFocused>{presentPercentage(0.5)}</SessionItemPctTimeFocused>
+                    <SessionItemPctTimeNormal>{presentPercentage(0)}</SessionItemPctTimeNormal>
+                    <SessionItemPctTimeDistracted>{presentPercentage(0.5)}</SessionItemPctTimeDistracted>
                   </SessionItemView>
                 ))}
               </SessionListView>
@@ -77,4 +84,8 @@ export default function SessionProgress() {
       </PageMainContent>
     </PageContainer>
   )
+}
+
+function presentPercentage(pct: number): string {
+  return pct > 0 ? Math.round(pct * 100).toString() + '%' : '-';
 }
