@@ -12,6 +12,7 @@ import iamService from "@/services/iam";
 import api from "@/services/api";
 import { getLocalStorage, Item, removeLocalStorage, setLocalStorage } from "@/localstorage";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export interface LoginCredentials {
     username: string;
@@ -70,6 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     });
 
+    const [ipAddress, setIpAddress] = useState<string>('');
+    useEffect(() => {
+        (async () => {
+            const response = await axios.get('https://api.ipify.org/?format=json');
+            setIpAddress(response.data.ip);
+        })();
+    }, []);
+
     // useEffect(() => {
     //     (async () => {
     //         const sessionString = getLocalStorage(Item.SESSION_OBJ);
@@ -90,7 +99,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             removeLocalStorage(Item.SESSION_OBJ);
             const session = await iamService.createSession(
                 credentials.username,
-                credentials.password
+                credentials.password,
+                ipAddress
             );
             if (session) {
                 api.defaults.headers.common = { Authorization: `Bearer ${session.token}` }
@@ -112,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             toast.error('Something went wrong.')
         }
         return null;
-    }, [setAuthState]);
+    }, [setAuthState, ipAddress]);
 
     const logout = useCallback(() => {
         removeLocalStorage(Item.SESSION_OBJ);

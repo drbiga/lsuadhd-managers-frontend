@@ -6,6 +6,14 @@ export type Student = {
     name: string;
     sessions_done: Session[];
     active_session: Session;
+    sessions_analytics: SessionAnalytics[];
+}
+
+export type SessionAnalytics = {
+    session_seqnum: number;
+    percentage_time_distracted: number;
+    percentage_time_normal: number;
+    percentage_time_focused: number;
 }
 
 export type Session = {

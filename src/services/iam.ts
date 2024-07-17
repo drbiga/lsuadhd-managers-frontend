@@ -16,6 +16,7 @@ type User = {
 type Session = {
     token: string;
     user: User;
+    ip_address: string;
 }
 
 type Context = {
@@ -62,8 +63,8 @@ class IamService {
             throw Error('No running session');
     }
     
-    public async createSession(username: string, password: string): Promise<Session> {
-        const response = await api.post('/iam/session', {username, password})
+    public async createSession(username: string, password: string, ipAddress: string): Promise<Session> {
+        const response = await api.post('/iam/session', {username, password, ip_address: ipAddress})
         this.currentSession = response.data;
         setLocalStorage(Item.SESSION_OBJ, JSON.stringify(this.currentSession));
         this.authenticatedUser = this.currentSession?.user || null;

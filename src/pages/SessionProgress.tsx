@@ -1,8 +1,8 @@
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import Sidebar from "../components/Sidebar";
-import { SessionItemComment, SessionItemNumFeedbacks, SessionItemPctTimeDistracted, SessionItemPctTimeFocused, SessionItemPctTimeNormal, SessionItemSeqnum, SessionItemStage, SessionItemView, SessionListTitle, SessionListView, SessionStartButton } from "@/components/sessionExecution/Session";
+import { SessionItemChart, SessionItemComment, SessionItemContent, SessionItemNumFeedbacks, SessionItemPctTimeDistracted, SessionItemPctTimeFocused, SessionItemPctTimeNormal, SessionItemSeqnum, SessionItemStage, SessionItemView, SessionListTitle, SessionListView, SessionStartButton } from "@/components/sessionExecution/Session";
 import { useEffect, useState } from "react";
-import sessionExecutionService, { Session } from "@/services/sessionExecution";
+import sessionExecutionService, { Session, SessionAnalytics } from "@/services/sessionExecution";
 import { Role, useAuth } from "@/hooks/auth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 export default function SessionProgress() {
   const [sessionsDone, setSessionsDone] = useState<Session[]>([]);
   const [remainingSessions, setRemainingSessions] = useState<Session[]>([]);
+  const [sessionsDoneAnalytics, setSessionsDoneAnalytics] = useState<SessionAnalytics[]>([]);
   const { authState } = useAuth();
 
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function SessionProgress() {
           setSessionsDone(student.sessions_done);
           const sessions = await sessionExecutionService.getRemainingSessionsForStudent(authState.session.user.username);
           setRemainingSessions(sessions);
+          setSessionsDoneAnalytics(student.sessions_analytics);
         } catch {
           toast.error('Something went wrong while getting your sessions. Please contact the administrator')
         }
@@ -44,17 +46,20 @@ export default function SessionProgress() {
             <>
               <SessionListTitle>Sessions already done</SessionListTitle>
               <SessionListView>
-                {sessionsDone.map(s => (
+                {sessionsDone.length > 0 && sessionsDoneAnalytics.length > 0 && sessionsDone.map(s => (
                   <SessionItemView>
-                    <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
-                    <p>
-                      <span className="text-slate-600 dark:text-slate-400 border-b-[1px]">Overview</span>
-                    </p>
-                    <SessionItemStage>{s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}</SessionItemStage>
-                    <SessionItemNumFeedbacks>{s.feedbacks.length}</SessionItemNumFeedbacks>
-                    <SessionItemPctTimeFocused>{presentPercentage(0.5)}</SessionItemPctTimeFocused>
-                    <SessionItemPctTimeNormal>{presentPercentage(0)}</SessionItemPctTimeNormal>
-                    <SessionItemPctTimeDistracted>{presentPercentage(0.5)}</SessionItemPctTimeDistracted>
+                    <SessionItemContent>
+                      <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
+                      <p>
+                        <span className="text-slate-600 dark:text-slate-400 border-b-[1px]">Overview</span>
+                      </p>
+                      <SessionItemStage>{s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}</SessionItemStage>
+                      <SessionItemNumFeedbacks>{s.feedbacks.length}</SessionItemNumFeedbacks>
+                      <SessionItemPctTimeFocused>{presentPercentage(findAnalytics(sessionsDoneAnalytics, s).percentage_time_focused)}</SessionItemPctTimeFocused>
+                      <SessionItemPctTimeNormal>{presentPercentage(0)}</SessionItemPctTimeNormal>
+                      <SessionItemPctTimeDistracted>{presentPercentage(0.5)}</SessionItemPctTimeDistracted>
+                    </SessionItemContent>
+                    <SessionItemChart feedbacks={s.feedbacks} />
                   </SessionItemView>
                 ))}
               </SessionListView>
@@ -68,13 +73,15 @@ export default function SessionProgress() {
               <SessionListView>
                 {remainingSessions.map(s => (
                   <SessionItemView className="relative">
-                    <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
-                    <SessionItemComment>Upcoming...</SessionItemComment>
-                    <p className="absolute top-4 right-4">
-                      {s.seqnum === sessionsDone.length + 1 && (
-                        <SessionStartButton onClick={() => navigate('/')}>Start next session</SessionStartButton>
-                      )}
-                    </p>
+                    <SessionItemContent>
+                      <SessionItemSeqnum>{s.seqnum}</SessionItemSeqnum>
+                      <SessionItemComment>Upcoming...</SessionItemComment>
+                      <p className="absolute top-4 right-4">
+                        {s.seqnum === sessionsDone.length + 1 && (
+                          <SessionStartButton onClick={() => navigate('/')}>Start next session</SessionStartButton>
+                        )}
+                      </p>
+                    </SessionItemContent>
                   </SessionItemView>
                 ))}
               </SessionListView>
@@ -88,4 +95,14 @@ export default function SessionProgress() {
 
 function presentPercentage(pct: number): string {
   return pct > 0 ? Math.round(pct * 100).toString() + '%' : '-';
+}
+
+function findAnalytics(sessionsAnalytics: SessionAnalytics[], session: Session): SessionAnalytics | null {
+  for (let s of sessionsAnalytics) {
+    if (s.session_seqnum === session.seqnum) {
+      return s;
+    }
+  }
+  return null;
+  // throw Error('Session Analytics does not exist, but it always should. Please contact an administrator.')
 }
