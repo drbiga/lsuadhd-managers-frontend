@@ -1,12 +1,12 @@
 import { forwardRef, HtmlHTMLAttributes, LiHTMLAttributes, PropsWithChildren } from "react";
 import { Button } from "../Button";
 import { cn } from "@/lib/utils";
-import { Bar, BarChart, Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
+import { Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 import { Feedback, FeedbackType } from "@/services/sessionExecution";
 import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
 export const SessionListTitle = forwardRef<HTMLHeadingElement, HtmlHTMLAttributes<HTMLHeadingElement>>(
-  function SessionListTitle({ children, className }, ref) {
+  function SessionListTitle({ children, className }, _) {
     return <h2 className={cn("text-2xl text-slate-800 dark:text-slate-200 opacity-50", className)}>{children}</h2>
   }
 );
@@ -20,7 +20,7 @@ export function SessionListView({ children }: PropsWithChildren) {
   )
 }
 
-export const SessionItemView = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLIElement>>(function SessionItemView({ children, className }, ref) {
+export const SessionItemView = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLIElement>>(function SessionItemView({ children, className }, _) {
   return (
     <li className={cn("bg-card p-4 h-[80vh] w-[70vw] rounded-lg flex", className)}>
       {children}
@@ -28,7 +28,7 @@ export const SessionItemView = forwardRef<HTMLLIElement, LiHTMLAttributes<HTMLLI
   )
 });
 
-export const SessionItemContent = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ children, className }, ref) => {
+export const SessionItemContent = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ children, className }, _) => {
   return (
     <div className={cn('w-[30%]', className)}>
       {children}
@@ -74,7 +74,7 @@ export function SessionStartButton({ children, onClick }: PropsWithChildren & { 
   )
 }
 
-export const SessionItemNumFeedbacks = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+export const SessionItemNumFeedbacks = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, _) => {
   return (
     <div className={cn(className, "text-sm text-slate-400 dark:text-slate-600")}>
       Number of feedbacks given: {children}
@@ -82,7 +82,7 @@ export const SessionItemNumFeedbacks = forwardRef<HTMLDivElement, HtmlHTMLAttrib
   )
 });
 
-export const SessionItemPctTimeFocused = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+export const SessionItemPctTimeFocused = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, _) => {
   return (
     <div className={cn(className, "text-sm text-slate-800 dark:text-slate-200")}>
       Percentage of time focused: {children}
@@ -90,7 +90,7 @@ export const SessionItemPctTimeFocused = forwardRef<HTMLDivElement, HtmlHTMLAttr
   )
 });
 
-export const SessionItemPctTimeNormal = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+export const SessionItemPctTimeNormal = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, _) => {
   return (
     <div className={cn(className, "text-sm text-slate-400 dark:text-slate-600")}>
       Percentage of time normal: {children}
@@ -98,7 +98,7 @@ export const SessionItemPctTimeNormal = forwardRef<HTMLDivElement, HtmlHTMLAttri
   )
 });
 
-export const SessionItemPctTimeDistracted = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, ref) => {
+export const SessionItemPctTimeDistracted = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement>>(({ className, children }, _) => {
   return (
     <div className={cn(className, "text-sm text-slate-400 dark:text-slate-600")}>
       Percentage of time distracted: {children}
@@ -112,7 +112,7 @@ type SessionItemChartExtraProps = {
 }
 
 export const SessionItemChart = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement> & SessionItemChartExtraProps>(
-  ({ feedbacks }, ref) => {
+  ({ feedbacks }, _) => {
     const data = []
     for (let i = 0; i < feedbacks.length; i++) {
       data.push({

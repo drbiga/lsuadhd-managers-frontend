@@ -1,9 +1,7 @@
 import { Button } from "@/components/Button";
 import { DarkModeButton } from "@/components/DarkModeButton";
 import { useAuth } from "@/hooks/auth";
-import iamService from "@/services/iam";
 import sessionExecutionService from "@/services/sessionExecution";
-// import { InvalidCredentialsError } from "@/services/auth";
 import { useCallback, useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,7 +27,7 @@ export default function SignUp() {
 
   const onSubmit = useCallback(async (data: FieldValues) => {
     try {
-      const newStudent = await sessionExecutionService.createStudent(data.username, data.password);
+      await sessionExecutionService.createStudent(data.username, data.password);
       navigate('/login')
     } catch (error) {
       toast.error('Unknown error. Please contact someone');

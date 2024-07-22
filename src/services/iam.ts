@@ -26,18 +26,18 @@ type Context = {
 
 class IamService {
     private currentSession: Session | null;
-    private authenticatedUser: User | null;
-    private ipAddress: string;
+    // private authenticatedUser: User | null;
+    // private ipAddress: string;
 
     public constructor() {
         const sessionString = getLocalStorage(Item.SESSION_OBJ);
         this.currentSession = sessionString ? JSON.parse(sessionString) : null;
-        this.authenticatedUser = this.currentSession ? this.currentSession.user : null;
+        // this.authenticatedUser = this.currentSession ? this.currentSession.user : null;
         if (this.currentSession) {
             api.defaults.headers.common.Authorization = `Bearer ${this.currentSession.token}`;
         }
-        this.ipAddress = '';
-        this.getIpAddress().then(ip => { this.ipAddress = ip })
+        // this.ipAddress = '';
+        // this.getIpAddress().then(ip => { this.ipAddress = ip })
     }
 
     async getIpAddress(): Promise<string> {
@@ -67,7 +67,7 @@ class IamService {
         const response = await api.post('/iam/session', {username, password, ip_address: ipAddress})
         this.currentSession = response.data;
         setLocalStorage(Item.SESSION_OBJ, JSON.stringify(this.currentSession));
-        this.authenticatedUser = this.currentSession?.user || null;
+        // this.authenticatedUser = this.currentSession?.user || null;
         await axios.post('http://localhost:8001/session', this.currentSession);
         return response.data;
     }

@@ -3,7 +3,7 @@ import { Button } from "./Button";
 import { Moon, Sun } from "lucide-react";
 import { ButtonProps } from "./ui/button";
 
-export const DarkModeButton = forwardRef<HTMLButtonElement, ButtonProps>(function DarkModeButton({ className, ...rest }, ref) {
+export const DarkModeButton = forwardRef<HTMLButtonElement, ButtonProps>(function DarkModeButton({ className, ...rest }, _) {
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const html = document.getElementById('html');
         if (html) {

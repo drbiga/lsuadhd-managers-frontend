@@ -1,4 +1,3 @@
-import { Button } from "@/components/Button";
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionStartButton } from "@/components/sessionExecution/Session";
 import Sidebar from "@/components/Sidebar";
@@ -45,7 +44,7 @@ export default function NextSession() {
 
   const handleStartSession = useCallback(async () => {
     if (authState.session) {
-      const session = await sessionExecutionService.startSessionForStudent(authState.session.user.username, handleSessionProgressDataUpdate);
+      await sessionExecutionService.startSessionForStudent(authState.session.user.username, handleSessionProgressDataUpdate);
       setSessionHasStarted(true);
     }
   }, [authState, nextSession]);

@@ -55,9 +55,9 @@ export default function SessionProgress() {
                       </p>
                       <SessionItemStage>{s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}</SessionItemStage>
                       <SessionItemNumFeedbacks>{s.feedbacks.length}</SessionItemNumFeedbacks>
-                      <SessionItemPctTimeFocused>{presentPercentage(findAnalytics(sessionsDoneAnalytics, s).percentage_time_focused)}</SessionItemPctTimeFocused>
-                      <SessionItemPctTimeNormal>{presentPercentage(0)}</SessionItemPctTimeNormal>
-                      <SessionItemPctTimeDistracted>{presentPercentage(0.5)}</SessionItemPctTimeDistracted>
+                      <SessionItemPctTimeFocused>{presentPercentage(findAnalytics(sessionsDoneAnalytics, s)?.percentage_time_focused || 0)}</SessionItemPctTimeFocused>
+                      <SessionItemPctTimeNormal>{presentPercentage(findAnalytics(sessionsDoneAnalytics, s)?.percentage_time_normal || 0)}</SessionItemPctTimeNormal>
+                      <SessionItemPctTimeDistracted>{presentPercentage(findAnalytics(sessionsDoneAnalytics, s)?.percentage_time_distracted || 0)}</SessionItemPctTimeDistracted>
                     </SessionItemContent>
                     <SessionItemChart feedbacks={s.feedbacks} />
                   </SessionItemView>

@@ -6,7 +6,7 @@ import {
     useEffect,
     useState,
 } from "react";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import iamService from "@/services/iam";
 import api from "@/services/api";
