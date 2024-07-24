@@ -29,8 +29,8 @@ jobs:
       - name: Build
         run: npm run build --if-present
         env:
-          VITE_BACKEND_HOST: ${{ secrets.VITE_BACKEND_HOST }}
-          VITE_BACKEND_PORT: ${{ secrets.VITE_BACKEND_PORT }}
+          VITE_BACKEND_HOST: localhost
+          VITE_BACKEND_PORT: 8000
       # Added --if-present here because I do not have tests yet
       - run: npm test --if-present
       - name: Deploy with gh-pages
