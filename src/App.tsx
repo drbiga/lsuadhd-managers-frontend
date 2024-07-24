@@ -42,7 +42,9 @@ function App() {
                 </AuthRequired>
             ),
         },
-    ]);
+    ], {
+        basename: import.meta.env.BASENAME
+    });
 
     return (
         <>
