@@ -97,11 +97,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = useCallback(async (credentials: LoginCredentials) => {
         try {
             removeLocalStorage(Item.SESSION_OBJ);
-            const session = await iamService.createSession(
-                credentials.username,
-                credentials.password,
-                ipAddress
-            );
+            let session = null;
+            try {
+                session = await iamService.createSession(
+                    credentials.username,
+                    credentials.password,
+                    ipAddress
+                );
+            } catch {
+                toast.error('There was an error while logging you in on our servers')
+            }
             if (session) {
                 api.defaults.headers.common = { Authorization: `Bearer ${session.token}` }
                 setLocalStorage(Item.SESSION_OBJ, JSON.stringify(session));
@@ -119,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return null;
             }
         } catch {
-            toast.error('Something went wrong.')
+            toast.error('Something went wrong while logging in.')
         }
         return null;
     }, [setAuthState, ipAddress]);
