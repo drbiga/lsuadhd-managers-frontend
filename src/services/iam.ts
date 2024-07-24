@@ -72,7 +72,7 @@ class IamService {
         try {
             await axios.post('http://localhost:8001/session', this.currentSession);
         } catch {
-            toast.error('Could not communicate with the local feedback collection tool')
+            // toast.error('Could not communicate with the local feedback collection tool')
         }
         return response.data;
     }
