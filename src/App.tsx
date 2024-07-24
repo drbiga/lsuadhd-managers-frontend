@@ -43,7 +43,7 @@ function App() {
             ),
         },
     ], {
-        basename: import.meta.env.BASENAME
+        basename: '/lsuadhd-frontend'
     });
 
     return (
