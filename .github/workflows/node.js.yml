@@ -29,7 +29,7 @@ jobs:
       - name: Build
         run: npm run build --if-present
         env:
-          VITE_BACKEND_HOST: https://backend.purplegrass-76bdc488.eastus.azurecontainerapps.io
+          VITE_BACKEND_HOST: backend.purplegrass-76bdc488.eastus.azurecontainerapps.io
           VITE_BACKEND_PORT: 8000
       # Added --if-present here because I do not have tests yet
       - run: npm test --if-present
