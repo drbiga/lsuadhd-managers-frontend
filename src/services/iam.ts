@@ -1,7 +1,7 @@
 import { getLocalStorage, Item, setLocalStorage } from "@/localstorage";
 import api from "./api";
 import axios from "axios";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 enum Role {
     MANAGER = 'manager',
@@ -72,7 +72,7 @@ class IamService {
         try {
             await axios.post('http://localhost:8001/session', this.currentSession);
         } catch {
-            // toast.error('Could not communicate with the local feedback collection tool')
+            toast.error('Could not communicate with the local feedback collection tool')
         }
         return response.data;
     }
