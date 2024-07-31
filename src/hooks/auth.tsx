@@ -13,6 +13,7 @@ import api from "@/services/api";
 import { getLocalStorage, Item, removeLocalStorage, setLocalStorage } from "@/localstorage";
 import { toast } from "react-toastify";
 import axios from "axios";
+import sessionExecutionService from "@/services/sessionExecution";
 
 export interface LoginCredentials {
     username: string;
@@ -46,12 +47,28 @@ export enum Role {
     STUDENT = 'student'
 };
 
-function computeInitialState(): IAuthState {
+function computeInitialStateRaw(): IAuthState {
     const sessionString = getLocalStorage(Item.SESSION_OBJ);
     const session: ISession = sessionString ? JSON.parse(sessionString) : {};
     const authState: IAuthState = session ? { session, isLoggedIn: true } : { isLoggedIn: false };
     return authState;
 }
+
+function initializeLocalServerWrapper(computeInitialState: () => IAuthState): () => IAuthState {
+    function initializeLocalServer(): IAuthState {
+        const authState = computeInitialState();
+
+        if (authState.session) {
+            axios.post('http://localhost:8001/session', authState.session);
+        }
+
+        return authState;
+    }
+
+    return initializeLocalServer;
+}
+
+const computeInitialState = initializeLocalServerWrapper(computeInitialStateRaw);
 
 const AuthContext = createContext<IAuthContext>({ authState: computeInitialState() } as IAuthContext);
 
@@ -79,20 +96,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })();
     }, []);
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const sessionString = getLocalStorage(Item.SESSION_OBJ);
-    //         const session = sessionString ? JSON.parse(sessionString) : null;
-    //         if (session !== null) {
-    //             setAuthState({
-    //                 session,
-    //                 isLoggedIn: true
-    //             })
-    //         } else {
-    //             setAuthState({ isLoggedIn: false });
-    //         }
-    //     })()
-    // }, []);
 
     const login = useCallback(async (credentials: LoginCredentials) => {
         try {
