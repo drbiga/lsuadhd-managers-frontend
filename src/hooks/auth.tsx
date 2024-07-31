@@ -13,7 +13,6 @@ import api from "@/services/api";
 import { getLocalStorage, Item, removeLocalStorage, setLocalStorage } from "@/localstorage";
 import { toast } from "react-toastify";
 import axios from "axios";
-import sessionExecutionService from "@/services/sessionExecution";
 
 export interface LoginCredentials {
     username: string;
