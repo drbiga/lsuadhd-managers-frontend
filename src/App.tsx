@@ -7,6 +7,7 @@ import { AuthRequired } from "./hooks/auth";
 import SignUp from "./pages/SignUp";
 import NextSession from "./pages/NextSession";
 import SessionProgress from "./pages/SessionProgress";
+import SessionGroups from "./pages/SessionGroups";
 
 function App() {
     const router = createBrowserRouter([
@@ -39,6 +40,14 @@ function App() {
             element: (
                 <AuthRequired authRoute="/login">
                     <Management />
+                </AuthRequired>
+            ),
+        },
+        {
+            path: "/session_groups",
+            element: (
+                <AuthRequired authRoute="/login">
+                    <SessionGroups />
                 </AuthRequired>
             ),
         },
