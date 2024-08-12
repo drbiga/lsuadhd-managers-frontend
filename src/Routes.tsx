@@ -15,7 +15,7 @@ export enum RouteNames {
     SIGNUP = '/signup',
     SESSION_PROGRESS = '/session-progress',
     MANAGEMENT = '/management',
-    SESSION_GROUPS = 'session_groups'
+    SESSION_GROUPS = '/session_groups'
 }
 
 export default function Routes() {
