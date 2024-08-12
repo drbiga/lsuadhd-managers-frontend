@@ -5,6 +5,11 @@ export type Manager = {
     name: string;
 }
 
+export type Student = {
+    name: string;
+    group: string;
+}
+
 export type SessionGroup = {
     group_name: string;
     creator_manager_name: string;
@@ -43,6 +48,26 @@ class ManagementService {
                 name_manager_requesting_operation: iamService.getCurrentSession().user.username
             }
         });
+        return response.data;
+    }
+
+    public async createStudent(studentName: string, sessionGroupName: string): Promise<Student> {
+        const response = await api.post('/management/student', {}, {
+            params: {
+            student_name: studentName,
+            session_group_name: sessionGroupName,
+            name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+        }});
+        return response.data;
+    }
+
+    // public async getStudents(): Promise<Student[]> {
+    //     const response = await api.get('/management/student');
+    //     return response.data;
+    // }
+
+    public async getStudent(studentName: string): Promise<Student> {
+        const response = await api.get(`/management/student/${studentName}`);
         return response.data;
     }
 

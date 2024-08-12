@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/auth";
 import managementService, { SessionGroup } from "@/services/managementService";
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function SessionGroups() {
@@ -62,6 +62,7 @@ export default function SessionGroups() {
                   <SessionGroupCreatorName>{sg.creator_manager_name}</SessionGroupCreatorName>
                   <SessionGroupDateCreated>{sg.created_on.toString()}</SessionGroupDateCreated>
                   <SessionGroupPublicLink>{sg.public_link}</SessionGroupPublicLink>
+                  <Link>Edit</Link>
                 </SessionGroupView>
               </li>
             ))}
