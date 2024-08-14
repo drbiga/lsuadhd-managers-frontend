@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/auth";
 import managementService, { Session, SessionGroup } from "@/services/managementService";
-import { useCallback, useEffect, useState } from "react";
+import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -28,7 +28,7 @@ export function SessionGroupPage() {
 
   const { handleSubmit, reset, register } = useForm();
 
-  const onSubmit = useCallback(async (data: FieldValues, e) => {
+  const onSubmit = useCallback(async (data: FieldValues, e: BaseSyntheticEvent<object, any, any> | undefined) => {
     if (authState.session && sessionGroup) {
       try {
         const newSession = await managementService.createSession(
@@ -44,7 +44,7 @@ export function SessionGroupPage() {
         setSessionGroup(sessionGroupChange);
       } catch {
         // reset();
-        e.preventDefault();
+        e?.preventDefault();
       }
 
     } else {
