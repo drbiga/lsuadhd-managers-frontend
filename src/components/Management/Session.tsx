@@ -3,7 +3,7 @@ import { forwardRef, HtmlHTMLAttributes, PropsWithChildren } from "react";
 export const SessionView = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLHtmlElement>>(
   function SessionView({ children, className }, _) {
     return (
-      <div className="bg-accent rounded-lg p-2">
+      <div className="bg-accent rounded-lg p-4">
         {children}
       </div>
     );
@@ -20,7 +20,7 @@ function AttributeValue({ children }: PropsWithChildren) {
 
 export function SessionViewSequenceNumber({ children }: PropsWithChildren) {
   return (
-    <p><AttributeTitle>Sequence number</AttributeTitle>: <AttributeValue>{children}</AttributeValue></p>
+    <h2 className="text-2xl text-slate-700 dark:text-slate-300">Sequence number: {children}</h2>
   )
 }
 

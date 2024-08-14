@@ -62,7 +62,7 @@ export function SessionGroupPage() {
             <div>
               <p className="mb-8">Date created: {sessionGroup.created_on.toString()}</p>
               <h2 className="mb-4">Sessions</h2>
-              <ul className="flex flex-wrap gap-16">
+              <ul className="grid grid-cols-4 gap-8 pr-16">
                 {sessionGroup.sessions.map(s => (
                   <li key={s.seqnum} className="mb-8 flex flex-col gap-4">
                     <SessionView>
@@ -125,7 +125,7 @@ export function SessionGroupPage() {
                     </div>
                     <DialogFooter>
                       <DialogClose>
-                        <Button type="submit">Save changes</Button>
+                        <Button type="submit" variant="outline">Create</Button>
                       </DialogClose>
                     </DialogFooter>
                   </form>
