@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import NextSession from "./pages/NextSession";
 import SessionProgress from "./pages/SessionProgress";
 import SessionGroups from "./pages/SessionGroups";
+import { SessionGroupPage } from "./pages/SessionGroup";
 
 export enum RouteNames {
     BASENAME = '/lsuadhd-frontend',
@@ -15,7 +16,8 @@ export enum RouteNames {
     SIGNUP = '/signup',
     SESSION_PROGRESS = '/session-progress',
     MANAGEMENT = '/management',
-    SESSION_GROUPS = '/session_groups'
+    SESSION_GROUPS = '/session_groups',
+    INDIVIDUAL_SESSION_GROUP = '/session-group'
 }
 
 export default function Routes() {
@@ -58,6 +60,14 @@ export default function Routes() {
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
                     <SessionGroups />
+                </AuthRequired>
+            ),
+        },
+        {
+            path: RouteNames.INDIVIDUAL_SESSION_GROUP,
+            element: (
+                <AuthRequired authRoute={RouteNames.LOGIN}>
+                    <SessionGroupPage />
                 </AuthRequired>
             ),
         },

@@ -6,6 +6,7 @@ import { Role, useAuth } from "@/hooks/auth";
 import iamService from "@/services/iam";
 import { LogOutButton } from "./LogOutButton";
 import { Button } from "./Button";
+import { RouteNames } from "@/Routes";
 
 function SidebarLink({ active, collapsed, children, icon, to }: { active?: boolean; collapsed: boolean, icon: ReactNode, to: string, children: ReactNode }) {
     return (
@@ -61,27 +62,27 @@ export default function Sidebar() {
             <ul className="flex flex-col justify-around gap-4 mt-16">
                 {
                     allowedContexts.includes('management') &&
-                    <SidebarLink active={pathname === '/management'} to='/management' collapsed={collapsed} icon={<LayoutGrid />}>Management</SidebarLink>
+                    <SidebarLink active={pathname === RouteNames.MANAGEMENT} to={RouteNames.MANAGEMENT} collapsed={collapsed} icon={<LayoutGrid />}>Management</SidebarLink>
                 }
                 {
                     allowedContexts.includes('management') &&
-                    <SidebarLink active={pathname === '/session_groups'} to='/session_groups' collapsed={collapsed} icon={<Group />}>Session Groups</SidebarLink>
+                    <SidebarLink active={pathname === RouteNames.SESSION_GROUPS} to={RouteNames.SESSION_GROUPS} collapsed={collapsed} icon={<Group />}>Session Groups</SidebarLink>
                 }
                 {
                     allowedContexts.includes('session_execution') && authState.session?.user.role === Role.STUDENT && (
-                        <SidebarLink active={pathname === '/'} to='/' collapsed={collapsed} icon={<Target />}>
+                        <SidebarLink active={pathname === RouteNames.HOME} to={RouteNames.HOME} collapsed={collapsed} icon={<Target />}>
                             Next Session
                         </SidebarLink>
                     )
                 }
                 {
                     allowedContexts.includes('session_execution') &&
-                    <SidebarLink active={pathname === '/session-progress'} to='/session-progress' collapsed={collapsed} icon={<Milestone />}>Session Progress</SidebarLink>
+                    <SidebarLink active={pathname === RouteNames.SESSION_PROGRESS} to={RouteNames.SESSION_PROGRESS} collapsed={collapsed} icon={<Milestone />}>Session Progress</SidebarLink>
                 }
-                {
+                {/* {
                     allowedContexts.includes('goals') &&
                     <SidebarLink active={pathname === '/goals'} to='/goals' collapsed={collapsed} icon={<Goal />}>My Goals</SidebarLink>
-                }
+                } */}
             </ul>
 
             <div className="text-white">

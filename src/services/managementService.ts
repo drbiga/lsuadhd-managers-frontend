@@ -1,5 +1,7 @@
+import { toast } from "react-toastify";
 import api from "./api";
 import iamService from "./iam";
+import { AxiosError } from "axios";
 
 export type Manager = {
     name: string;
@@ -31,6 +33,12 @@ export type CreateSessionGroupDTO = {
 }
 
 class ManagementService {
+    private sessionGroups: SessionGroup[] | null;
+
+    public constructor() {
+        this.sessionGroups = null;
+    }
+
     public async createManager(managerName: string): Promise<Manager> {
         const response = await api.post('/management/manager', {
         }, {
@@ -84,6 +92,45 @@ class ManagementService {
         });
 
         return response.data;
+    }
+
+    public async getSessionGroup(sessionGroupName: string): Promise<SessionGroup> {
+        const response = await api.get(`/management/session_group/${sessionGroupName}`, {
+            params: {
+                manager_name: iamService.getCurrentSession().user.username
+            }
+        });
+
+        return response.data;
+    }
+
+    public async createSession(
+        sessionGroupName: string,
+        sessionSeqnum: number,
+        sessionHasFeedback: boolean,
+        sessionIsPassthrough: boolean
+    ): Promise<Session> {
+        try {
+            const response = await api.post('/management/session', {
+                session_group_name: sessionGroupName,
+                seqnum: sessionSeqnum,
+                is_passthrough: sessionIsPassthrough,
+                has_feedback: sessionHasFeedback
+            }, {
+                params: {
+                    manager_name: iamService.getCurrentSession().user.username
+                }
+            });
+            return response.data;
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                toast.error(err.response?.data.detail.message)
+                throw new Error(err.response?.data.detail.message);
+            } else {
+                toast.error('Something went wrong')
+                throw new Error("Unknown error")
+            }
+        }
     }
 }
 

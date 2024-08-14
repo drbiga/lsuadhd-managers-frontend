@@ -1,5 +1,5 @@
 import { PageContainer, PageMainContent, PageSectionTitle, PageTitle } from "@/components/Page";
-import { SessionGroupView, SessionGroupName, SessionGroupCreatorName, SessionGroupDateCreated, SessionGroupPublicLink } from "@/components/SessionGroup";
+import { SessionGroupView, SessionGroupName, SessionGroupCreatorName, SessionGroupDateCreated, SessionGroupPublicLink, SessionGroupEditButton } from "@/components/SessionGroup";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/hooks/auth";
 import managementService, { SessionGroup } from "@/services/managementService";
@@ -57,12 +57,12 @@ export default function SessionGroups() {
           <ul>
             {sessionGroups.map(sg => (
               <li key={sg.group_name} className="mb-8">
-                <SessionGroupView>
+                <SessionGroupView className="relative">
                   <SessionGroupName>{sg.group_name}</SessionGroupName>
                   <SessionGroupCreatorName>{sg.creator_manager_name}</SessionGroupCreatorName>
                   <SessionGroupDateCreated>{sg.created_on.toString()}</SessionGroupDateCreated>
                   <SessionGroupPublicLink>{sg.public_link}</SessionGroupPublicLink>
-                  <Link>Edit</Link>
+                  <SessionGroupEditButton sessionGroupName={sg.group_name} />
                 </SessionGroupView>
               </li>
             ))}
