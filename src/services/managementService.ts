@@ -24,6 +24,7 @@ export type Session = {
     seqnum: number;
     is_passthrough: boolean;
     has_feedback: boolean;
+    no_equipment?: boolean;
 }
 
 export type CreateSessionGroupDTO = {
@@ -33,12 +34,6 @@ export type CreateSessionGroupDTO = {
 }
 
 class ManagementService {
-    private sessionGroups: SessionGroup[] | null;
-
-    public constructor() {
-        this.sessionGroups = null;
-    }
-
     public async createManager(managerName: string): Promise<Manager> {
         const response = await api.post('/management/manager', {
         }, {
