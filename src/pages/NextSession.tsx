@@ -100,12 +100,30 @@ export default function NextSession() {
               <div className="h-full w-full flex items-center justify-center">
                 <div className="flex flex-col gap-8 justify-center items-center translate-x-[-100px] p-16 border-[2px] border-slate-700 rounded-lg">
                   <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
-                  <SessionItemComment>
-                    {nextSession?.is_passthrough ? "This session is going to be passthrough" : "This session is going to be VR"}
-                  </SessionItemComment>
-                  <SessionItemComment>
-                    {nextSession?.has_feedback ? "You are going to receive some feedback this session" : "There will be no feedbacks for this session"}
-                  </SessionItemComment>
+                  {nextSession && (
+                    <>
+                      {nextSession.no_equipment === true ? (
+                        <>
+                          <SessionItemComment>
+                            <span className="font-bold text-slate-200 text-xl">Attention!</span> You are <span className="font-bold text-slate-200 text-xl">not supposed to use the headset</span> during this session.
+                          </SessionItemComment>
+                          <SessionItemComment>
+                            If you are currently wearing the headset, then please take it off to continue your session properly.
+                          </SessionItemComment>
+                          <SessionItemComment>Your sessions with the headset begin at session #3</SessionItemComment>
+                        </>
+                      ) : (
+                        <>
+                          <SessionItemComment>
+                            {nextSession?.is_passthrough ? "This session is going to be passthrough" : "This session is going to be VR"}
+                          </SessionItemComment>
+                          <SessionItemComment>
+                            {nextSession?.has_feedback ? "You are going to receive some feedback this session" : "There will be no feedbacks for this session"}
+                          </SessionItemComment>
+                        </>
+                      )}
+                    </>
+                  )}
                   <SessionItemComment>
                     Are you ready to do this?
                   </SessionItemComment>
