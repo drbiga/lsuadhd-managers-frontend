@@ -60,12 +60,23 @@ class ManagementService {
     }
 
     public async createStudent(studentName: string, sessionGroupName: string): Promise<Student> {
-        const response = await api.post('/management/student', {}, {
-            params: {
-            student_name: studentName,
-            session_group_name: sessionGroupName,
-            name_manager_requesting_operation: iamService.getCurrentSession().user.username,
-        }});
+        let response;
+        try {
+            response = await api.post('/management/student', {}, {
+                params: {
+                student_name: studentName,
+                session_group_name: sessionGroupName,
+                name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+            }});
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                toast.error(error.response?.data.detail)
+                throw new Error(error.response?.data.detail)
+            } else {
+                throw new Error('There was a problem creating the student')
+            }
+        }
+
         return response.data;
     }
 

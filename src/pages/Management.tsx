@@ -62,9 +62,9 @@ export default function Management() {
       setManagers([...managers, newManager]);
     } catch (error) {
       toast.error('Unknown error. Please contact someone');
-      reset();
     }
-  }, [authState]);
+    reset(data);
+  }, [authState, managers]);
 
   const onSubmitStudent = useCallback(async (data: FieldValues) => {
     try {
@@ -72,9 +72,9 @@ export default function Management() {
       setStudents([...students, newStudent]);
     } catch (error) {
       toast.error('Unknown error. Please contact someone');
-      reset();
     }
-  }, [authState]);
+    reset(data);
+  }, [authState, students]);
 
   return (
     <PageContainer>
