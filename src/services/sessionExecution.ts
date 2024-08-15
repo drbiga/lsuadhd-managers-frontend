@@ -1,6 +1,7 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import api from "./api";
 import iamService from "./iam";
+import { toast } from "react-toastify";
 
 export type Student = {
     name: string;
@@ -19,6 +20,7 @@ export type SessionAnalytics = {
 export type Session = {
     seqnum: number;
     is_passthrough: boolean;
+    has_feedback: boolean;
     stage: Stage;
     feedbacks: Feedback[];
 }
@@ -82,7 +84,18 @@ class SessionExecutionService {
     }
 
     public async getRemainingSessionsForStudent(studentName: string): Promise<Session[]> {
-        const response = await api.get(`/session_execution/student/${studentName}/remaining_sessions`);
+        let response;
+        try {
+            response = await api.get(`/session_execution/student/${studentName}/remaining_sessions`);
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                toast.error(error.response?.data.detail.exception)
+                throw new Error(error.response?.data.detail.message);
+            } else {
+                toast.error('There was a problem when getting your remaining sessions');
+                throw new Error('There was a problem when getting your remaining sessions');
+            }
+        }
         return response.data;
     }
 

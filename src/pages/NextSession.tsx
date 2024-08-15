@@ -101,6 +101,12 @@ export default function NextSession() {
                 <div className="flex flex-col gap-8 justify-center items-center translate-x-[-100px] p-16 border-[2px] border-slate-700 rounded-lg">
                   <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
                   <SessionItemComment>
+                    {nextSession?.is_passthrough ? "This session is going to be passthrough" : "This session is going to be VR"}
+                  </SessionItemComment>
+                  <SessionItemComment>
+                    {nextSession?.has_feedback ? "You are going to receive some feedback this session" : "There will be no feedbacks for this session"}
+                  </SessionItemComment>
+                  <SessionItemComment>
                     Are you ready to do this?
                   </SessionItemComment>
                   <SessionStartButton onClick={() => handleStartSession()}>Start!</SessionStartButton>
