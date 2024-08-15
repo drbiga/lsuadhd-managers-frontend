@@ -79,6 +79,25 @@ class ManagementService {
         return response.data;
     }
 
+    public async getAllStudents(): Promise<Student[]> {
+        try {
+            const response = await api.get('/management/student', {
+                params: {
+                    name_manager_requesting_operation: iamService.getCurrentSession().user.username
+                }
+            })
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                toast.error(error.response?.data.detail.exception)
+                throw new Error(error.response?.data.detail.message)
+            } else {
+                toast.error('Unknown error while getting the students')
+                throw error
+            }
+        }
+    }
+
     public async createSessionGroup(createSessionGroupDTO: CreateSessionGroupDTO): Promise<SessionGroup> {
         const response = await api.post('/management/session_group', createSessionGroupDTO);
         return response.data;

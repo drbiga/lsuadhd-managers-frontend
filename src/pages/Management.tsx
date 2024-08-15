@@ -21,14 +21,14 @@ export default function Management() {
   useEffect(() => {
     (async () => {
       try {
-        const studentsResponse = await managementService.getStudent('1111');
+        const studentsResponse = await managementService.getAllStudents();
         if (studentsResponse) {
-          setStudents([studentsResponse]);
+          setStudents(studentsResponse);
         } else {
-          toast.error('Something went wrong while getting the students')
+          toast.error('Something went wrong while setting the students')
         }
       } catch {
-        toast.error('Something went wrong while getting this student')
+        toast.error('Something went wrong while getting the students')
       }
     })()
   }, []);
@@ -52,7 +52,6 @@ export default function Management() {
     reset,
     handleSubmit,
     register,
-    formState: { errors },
   } = useForm();
 
   const { authState } = useAuth();
@@ -137,7 +136,7 @@ export default function Management() {
                 >
                   {
                     sessionGroups.map(sg => (
-                      <option value={sg.group_name}>{sg.group_name}</option>
+                      <option key={sg.group_name} value={sg.group_name}>{sg.group_name}</option>
                     ))
                   }
                 </select>
