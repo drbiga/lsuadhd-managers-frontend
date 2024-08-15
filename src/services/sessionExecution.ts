@@ -21,6 +21,7 @@ export type Session = {
     seqnum: number;
     is_passthrough: boolean;
     has_feedback: boolean;
+    no_equipment?: boolean;
     stage: Stage;
     feedbacks: Feedback[];
 }
