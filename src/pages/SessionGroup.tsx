@@ -1,4 +1,4 @@
-import { SessionView, SessionViewHasFeedback, SessionViewIsPassthrough, SessionViewSequenceNumber } from "@/components/Management/Session";
+import { SessionView, SessionViewHasFeedback, SessionViewIsNoEquipment, SessionViewIsPassthrough, SessionViewSequenceNumber } from "@/components/Management/Session";
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import Sidebar from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
@@ -69,6 +69,7 @@ export function SessionGroupPage() {
                       <SessionViewSequenceNumber>{s.seqnum}</SessionViewSequenceNumber>
                       <SessionViewHasFeedback>{s.has_feedback ? "Yes" : "No"}</SessionViewHasFeedback>
                       <SessionViewIsPassthrough>{s.is_passthrough ? "No" : "Yes"}</SessionViewIsPassthrough>
+                      <SessionViewIsNoEquipment>{(s.no_equipment && s.no_equipment === true) ? "Yes" : "No"}</SessionViewIsNoEquipment>
                     </SessionView>
                   </li>
                 ))}
