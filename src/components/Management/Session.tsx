@@ -33,3 +33,7 @@ export function SessionViewHasFeedback({ children }: PropsWithChildren) {
 export function SessionViewIsPassthrough({ children }: PropsWithChildren) {
   return <p><AttributeTitle>Is Passthrough</AttributeTitle>: <AttributeValue>{children}</AttributeValue></p>
 }
+
+export function SessionViewIsNoEquipment({ children }: PropsWithChildren) {
+  return <p><AttributeTitle>No equipment</AttributeTitle>: <AttributeValue>{children}</AttributeValue></p>
+}
