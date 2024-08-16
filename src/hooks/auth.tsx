@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = useCallback(async (credentials: LoginCredentials) => {
         try {
             removeLocalStorage(Item.SESSION_OBJ);
-            let session = null;
+            let session: ISession | null = null;
             try {
                 session = await iamService.createSession(
                     credentials.username,

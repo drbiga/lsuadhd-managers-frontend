@@ -113,7 +113,7 @@ type SessionItemChartExtraProps = {
 
 export const SessionItemChart = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement> & SessionItemChartExtraProps>(
   ({ feedbacks }, _) => {
-    const data = []
+    const data: ({ seqnum: number } & Feedback)[] = []
     for (let i = 0; i < feedbacks.length; i++) {
       data.push({
         ...feedbacks[i],
