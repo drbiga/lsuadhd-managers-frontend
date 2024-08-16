@@ -135,6 +135,7 @@ class ManagementService {
         sessionHasFeedback: boolean,
         sessionIsPassthrough: boolean
     ): Promise<Session> {
+        console.log('Session is passthrough: ' + sessionIsPassthrough)
         try {
             const response = await api.post('/management/session', {
                 session_group_name: sessionGroupName,
@@ -149,8 +150,8 @@ class ManagementService {
             return response.data;
         } catch (err) {
             if (err instanceof AxiosError) {
-                toast.error(err.response?.data.detail.message)
-                throw new Error(err.response?.data.detail.message);
+                toast.error(err.response?.data.detail.exception)
+                throw new Error(err.response?.data.detail.exception);
             } else {
                 toast.error('Something went wrong')
                 throw new Error("Unknown error")

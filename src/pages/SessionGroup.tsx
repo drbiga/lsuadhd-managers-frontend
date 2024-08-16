@@ -29,13 +29,15 @@ export function SessionGroupPage() {
   const { handleSubmit, reset, register } = useForm();
 
   const onSubmit = useCallback(async (data: FieldValues, e: BaseSyntheticEvent<object, any, any> | undefined) => {
+    console.log('Data to create session')
+    console.log(data);
     if (authState.session && sessionGroup) {
       try {
         const newSession = await managementService.createSession(
           sessionGroup.group_name,
           data.seqnum,
-          data.has_feedback,
-          data.is_passthrough
+          data.has_feedback === 'yes',
+          data.is_passthrough === 'yes'
         );
         const sessionGroupChange: SessionGroup = {
           ...sessionGroup,
@@ -68,7 +70,7 @@ export function SessionGroupPage() {
                     <SessionView>
                       <SessionViewSequenceNumber>{s.seqnum}</SessionViewSequenceNumber>
                       <SessionViewHasFeedback>{s.has_feedback ? "Yes" : "No"}</SessionViewHasFeedback>
-                      <SessionViewIsPassthrough>{s.is_passthrough ? "No" : "Yes"}</SessionViewIsPassthrough>
+                      <SessionViewIsPassthrough>{s.is_passthrough ? "Yes" : "No"}</SessionViewIsPassthrough>
                       <SessionViewIsNoEquipment>{(s.no_equipment && s.no_equipment === true) ? "Yes" : "No"}</SessionViewIsNoEquipment>
                     </SessionView>
                   </li>
@@ -104,7 +106,7 @@ export function SessionGroupPage() {
                         </Label>
                         <Input
                           id="has_feedback"
-                          defaultValue={1}
+                          defaultValue="yes"
                           className="col-span-1 p-0 w-4 h-4"
                           type="checkbox"
                           {...register('has_feedback')}
@@ -117,7 +119,7 @@ export function SessionGroupPage() {
                         </Label>
                         <Input
                           id="is_passthrough"
-                          defaultValue={1}
+                          defaultValue="yes"
                           className="col-span-1 p-0 w-4 h-4"
                           type="checkbox"
                           {...register('is_passthrough')}

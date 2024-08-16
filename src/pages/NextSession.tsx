@@ -24,7 +24,8 @@ export default function NextSession() {
   const getNextSession = useCallback(async () => {
     if (authState.session) {
       const remainingSessions = await sessionExecutionService.getRemainingSessionsForStudent(authState.session.user.username);
-      console.log(remainingSessions)
+      console.log('GetNextSession -> remainingSessions')
+      console.log(remainingSessions);
       if (remainingSessions.length > 0) {
         setNextSession(remainingSessions[0]);
         setHasNextSession(HasNextSessionValue.YES);
@@ -78,22 +79,47 @@ export default function NextSession() {
     <PageContainer>
       <Sidebar />
       <PageMainContent>
-        <PageTitle>Next Session</PageTitle>
-        {sessionHasStarted ? (
-          <div className="h-full w-full flex items-center justify-center">
-            <div className="flex flex-col items-center justify-center gap-4">
-              <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
-              <SessionItemStage>{sessionProgressData?.stage}</SessionItemStage>
-              {sessionProgressData && (
-                <SessionItemComment>
-                  Remaining time: {presentRemainingTime(sessionProgressData.remainingTimeSeconds)}
-                </SessionItemComment>
-              )}
-              {sessionProgressData && sessionProgressData.stage === Stage.FINISHED && (
-                <SessionStartButton onClick={() => handleStartAnotherSession()}>I want to do another session now</SessionStartButton>
-              )}
-            </div>
+        <header className="flex justify-between pr-16">
+          <PageTitle>Next Session</PageTitle>
+
+          <div className="ml-8 flex items-center justify-center gap-4">
+            <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
+            <SessionItemStage>{sessionProgressData?.stage}</SessionItemStage>
+            {sessionProgressData && (
+              <SessionItemComment>
+                Remaining time: {presentRemainingTime(sessionProgressData.remainingTimeSeconds)}
+              </SessionItemComment>
+            )}
           </div>
+        </header>
+        {sessionHasStarted && sessionProgressData ? (
+          <>
+            {sessionProgressData.stage === Stage.READCOMP ? (
+              <iframe src={"https://redcap.rwjms.rutgers.edu/surveys/?s=CEKFT7P8TC9JDKAY"} className="h-full w-full"></iframe>
+            ) : (
+              <>
+                {sessionProgressData.stage === Stage.SURVEY ? (
+                  <iframe src={"https://redcap.rwjms.rutgers.edu/surveys/?s=CEKFT7P8TC9JDKAY"} className="h-full w-full"></iframe>
+                ) : (
+                  // Homework
+                  <div className="h-full w-full flex items-center justify-center">
+                    <div className="flex flex-col items-center justify-center gap-4">
+                      <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
+                      <SessionItemStage>{sessionProgressData?.stage}</SessionItemStage>
+                      {sessionProgressData && (
+                        <SessionItemComment>
+                          Remaining time: {presentRemainingTime(sessionProgressData.remainingTimeSeconds)}
+                        </SessionItemComment>
+                      )}
+                      {sessionProgressData && sessionProgressData.stage === Stage.FINISHED && (
+                        <SessionStartButton onClick={() => handleStartAnotherSession()}>I want to do another session now</SessionStartButton>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </>
         ) : (
           <>
             {hasNextSession ? (
@@ -151,7 +177,7 @@ function presentRemainingTime(remainingTimeSeconds: number | null): string {
 }
 
 function presentRemainingTimeMinutes(timeSeconds: number): string {
-  return String(Math.max(Math.round(timeSeconds / 60) - 1, 0)).padStart(2, '0');
+  return String(Math.max(Math.floor(timeSeconds / 60), 0)).padStart(2, '0');
 }
 
 function presentRemainingTimeSeconds(timeSeconds: number): string {
