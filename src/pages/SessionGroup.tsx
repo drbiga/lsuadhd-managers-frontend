@@ -6,7 +6,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/auth";
-import managementService, { Session, SessionGroup } from "@/services/managementService";
+import managementService, { SessionGroup } from "@/services/managementService";
 import { BaseSyntheticEvent, useCallback, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
@@ -26,7 +26,7 @@ export function SessionGroupPage() {
 
   const { authState } = useAuth();
 
-  const { handleSubmit, reset, register } = useForm();
+  const { handleSubmit, register } = useForm();
 
   const onSubmit = useCallback(async (data: FieldValues, e: BaseSyntheticEvent<object, any, any> | undefined) => {
     console.log('Data to create session')

@@ -5,7 +5,6 @@ import { useAuth } from "@/hooks/auth";
 import managementService, { SessionGroup } from "@/services/managementService";
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function SessionGroups() {
@@ -20,13 +19,11 @@ export default function SessionGroups() {
 
   const {
     register,
-    reset,
     handleSubmit
   } = useForm();
 
   const { authState } = useAuth();
 
-  const navigate = useNavigate();
 
   const onSubmit = useCallback(async (data: FieldValues) => {
     try {

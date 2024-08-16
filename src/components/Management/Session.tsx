@@ -1,7 +1,7 @@
 import { forwardRef, HtmlHTMLAttributes, PropsWithChildren } from "react";
 
 export const SessionView = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLHtmlElement>>(
-  function SessionView({ children, className }, _) {
+  function SessionView({ children }, _) {
     return (
       <div className="bg-accent rounded-lg p-4">
         {children}
