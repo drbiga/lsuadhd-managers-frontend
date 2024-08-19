@@ -2,12 +2,13 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom"
 
 import Management from "./pages/Management";
 import Login from "./pages/Login";
-import { AuthRequired } from "./hooks/auth";
+import { AuthRequired, Role, useAuth } from "./hooks/auth";
 import SignUp from "./pages/SignUp";
 import NextSession from "./pages/NextSession";
 import SessionProgress from "./pages/SessionProgress";
 import SessionGroups from "./pages/SessionGroups";
 import { SessionGroupPage } from "./pages/SessionGroup";
+import SessionProgressManagementPage from "./pages/SessionProgress/Management";
 
 export enum RouteNames {
     BASENAME = '/lsuadhd-frontend',
@@ -21,6 +22,7 @@ export enum RouteNames {
 }
 
 export default function Routes() {
+    const { authState } = useAuth();
 
     const router = createBrowserRouter([
         {
@@ -35,7 +37,13 @@ export default function Routes() {
             path: RouteNames.SESSION_PROGRESS,
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
-                    <SessionProgress />
+                    {
+                        (authState.session && authState.session.user.role === Role.MANAGER) ? (
+                            <SessionProgressManagementPage />
+                        ) : (
+                            <SessionProgress />
+                        )
+                    }
                 </AuthRequired>
             )
         },
