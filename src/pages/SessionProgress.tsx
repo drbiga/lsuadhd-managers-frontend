@@ -6,6 +6,7 @@ import sessionExecutionService, { Session, SessionAnalytics } from "@/services/s
 import { Role, useAuth } from "@/hooks/auth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { findAnalytics, presentPercentage } from "@/lib/sessionProgress";
 
 export default function SessionProgress() {
   const [sessionsDone, setSessionsDone] = useState<Session[]>([]);
@@ -91,18 +92,4 @@ export default function SessionProgress() {
       </PageMainContent>
     </PageContainer>
   )
-}
-
-function presentPercentage(pct: number): string {
-  return pct > 0 ? Math.round(pct * 100).toString() + '%' : '-';
-}
-
-function findAnalytics(sessionsAnalytics: SessionAnalytics[], session: Session): SessionAnalytics | null {
-  for (let s of sessionsAnalytics) {
-    if (s.session_seqnum === session.seqnum) {
-      return s;
-    }
-  }
-  return null;
-  // throw Error('Session Analytics does not exist, but it always should. Please contact an administrator.')
 }
