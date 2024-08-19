@@ -122,14 +122,20 @@ export const SessionItemChart = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HT
     }
     return (
       <div className="w-[70%]">
-        <ResponsiveContainer height="100%" width="100%">
-          <LineChart height={500} width={600} data={data} >
-            <XAxis dataKey="seqnum" />
-            <YAxis type="category" domain={[FeedbackType.DISTRACTED, FeedbackType.NORMAL, FeedbackType.FOCUSED]} width={100} />
-            <Line type="monotone" dataKey="output" />
-            <Tooltip content={LineChartTooltip} />
-          </LineChart>
-        </ResponsiveContainer>
+        {
+          feedbacks.length === 0 ? (
+            <h2 className="text-xl relative top-[50%] text-slate-600 dark:text-slate-400">There were no feedbacks in this session. Is there something wrong?</h2>
+          ) : (
+            <ResponsiveContainer height="100%" width="100%">
+              <LineChart height={500} width={600} data={data} >
+                <XAxis dataKey="seqnum" />
+                <YAxis type="category" domain={[FeedbackType.DISTRACTED, FeedbackType.NORMAL, FeedbackType.FOCUSED]} width={100} />
+                <Line type="monotone" dataKey="output" />
+                <Tooltip content={LineChartTooltip} />
+              </LineChart>
+            </ResponsiveContainer>
+          )
+        }
       </div>
     )
   }
