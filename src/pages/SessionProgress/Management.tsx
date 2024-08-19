@@ -32,7 +32,7 @@ export default function SessionProgressManagementPage() {
             <select
               name="student_name" id="student_name"
               className="bg-primary py-2 px-4 border-[1px] border-black dark:border-white mb-4 rounded-lg"
-              value={student !== null ? student.name : "Select a student"}
+              // value={student !== null ? student.name : "Select a student"}
               onChange={(e) => handleChange(e)}
             >
               {/* <option value="Select a student option" key="null" className="text-black">Select a student</option> */}
