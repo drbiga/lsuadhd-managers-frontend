@@ -13,6 +13,7 @@ export default function SessionProgressManagementPage() {
     (async () => {
       const response = await sessionExecutionService.getAllStudents();
       setAllStudents(response);
+      setStudent(response[0]);
     })()
   }, []);
 
@@ -34,9 +35,9 @@ export default function SessionProgressManagementPage() {
               value={student !== null ? student.name : "Select a student"}
               onChange={(e) => handleChange(e)}
             >
-              <option value="Select a student option" key="null">Select a student</option>
+              {/* <option value="Select a student option" key="null" className="text-black">Select a student</option> */}
               {allStudents.map(s => (
-                <option className="bg-primary p-2" key={s.name} value={JSON.stringify(s)}>{s.name}</option>
+                <option className="bg-primary p-2 text-black" key={s.name} value={JSON.stringify(s)}>{s.name}</option>
               ))}
             </select>
           </div>
