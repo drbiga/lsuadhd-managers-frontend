@@ -79,6 +79,18 @@ class SessionExecutionService {
         return response.data;
     }
 
+    public async getAllStudents(): Promise<Student[]> {
+        const response = await api.get(
+            '/session_execution/students',
+            {
+                params: {
+                    name_manager_requesting_operation: iamService.getCurrentSession().user.username
+                }
+            }
+        );
+        return response.data;
+    }
+
     public async getStudent(studentName: string): Promise<Student> {
         const response = await api.get('/session_execution/student', { params: { student_name: studentName } });
         return response.data;
