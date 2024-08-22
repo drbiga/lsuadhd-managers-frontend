@@ -147,7 +147,8 @@ class SessionExecutionService {
 
 function createWebSocket(studentName: string): WebSocket {
     const session = iamService.getCurrentSession();
-    const socket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_PROTOCOL}://${import.meta.env.VITE_BACKEND_HOST}:${import.meta.env.VITE_BACKEND_PORT}/session_execution/student/${studentName}/session/observer?token=${session.token}`); // Replace with your actual WebSocket URL
+    // const socket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_PROTOCOL || "https" }://${import.meta.env.VITE_BACKEND_HOST}:${import.meta.env.VITE_BACKEND_PORT}/session_execution/student/${studentName}/session/observer?token=${session.token}`); // Replace with your actual WebSocket URL
+    const socket = new WebSocket(`https://${import.meta.env.VITE_BACKEND_HOST}:${import.meta.env.VITE_BACKEND_PORT}/session_execution/student/${studentName}/session/observer?token=${session.token}`); // Replace with your actual WebSocket URL
 
     socket.onopen = () => {
       console.log('WebSocket connection established.');
