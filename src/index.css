@@ -84,4 +84,8 @@
   ::-webkit-scrollbar-thumb {
     @apply rounded-md bg-slate-300 dark:bg-slate-700;
   }
+
+  select option {
+    @apply bg-slate-200 dark:bg-slate-800;
+  }
 }
