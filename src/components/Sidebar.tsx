@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Target } from "lucide-react";
+import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Target, Users } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "./DarkModeButton";
@@ -70,7 +70,7 @@ export default function Sidebar() {
                 }
                 {
                     allowedContexts.includes('management') &&
-                    <SidebarLink active={pathname === RouteNames.MANAGEMENT__STUDENTS} to={RouteNames.MANAGEMENT__STUDENTS} collapsed={collapsed} icon={<Group />}>Students</SidebarLink>
+                    <SidebarLink active={pathname === RouteNames.MANAGEMENT__STUDENTS} to={RouteNames.MANAGEMENT__STUDENTS} collapsed={collapsed} icon={<Users />}>Students</SidebarLink>
                 }
                 {
                     allowedContexts.includes('session_execution') && authState.session?.user.role === Role.STUDENT && (
