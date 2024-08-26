@@ -25,6 +25,8 @@ export default function Routes() {
     const { authState } = useAuth();
 
     const router = createBrowserRouter([
+        // ============================================================
+        // Common pages
         {
             path: RouteNames.LOGIN,
             element: <Login />
@@ -33,6 +35,8 @@ export default function Routes() {
             path: RouteNames.SIGNUP,
             element: <SignUp />
         },
+        // ============================================================
+        // Common conditional pages (depend on the role)
         {
             path: RouteNames.SESSION_PROGRESS,
             element: (
@@ -51,10 +55,16 @@ export default function Routes() {
             path: RouteNames.HOME,
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
-                    <NextSession />
+                    {(authState.session && authState.session.user.role === Role.STUDENT) ? (
+                        <NextSession />
+                    ) : (
+                        <Management />
+                    )}
                 </AuthRequired>
             )
         },
+        // ============================================================
+        // Management Only Pages
         {
             path: RouteNames.MANAGEMENT,
             element: (
