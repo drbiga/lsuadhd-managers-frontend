@@ -69,6 +69,10 @@ export default function Sidebar() {
                     <SidebarLink active={pathname === RouteNames.SESSION_GROUPS} to={RouteNames.SESSION_GROUPS} collapsed={collapsed} icon={<Group />}>Session Groups</SidebarLink>
                 }
                 {
+                    allowedContexts.includes('management') &&
+                    <SidebarLink active={pathname === RouteNames.MANAGEMENT__STUDENTS} to={RouteNames.MANAGEMENT__STUDENTS} collapsed={collapsed} icon={<Group />}>Students</SidebarLink>
+                }
+                {
                     allowedContexts.includes('session_execution') && authState.session?.user.role === Role.STUDENT && (
                         <SidebarLink active={pathname === RouteNames.HOME} to={RouteNames.HOME} collapsed={collapsed} icon={<Target />}>
                             Next Session
