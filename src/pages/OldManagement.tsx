@@ -66,6 +66,8 @@ export default function Management() {
     reset(data);
   }, [authState, managers]);
 
+  // ============================================================================================
+  // TODO: Delete once students page is stable
   const onSubmitStudent = useCallback(async (data: FieldValues) => {
     try {
       const newStudent = await managementService.createStudent(data.name, data.sessionGroupName);

@@ -49,7 +49,7 @@ export default function SessionGroups() {
       <PageMainContent>
         <PageTitle>Session Groups</PageTitle>
 
-        <div>
+        <div className="w-6/12">
           <PageSectionTitle>Existing session groups</PageSectionTitle>
           <ul>
             {sessionGroups.map(sg => (
