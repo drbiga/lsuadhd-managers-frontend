@@ -15,7 +15,7 @@ export default function Students() {
   const [students, setStudents] = useState<Student[]>([]);
   const [sessionGroups, setSessionGroups] = useState<SessionGroup[]>([]);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     reset,
@@ -70,17 +70,19 @@ export default function Students() {
   }, []);
 
   const handleSetSurveyQueue = useCallback(async (e, studentName) => {
-    await managementService.setStudentSurveyQueueLink(studentName, inputRef.current?.value);
-    setStudents(students.map(s => {
-      if (s.name === studentName) {
-        return {
-          ...s,
-          survey_queue_link: inputRef.current?.value
+    if (inputRef.current) {
+      await managementService.setStudentSurveyQueueLink(studentName, inputRef.current?.value);
+      setStudents(students.map(s => {
+        if (s.name === studentName) {
+          return {
+            ...s,
+            survey_queue_link: inputRef.current?.value
+          }
+        } else {
+          return s
         }
-      } else {
-        return s
-      }
-    }))
+      }))
+    }
   }, [inputRef, students]);
 
   return (
