@@ -113,21 +113,30 @@ class SessionExecutionService {
     }
 
     public async startSessionForStudent(studentName: string, updateCallback: (sessionProgressData: SessionProgressData) => void): Promise<Session> {
-        const response = await api.post(`/session_execution/student/${studentName}/session`);
-
-        this.websocket = createWebSocket(studentName);
-        this.websocket.addEventListener('message', (event) => {
-            const data = JSON.parse(event.data);
-            console.log(data);
-            updateCallback({
-                stage: data.stage,
-                remainingTimeSeconds: data.remaining_time
+        try {
+            const response = await api.post(`/session_execution/student/${studentName}/session`);
+    
+            this.websocket = createWebSocket(studentName);
+            this.websocket.addEventListener('message', (event) => {
+                const data = JSON.parse(event.data);
+                console.log(data);
+                updateCallback({
+                    stage: data.stage,
+                    remainingTimeSeconds: data.remaining_time
+                });
             });
-        });
-
-        await axios.post('http://localhost:8001/collection');
-
-        return response.data;
+    
+            await axios.post('http://localhost:8001/collection');
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                toast.error(error.response?.data.detail.message);
+                throw new Error();
+            } else {
+                toast.error('Something went wrong');
+                throw new Error();
+            }
+        }
     }
 
     public setUpdateCallback(studentName: string, updateCallback: (sessionProgressData: SessionProgressData) => void) {
