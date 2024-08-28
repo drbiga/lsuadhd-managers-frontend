@@ -69,7 +69,7 @@ export default function Students() {
     })()
   }, []);
 
-  const handleSetSurveyQueue = useCallback(async (e, studentName) => {
+  const handleSetSurveyQueue = useCallback(async (studentName) => {
     if (inputRef.current) {
       await managementService.setStudentSurveyQueueLink(studentName, inputRef.current?.value);
       setStudents(students.map(s => {
@@ -147,7 +147,7 @@ export default function Students() {
                         <Input ref={inputRef} />
                         <DialogClose className="flex justify-end gap-4">
                           <Button>Cancel</Button>
-                          <Button onClick={(e) => handleSetSurveyQueue(e, s.name)}>Save</Button>
+                          <Button onClick={() => handleSetSurveyQueue(s.name)}>Save</Button>
                         </DialogClose>
                       </DialogContent>
                     </Dialog>
