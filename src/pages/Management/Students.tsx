@@ -1,14 +1,21 @@
+import { Button } from "@/components/Button";
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import Sidebar from "@/components/Sidebar";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogHeader, DialogClose } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/auth";
 import managementService, { SessionGroup, Student } from "@/services/managementService";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 export default function Students() {
   const [students, setStudents] = useState<Student[]>([]);
   const [sessionGroups, setSessionGroups] = useState<SessionGroup[]>([]);
+
+  const inputRef = useRef(null);
 
   const {
     reset,
@@ -21,6 +28,10 @@ export default function Students() {
   const onSubmitStudent = useCallback(async (data: FieldValues) => {
     try {
       const newStudent = await managementService.createStudent(data.name, data.sessionGroupName);
+      if (data.surveyQueueLink) {
+        managementService.setStudentSurveyQueueLink(newStudent.name, data.surveyQueueLink);
+        newStudent.survey_queue_link = data.surveyQueueLink;
+      }
       setStudents([...students, newStudent]);
     } catch (error) {
       toast.error('Unknown error. Please contact someone');
@@ -58,6 +69,20 @@ export default function Students() {
     })()
   }, []);
 
+  const handleSetSurveyQueue = useCallback(async (e, studentName) => {
+    await managementService.setStudentSurveyQueueLink(studentName, inputRef.current?.value);
+    setStudents(students.map(s => {
+      if (s.name === studentName) {
+        return {
+          ...s,
+          survey_queue_link: inputRef.current?.value
+        }
+      } else {
+        return s
+      }
+    }))
+  }, [inputRef, students]);
+
   return (
     <PageContainer>
       <Sidebar />
@@ -86,6 +111,12 @@ export default function Students() {
                   ))
                 }
               </select>
+              <input
+                type="text"
+                placeholder="Survey queue link (optional)"
+                className="bg-accent p-2 rounded-lg"
+                {...register('surveyQueueLink', { required: false })}
+              />
               <div>
                 <button type="submit" className="float-right bg-accent p-2 rounded-lg hover:bg-accent-foreground hover:text-accent transition-all duration-100">Create</button>
               </div>
@@ -98,6 +129,28 @@ export default function Students() {
               <li className="mb-4" key={s.name}>
                 <p>Student Name: {s.name}</p>
                 <p>Session Group: {s.group}</p>
+                {s.survey_queue_link ? (
+                  <p>Survey Queue: {s.survey_queue_link}</p>
+                ) : (
+                  <p>
+                    Survey Queue: &nbsp;
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="p-1">Set one now!</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Survey queue</DialogTitle>
+                        </DialogHeader>
+                        <Input ref={inputRef} />
+                        <DialogClose className="flex justify-end gap-4">
+                          <Button>Cancel</Button>
+                          <Button onClick={(e) => handleSetSurveyQueue(e, s.name)}>Save</Button>
+                        </DialogClose>
+                      </DialogContent>
+                    </Dialog>
+                  </p>
+                )}
               </li>
             ))}
           </ul>

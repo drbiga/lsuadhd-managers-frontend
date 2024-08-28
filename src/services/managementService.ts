@@ -10,6 +10,7 @@ export type Manager = {
 export type Student = {
     name: string;
     group: string;
+    survey_queue_link?: string;
 }
 
 export type SessionGroup = {
@@ -73,6 +74,19 @@ class ManagementService {
         }
 
         return response.data;
+    }
+
+    public async setStudentSurveyQueueLink(studentName: string, surveyQueueLink: string): Promise<void> {
+        await api.put(
+            `/management/student/${studentName}/survey_queue_link`,
+            {},
+            {
+                params: {
+                    survey_queue_link: surveyQueueLink,
+                    name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+                }
+            }
+        )
     }
 
     // public async getStudents(): Promise<Student[]> {
