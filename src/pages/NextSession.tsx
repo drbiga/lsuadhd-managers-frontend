@@ -24,8 +24,6 @@ export default function NextSession() {
   const getNextSession = useCallback(async () => {
     if (authState.session) {
       const remainingSessions = await sessionExecutionService.getRemainingSessionsForStudent(authState.session.user.username);
-      console.log('GetNextSession -> remainingSessions')
-      console.log(remainingSessions);
       if (remainingSessions.length > 0) {
         setNextSession(remainingSessions[0]);
         setHasNextSession(HasNextSessionValue.YES);
@@ -95,11 +93,11 @@ export default function NextSession() {
         {sessionHasStarted && sessionProgressData ? (
           <>
             {sessionProgressData.stage === Stage.READCOMP ? (
-              <iframe src={"https://redcap.rwjms.rutgers.edu/surveys/?s=CEKFT7P8TC9JDKAY"} className="h-full w-full"></iframe>
+              <iframe src={nextSession?.start_link} className="h-full w-full"></iframe>
             ) : (
               <>
                 {sessionProgressData.stage === Stage.SURVEY ? (
-                  <iframe src={"https://redcap.rwjms.rutgers.edu/surveys/?s=CEKFT7P8TC9JDKAY"} className="h-full w-full"></iframe>
+                  <iframe src={nextSession?.start_link} className="h-full w-full"></iframe>
                 ) : (
                   // Homework
                   <div className="h-full w-full flex items-center justify-center">

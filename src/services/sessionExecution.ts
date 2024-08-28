@@ -19,6 +19,7 @@ export type SessionAnalytics = {
 
 export type Session = {
     seqnum: number;
+    start_link: string;
     is_passthrough: boolean;
     has_feedback: boolean;
     no_equipment?: boolean;
@@ -126,7 +127,11 @@ class SessionExecutionService {
                 });
             });
     
-            await axios.post('http://localhost:8001/collection');
+            try {
+                await axios.post('http://localhost:8001/collection');
+            } catch {
+                toast.error('The feedback collection tool is not running. This was not supposed to happen. Please let someone know as soon as possible.')
+            }
             return response.data;
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -156,8 +161,8 @@ class SessionExecutionService {
 
 function createWebSocket(studentName: string): WebSocket {
     const session = iamService.getCurrentSession();
-    // const socket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_PROTOCOL || "https" }://${import.meta.env.VITE_BACKEND_HOST}:${import.meta.env.VITE_BACKEND_PORT}/session_execution/student/${studentName}/session/observer?token=${session.token}`); // Replace with your actual WebSocket URL
-    const socket = new WebSocket(`https://${import.meta.env.VITE_BACKEND_HOST}:${import.meta.env.VITE_BACKEND_PORT}/session_execution/student/${studentName}/session/observer?token=${session.token}`); // Replace with your actual WebSocket URL
+    const socket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_PROTOCOL || "https" }://${import.meta.env.VITE_BACKEND_HOST}:${import.meta.env.VITE_BACKEND_PORT}/session_execution/student/${studentName}/session/observer?token=${session.token}`); // Replace with your actual WebSocket URL
+    // const socket = new WebSocket(`https://${import.meta.env.VITE_BACKEND_HOST}:${import.meta.env.VITE_BACKEND_PORT}/session_execution/student/${studentName}/session/observer?token=${session.token}`); // Replace with your actual WebSocket URL
 
     socket.onopen = () => {
       console.log('WebSocket connection established.');
