@@ -1,3 +1,4 @@
+import { Button } from "@/components/Button";
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionStartButton } from "@/components/sessionExecution/Session";
 import Sidebar from "@/components/Sidebar";
@@ -88,6 +89,15 @@ export default function NextSession() {
                 Remaining time: {presentRemainingTime(sessionProgressData.remainingTimeSeconds)}
               </SessionItemComment>
             )}
+            {
+              sessionProgressData?.stage === Stage.READCOMP && sessionProgressData.remainingTimeSeconds === 0 &&
+              <Button onClick={() => {
+                if (authState.session)
+                  sessionExecutionService.startHomeworkForStudent(authState.session?.user.username)
+              }}>
+                Proceed to homework
+              </Button>
+            }
           </div>
         </header>
         {sessionHasStarted && sessionProgressData ? (
