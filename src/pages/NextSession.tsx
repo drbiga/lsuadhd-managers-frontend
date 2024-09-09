@@ -61,6 +61,7 @@ export default function NextSession() {
     (async () => {
       if (authState.session) {
         const student = await sessionExecutionService.getStudent(authState.session.user.username);
+        console.log(student);
         if (student.active_session !== null) {
           // If the student already has an active session, that means that they have started a session
           // and have not finished yet. So, we need to restore this session.
@@ -71,6 +72,16 @@ export default function NextSession() {
       }
     })();
   }, [authState, handleSessionProgressDataUpdate]);
+
+  useEffect(() => {
+    (async () => {
+      if (authState.session) {
+        const progress = await sessionExecutionService.getSessionProgress(authState.session?.user.username)
+        console.log(progress);
+        setSessionProgressData(progress);
+      }
+    })()
+  }, [authState, setSessionProgressData]);
 
   useEffect(() => { }, [sessionHasStarted])
 
@@ -90,7 +101,7 @@ export default function NextSession() {
               </SessionItemComment>
             )}
             {
-              sessionProgressData?.stage === Stage.READCOMP && sessionProgressData.remainingTimeSeconds === 0 &&
+              sessionProgressData?.stage === Stage.READCOMP && sessionProgressData.remainingTimeSeconds <= 0 &&
               <Button onClick={() => {
                 if (authState.session)
                   sessionExecutionService.startHomeworkForStudent(authState.session?.user.username)
