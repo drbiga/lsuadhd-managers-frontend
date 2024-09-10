@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionStartButton } from "@/components/sessionExecution/Session";
+import { Walkthrough, WalkthroughInstructionsDescription, WalkthroughInstructionsTitle, WalkthroughSection } from "@/components/sessionExecution/WalkthroughSection";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/hooks/auth";
 import sessionExecutionService, { Session, SessionProgressData, Stage } from "@/services/sessionExecution";
@@ -61,7 +62,6 @@ export default function NextSession() {
     (async () => {
       if (authState.session) {
         const student = await sessionExecutionService.getStudent(authState.session.user.username);
-        console.log(student);
         if (student.active_session !== null) {
           // If the student already has an active session, that means that they have started a session
           // and have not finished yet. So, we need to restore this session.
@@ -111,30 +111,92 @@ export default function NextSession() {
             }
           </div>
         </header>
-        {sessionHasStarted && sessionProgressData ? (
+        {(sessionHasStarted && sessionProgressData) ? (
           <>
+            {/* Would be better, but for now, I think I should just do it the ugly way */}
+            {/* <WalkthroughSection>
+              <Walkthrough>
+                <WalkthroughInstructionsTitle></WalkthroughInstructionsTitle>
+              </Walkthrough>
+            </WalkthroughSection> */}
             {sessionProgressData.stage === Stage.READCOMP ? (
-              <iframe src={nextSession?.start_link} className="h-full w-full"></iframe>
+              <>
+                <Walkthrough>
+                  <WalkthroughInstructionsTitle>Reading and Comprehension</WalkthroughInstructionsTitle>
+                  <WalkthroughInstructionsDescription>
+                    <p>
+                      You are about to enter your reading and comprehension section of the session.
+                    </p>
+                    <p>
+                      In this section, you will read two text passages and answer some multiple choice
+                      questions regarding the passages previously read.
+                    </p>
+                    <p>
+                      Don't worry if you are not able to answer all of the questions in the allocated time, though.
+                      This section was designed so that it would take more than 10 minutes to complete.
+                    </p>
+                    <p>
+                      When the timer runs out, please make sure to <strong>click the submit button</strong>&nbsp;
+                      at the bottom of the questionnaire to <strong>save your answers</strong>.
+                    </p>
+                    <p>After you submit your answers, please press the "Proceed to homework" button on the top-right corner.</p>
+                  </WalkthroughInstructionsDescription>
+                </Walkthrough>
+                <iframe src={nextSession?.start_link} className="h-full w-full"></iframe>
+              </>
             ) : (
               <>
                 {sessionProgressData.stage === Stage.SURVEY ? (
-                  <iframe src={nextSession?.start_link} className="h-full w-full"></iframe>
+                  <>
+                    <Walkthrough>
+                      <WalkthroughInstructionsTitle>Survey</WalkthroughInstructionsTitle>
+                      <WalkthroughInstructionsDescription>
+                        <p>
+                          You are about to enter your post-session survey.
+                        </p>
+                        <p>
+                          In this section, you will read give us some feedback on how you felt during the session,
+                          if you think the system helped, among other things.
+                        </p>
+                      </WalkthroughInstructionsDescription>
+                    </Walkthrough>
+                    <iframe src={nextSession?.start_link} className="h-full w-full"></iframe>
+                  </>
                 ) : (
                   // Homework
-                  <div className="h-full w-full flex items-center justify-center">
-                    <div className="flex flex-col items-center justify-center gap-4">
-                      <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
-                      <SessionItemStage>{sessionProgressData?.stage}</SessionItemStage>
-                      {sessionProgressData && (
-                        <SessionItemComment>
-                          Remaining time: {presentRemainingTime(sessionProgressData.remainingTimeSeconds)}
-                        </SessionItemComment>
-                      )}
-                      {sessionProgressData && sessionProgressData.stage === Stage.FINISHED && (
-                        <SessionStartButton onClick={() => handleStartAnotherSession()}>I want to do another session now</SessionStartButton>
-                      )}
+                  <>
+                    <Walkthrough>
+                      <WalkthroughInstructionsTitle>Homework</WalkthroughInstructionsTitle>
+                      <WalkthroughInstructionsDescription>
+                        <p>
+                          You are about to enter your homework section of the session.
+                        </p>
+                        <p>
+                          In this section, you will do whatever homework you have from any classes.
+                          However, this homework should involve some kind of interaction with the
+                          laptop. It could be typing, scrolling, moving the mouse or clicking with the mouse.
+                        </p>
+                        <p>
+                          You will also receive some feedback on how much interaction we are detecting so that, in case you lose focus,
+                          we can get you back on track.
+                        </p>
+                      </WalkthroughInstructionsDescription>
+                    </Walkthrough>
+                    <div className="h-full w-full flex items-center justify-center">
+                      <div className="flex flex-col items-center justify-center gap-4">
+                        <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
+                        <SessionItemStage>{sessionProgressData?.stage}</SessionItemStage>
+                        {sessionProgressData && (
+                          <SessionItemComment>
+                            Remaining time: {presentRemainingTime(sessionProgressData.remainingTimeSeconds)}
+                          </SessionItemComment>
+                        )}
+                        {sessionProgressData && sessionProgressData.stage === Stage.FINISHED && (
+                          <SessionStartButton onClick={() => handleStartAnotherSession()}>I want to do another session now</SessionStartButton>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </>
             )}
