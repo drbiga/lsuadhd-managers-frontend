@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionStartButton } from "@/components/sessionExecution/Session";
-import { Walkthrough, WalkthroughInstructionsDescription, WalkthroughInstructionsTitle, WalkthroughSection } from "@/components/sessionExecution/WalkthroughSection";
+import { Walkthrough, WalkthroughInstructionsDescription, WalkthroughInstructionsTitle } from "@/components/sessionExecution/WalkthroughSection";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/hooks/auth";
 import sessionExecutionService, { Session, SessionProgressData, Stage } from "@/services/sessionExecution";
