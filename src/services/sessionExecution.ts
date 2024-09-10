@@ -144,6 +144,18 @@ class SessionExecutionService {
         }
     }
 
+    public async startHomeworkForStudent(studentName: string): Promise<void> {
+        await api.put(`/session_execution/student/${studentName}/session/homework`);
+    }
+
+    public async getSessionProgress(studentName: string): Promise<SessionProgressData> {
+        const response = await api.get(`/session_execution/student/${studentName}/session`);
+        return {
+            remainingTimeSeconds: response.data.remaining_time,
+            stage: response.data.stage
+        };
+    }
+
     public setUpdateCallback(studentName: string, updateCallback: (sessionProgressData: SessionProgressData) => void) {
         if (this.websocket === null) {
             this.websocket = createWebSocket(studentName);
