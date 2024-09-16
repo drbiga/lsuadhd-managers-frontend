@@ -149,7 +149,6 @@ class ManagementService {
         sessionHasFeedback: boolean,
         sessionIsPassthrough: boolean
     ): Promise<Session> {
-        console.log('Session is passthrough: ' + sessionIsPassthrough)
         try {
             const response = await api.post('/management/session', {
                 session_group_name: sessionGroupName,
