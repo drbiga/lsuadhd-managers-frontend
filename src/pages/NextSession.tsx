@@ -50,11 +50,6 @@ export default function NextSession() {
     }
   }, [authState, nextSession]);
 
-  const handleStartAnotherSession = useCallback(async () => {
-    await getNextSession();
-    handleStartSession();
-  }, [getNextSession]);
-
   // State recovery
   // In case the user has to go outside the next session page and returns, they need
   // to be able to come back to the point where they left.
@@ -233,7 +228,7 @@ export default function NextSession() {
               </>
             )}
             {sessionProgressData.stage === Stage.FINISHED && (
-              <div className="h-full w-full flex items-center justify-center">
+              <div className="h-full w-full flex flex-col items-center justify-center">
                 <h2 className="text-lg">You have finished your session</h2>
                 <p>Please refer back to the instructions sheet.</p>
                 <p>At this point, you should <strong>turn off the laptop and the headset</strong></p>
