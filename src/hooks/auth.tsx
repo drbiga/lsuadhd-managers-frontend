@@ -46,16 +46,38 @@ export enum Role {
     STUDENT = 'student'
 };
 
-function computeInitialStateRaw(): IAuthState {
-    const sessionString = getLocalStorage(Item.SESSION_OBJ);
-    const session: ISession = sessionString ? JSON.parse(sessionString) : {};
-    const authState: IAuthState = session ? { session, isLoggedIn: true } : { isLoggedIn: false };
-    return authState;
-}
+const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
-function initializeLocalServerWrapper(computeInitialState: () => IAuthState): () => Promise<IAuthState> {
-    async function initializeLocalServer(): Promise<IAuthState> {
-        const authState = computeInitialState();
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+    const [ipAddress, setIpAddress] = useState<string>('');
+    const [authState, setAuthState] = useState<IAuthState>(() => {
+        const sessionString = getLocalStorage(Item.SESSION_OBJ)
+        const session = sessionString ? JSON.parse(sessionString) : null;
+        if (session !== null && session.token) {
+            return {
+                session,
+                isLoggedIn: true
+            }
+        } else {
+            return {
+                isLoggedIn: false
+            }
+        }
+    });
+
+    useEffect(() => {
+        (async () => {
+            const response = await axios.get('https://api.ipify.org/?format=json');
+            setIpAddress(response.data.ip);
+        })();
+    }, []);
+
+    useEffect(() => {
+        initializeLocalServer();
+    })
+
+    const initializeLocalServer = useCallback(async () => {
         try {
             const response = await axios.get('http://localhost:8001/session');
             const localServerSession: ISession = response.data;
@@ -75,42 +97,7 @@ function initializeLocalServerWrapper(computeInitialState: () => IAuthState): ()
                 toast.error("Something went wrong when initializing the local server")
             }
         }
-
-
-        return authState;
-    }
-
-    return initializeLocalServer;
-}
-
-
-const computeInitialState = initializeLocalServerWrapper(computeInitialStateRaw);
-
-const AuthContext = createContext<IAuthContext>({ authState: await computeInitialState() } as IAuthContext);
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-    const [authState, setAuthState] = useState<IAuthState>(() => {
-        const sessionString = getLocalStorage(Item.SESSION_OBJ)
-        const session = sessionString ? JSON.parse(sessionString) : null;
-        if (session !== null && session.token) {
-            return {
-                session,
-                isLoggedIn: true
-            }
-        } else {
-            return {
-                isLoggedIn: false
-            }
-        }
-    });
-
-    const [ipAddress, setIpAddress] = useState<string>('');
-    useEffect(() => {
-        (async () => {
-            const response = await axios.get('https://api.ipify.org/?format=json');
-            setIpAddress(response.data.ip);
-        })();
-    }, []);
+    }, [authState]);
 
 
     const login = useCallback(async (credentials: LoginCredentials) => {
