@@ -12,7 +12,7 @@ import iamService from "@/services/iam";
 import api from "@/services/api";
 import { getLocalStorage, Item, removeLocalStorage, setLocalStorage } from "@/localstorage";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export interface LoginCredentials {
     username: string;
@@ -53,13 +53,29 @@ function computeInitialStateRaw(): IAuthState {
     return authState;
 }
 
-function initializeLocalServerWrapper(computeInitialState: () => IAuthState): () => IAuthState {
-    function initializeLocalServer(): IAuthState {
+function initializeLocalServerWrapper(computeInitialState: () => IAuthState): () => Promise<IAuthState> {
+    async function initializeLocalServer(): Promise<IAuthState> {
         const authState = computeInitialState();
-
-        if (authState.session) {
-            axios.post('http://localhost:8001/session', authState.session);
+        try {
+            const response = await axios.get('http://localhost:8001/session');
+            const localServerSession: ISession = response.data;
+            if (authState.session && localServerSession.token !== authState.session?.token) {
+                axios.post('http://localhost:8001/session', authState.session);
+            }
+            return authState;
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                if (error.response?.status === 412) {
+                    // No session set in the local server yet, so we just set normally
+                    if (authState.session) {
+                        axios.post('http://localhost:8001/session', authState.session);
+                        return authState;
+                    }
+                }
+                toast.error("Something went wrong when initializing the local server")
+            }
         }
+
 
         return authState;
     }
@@ -67,9 +83,10 @@ function initializeLocalServerWrapper(computeInitialState: () => IAuthState): ()
     return initializeLocalServer;
 }
 
+
 const computeInitialState = initializeLocalServerWrapper(computeInitialStateRaw);
 
-const AuthContext = createContext<IAuthContext>({ authState: computeInitialState() } as IAuthContext);
+const AuthContext = createContext<IAuthContext>({ authState: await computeInitialState() } as IAuthContext);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [authState, setAuthState] = useState<IAuthState>(() => {
