@@ -83,7 +83,7 @@ export default function NextSession() {
     })()
   }, [authState, setSessionProgressData]);
 
-  useEffect(() => { }, [sessionHasStarted])
+  useEffect(() => { }, [sessionHasStarted]);
 
   return (
     <PageContainer>
@@ -130,21 +130,9 @@ export default function NextSession() {
                     <WalkthroughInstructionsTitle>Reading and Comprehension</WalkthroughInstructionsTitle>
                     <WalkthroughInstructionsDescription>
                       <p>
-                        You are about to enter your reading and comprehension section of the session.
+                        In the following 10 minutes, you will read some text passages and
+                        answer a few questions about them
                       </p>
-                      <p>
-                        In this section, you will read two text passages and answer some multiple choice
-                        questions regarding the passages previously read.
-                      </p>
-                      <p>
-                        Don't worry if you are not able to answer all of the questions in the allocated time, though.
-                        This section was designed so that it would take more than 10 minutes to complete.
-                      </p>
-                      <p>
-                        When the timer runs out, please make sure to <strong>click the submit button</strong>&nbsp;
-                        at the bottom of the questionnaire to <strong>save your answers</strong>.
-                      </p>
-                      <p>After you submit your answers, please press the "Proceed to homework" button on the top-right corner.</p>
                     </WalkthroughInstructionsDescription>
                   </Walkthrough>
                 )}
@@ -155,9 +143,31 @@ export default function NextSession() {
                       Time's up!
                     </WalkthroughInstructionsTitle>
                     <WalkthroughInstructionsDescription>
-                      <p>Your time for this reading-comprehension section is up.</p>
-                      <p>Please submit the survey using the submit button at the bottom as previously mentioned.</p>
-                      <p>Then, press the "Proceed to homework" button on the top-right corner.</p>
+                      <p>Your time for this reading-comprehension section is over.</p>
+                      <table>
+                        <tr>
+                          <td className="w-[50%]">
+                            <p>
+                              <strong>Scroll</strong> all the way down on the survey and <strong>click</strong> the submit button&nbsp;
+                              to <strong>save</strong> your answers.
+                            </p>
+                          </td>
+                          <td className="p-2">
+                            <img src="submit-button.png" alt="" />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p>
+                              <strong>After</strong> you submit your answers, please <strong>click</strong> the "Proceed to homework"
+                              button on the <strong>top-right corner</strong>.
+                            </p>
+                          </td>
+                          <td>
+                            <img src="proceed-to-homework.png" alt="" />
+                          </td>
+                        </tr>
+                      </table>
                     </WalkthroughInstructionsDescription>
                   </Walkthrough>
                 )}
@@ -169,13 +179,7 @@ export default function NextSession() {
                 <Walkthrough>
                   <WalkthroughInstructionsTitle>Survey</WalkthroughInstructionsTitle>
                   <WalkthroughInstructionsDescription>
-                    <p>
-                      You are about to enter your post-session survey.
-                    </p>
-                    <p>
-                      In this section, you will read give us some feedback on how you felt during the session,
-                      if you think the system helped, among other things.
-                    </p>
+                    <p>Please answer the following questions</p>
                   </WalkthroughInstructionsDescription>
                 </Walkthrough>
                 <iframe src={nextSession?.start_link} className="h-full w-full"></iframe>
@@ -190,17 +194,11 @@ export default function NextSession() {
                       <Walkthrough>
                         <WalkthroughInstructionsTitle>Homework</WalkthroughInstructionsTitle>
                         <WalkthroughInstructionsDescription>
+                          <p>Do whatever homework you have.</p>
                           <p>
-                            You are about to enter your homework section of the session.
-                          </p>
-                          <p>
-                            In this section, you will do whatever homework you have from any classes.
-                            However, this homework should involve some kind of interaction with the
-                            laptop. It could be typing, scrolling, moving the mouse or clicking with the mouse.
-                          </p>
-                          <p>
-                            You will also receive some feedback on how much interaction we are detecting so that, in case you lose focus,
-                            we can get you back on track.
+                            Depending you the group you were assigned to, you may receive
+                            feedback through a stop light to indicate how well you are
+                            performing
                           </p>
                         </WalkthroughInstructionsDescription>
                       </Walkthrough>
@@ -236,13 +234,9 @@ export default function NextSession() {
             )}
             {sessionProgressData.stage === Stage.FINISHED && (
               <div className="h-full w-full flex items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-4">
-                  <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
-                  <SessionItemStage>{sessionProgressData?.stage}</SessionItemStage>
-                  {sessionProgressData && sessionProgressData.stage === Stage.FINISHED && (
-                    <SessionStartButton onClick={() => handleStartAnotherSession()}>I want to do another session now</SessionStartButton>
-                  )}
-                </div>
+                <h2 className="text-lg">You have finished your session</h2>
+                <p>Please refer back to the instructions sheet.</p>
+                <p>At this point, you should <strong>turn off the laptop and the headset</strong></p>
               </div>
             )}
           </>
