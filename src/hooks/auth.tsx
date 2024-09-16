@@ -75,10 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         initializeLocalServer();
-    })
+    }, []);
 
     const initializeLocalServer = useCallback(async () => {
         try {
+            if (!authState.isLoggedIn) {
+                return;
+            }
             const response = await axios.get('http://localhost:8001/session');
             const localServerSession: ISession = response.data;
             if (authState.session && localServerSession.token !== authState.session?.token) {
