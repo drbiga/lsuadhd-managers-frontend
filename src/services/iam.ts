@@ -26,14 +26,12 @@ type Context = {
 
 class IamService {
     private currentSession: Session | null;
-    private localServerUpToDate: boolean;
-    // private authenticatedUser: User | null;
-    // private ipAddress: string;
+    // private localServerUpToDate: boolean;
 
     public constructor() {
         const sessionString = getLocalStorage(Item.SESSION_OBJ);
         this.currentSession = sessionString ? JSON.parse(sessionString) : null;
-        this.localServerUpToDate = false;
+        // this.localServerUpToDate = false;
         // this.authenticatedUser = this.currentSession ? this.currentSession.user : null;
         if (this.currentSession) {
             api.defaults.headers.common.Authorization = `Bearer ${this.currentSession.token}`;
@@ -69,24 +67,25 @@ class IamService {
         const response = await api.post('/iam/session', {username, password, ip_address: ipAddress})
         this.currentSession = response.data;
         setLocalStorage(Item.SESSION_OBJ, JSON.stringify(this.currentSession));
-        this.localServerUpToDate = false;
-        this.connectLocalServer();
+        // this.localServerUpToDate = false;
+        // this.updateLocalServer();
+        await axios.post('http://localhost:8001/session', this.currentSession);
         return response.data;
     }
 
-    private async connectLocalServer() {
-        while (!this.localServerUpToDate) {
-            try {
-                // Will try to connect endlessly because we need this connection to happen.
-                // If it doesn't happen, the user will never have feedback
-                await axios.post('http://localhost:8001/session', this.currentSession);
-                this.localServerUpToDate = true;
-            } catch {
-                // Delay function. Wait for 1 second
-                await ((ms) => (new Promise(resolve => setTimeout(resolve, ms)))) (1000)
-            }
-        }
-    }
+    // private async updateLocalServer() {
+    //     while (!this.localServerUpToDate) {
+    //         try {
+    //             // Will try to connect endlessly because we need this connection to happen.
+    //             // If it doesn't happen, the user will never have feedback
+    //             await axios.post('http://localhost:8001/session', this.currentSession);
+    //             this.localServerUpToDate = true;
+    //         } catch {
+    //             // Delay function. Wait for 1 second
+    //             await ((ms) => (new Promise(resolve => setTimeout(resolve, ms)))) (1000)
+    //         }
+    //     }
+    // }
 
     public async searchContexts(role: Role): Promise<Context[]> {
         const response = await api.post('/iam/context/_search', null, {params: {role}});
