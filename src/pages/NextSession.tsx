@@ -85,8 +85,6 @@ export default function NextSession() {
 
   useEffect(() => { }, [sessionHasStarted])
 
-  // new Audio('Beep.mp3').play();
-
   return (
     <PageContainer>
       <Sidebar />
@@ -215,9 +213,6 @@ export default function NextSession() {
                               Remaining time: {presentRemainingTime(sessionProgressData.remainingTimeSeconds)}
                             </SessionItemComment>
                           )}
-                          {sessionProgressData && sessionProgressData.stage === Stage.FINISHED && (
-                            <SessionStartButton onClick={() => handleStartAnotherSession()}>I want to do another session now</SessionStartButton>
-                          )}
                         </div>
                       </div>
                     </>
@@ -239,11 +234,19 @@ export default function NextSession() {
                   )}
               </>
             )}
+            {sessionProgressData.stage === Stage.FINISHED && (
+              <div className="h-full w-full flex items-center justify-center">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <SessionItemSeqnum>{nextSession?.seqnum}</SessionItemSeqnum>
+                  <SessionItemStage>{sessionProgressData?.stage}</SessionItemStage>
+                  {sessionProgressData && sessionProgressData.stage === Stage.FINISHED && (
+                    <SessionStartButton onClick={() => handleStartAnotherSession()}>I want to do another session now</SessionStartButton>
+                  )}
+                </div>
+              </div>
+            )}
           </>
         )}
-
-
-
 
         {(!sessionHasStarted) && (
           <>
