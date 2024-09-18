@@ -138,7 +138,7 @@ class SessionExecutionService {
                 toast.error(error.response?.data.detail.message);
                 throw new Error();
             } else {
-                toast.error('Something went wrong');
+                toast.error('Something went wrong when trying to start a session');
                 throw new Error();
             }
         }

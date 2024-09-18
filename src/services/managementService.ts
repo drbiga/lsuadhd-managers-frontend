@@ -166,7 +166,7 @@ class ManagementService {
                 toast.error(err.response?.data.detail.exception)
                 throw new Error(err.response?.data.detail.exception);
             } else {
-                toast.error('Something went wrong')
+                toast.error('Something went wrong when trying to create a session')
                 throw new Error("Unknown error")
             }
         }
