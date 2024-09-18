@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         return authState;
                     }
                 }
-                toast.error("Something went wrong when initializing the local server")
+                // toast.error("Something went wrong when initializing the local server")
             }
         }
     }, [authState]);
