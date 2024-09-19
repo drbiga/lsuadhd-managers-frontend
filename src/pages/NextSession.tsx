@@ -139,7 +139,7 @@ export default function NextSession() {
                     </WalkthroughInstructionsTitle>
                     <WalkthroughInstructionsDescription>
                       <p>Your time for this reading-comprehension section is over.</p>
-                      <table>
+                      {/* <table>
                         <tr>
                           <td className="w-[50%]">
                             <p>
@@ -162,7 +162,21 @@ export default function NextSession() {
                             <img src="proceed-to-homework.png" alt="" />
                           </td>
                         </tr>
-                      </table>
+                      </table> */}
+                      <ol className="list-decimal">
+                        <li>
+                          <p>
+                            <strong>Scroll</strong> all the way down on the survey and <strong>click</strong> the submit button&nbsp;
+                            to <strong>save</strong> your answers.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <strong>After</strong> you submit your answers, please <strong>click</strong> the "Proceed to homework"
+                            button on the <strong>top-right corner</strong>.
+                          </p>
+                        </li>
+                      </ol>
                     </WalkthroughInstructionsDescription>
                   </Walkthrough>
                 )}
