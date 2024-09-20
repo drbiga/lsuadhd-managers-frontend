@@ -31,7 +31,7 @@ jobs:
         env:
           VITE_IS_HTTPS: "yes"
           VITE_WEBSOCKET_PROTOCOL: https
-          VITE_BACKEND_HOST: lsuadhd.westus2.cloudapp.azure.com
+          VITE_BACKEND_HOST: lsuadhd.centralus.cloudapp.azure.com
           VITE_BACKEND_PORT: 443
       # Added --if-present here because I do not have tests yet
       - run: npm test --if-present
