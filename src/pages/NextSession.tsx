@@ -3,8 +3,10 @@ import { PageContainer, PageMainContent, PageTitle } from "@/components/Page";
 import { SessionItemComment, SessionItemSeqnum, SessionItemStage, SessionStartButton } from "@/components/sessionExecution/Session";
 import { Walkthrough, WalkthroughInstructionsDescription, WalkthroughInstructionsTitle } from "@/components/sessionExecution/WalkthroughSection";
 import Sidebar from "@/components/Sidebar";
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/hooks/auth";
 import sessionExecutionService, { Session, SessionProgressData, Stage } from "@/services/sessionExecution";
+import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 import { useCallback, useEffect, useState } from "react";
 
 enum HasNextSessionValue {
@@ -293,7 +295,31 @@ export default function NextSession() {
                   <SessionItemComment>
                     Are you ready to do this?
                   </SessionItemComment>
-                  <SessionStartButton onClick={() => handleStartSession()}>Start!</SessionStartButton>
+                  {nextSession && nextSession.seqnum > 2 && (
+
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button>Start!</Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <h2 className="text-lg">VR Headset</h2>
+                          <p>You were supposed to be wearing the VR headset already. Are you?</p>
+                          <p>If not, it's possible you missed something on the instructions sheet.</p>
+                          <p>Please double check.</p>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogAction>
+                          </AlertDialogAction>
+                          <Button className="bg-primary" onClick={() => handleStartSession()}>Start!</Button>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                  {nextSession && nextSession.seqnum <= 2 && (
+                    <SessionStartButton onClick={() => handleStartSession()}>Start!</SessionStartButton>
+                  )}
                 </div>
               </div>
             ) : (
