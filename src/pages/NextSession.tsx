@@ -203,7 +203,16 @@ export default function NextSession() {
                       <Walkthrough>
                         <WalkthroughInstructionsTitle>Homework</WalkthroughInstructionsTitle>
                         <WalkthroughInstructionsDescription>
-                          <p>Do whatever homework you have.</p>
+                          <p>
+                            <strong>REMINDER:</strong>
+                            Homework sessions must involve active work that involves typing.
+                            This means that you are using active studying techniques while reading
+                            (taking notes, highlighting, scrolling, annotating). You may also
+                            complete writing pieces or math/science/engineering assignments.
+                            If you would like suggestions on active work techniques or have
+                            questions about this, please reach out to study coordinator,
+                            Sophia, at sf924@gsapp.rutgers.edu
+                          </p>
                           <p>
                             Depending you the group you were assigned to, you may receive
                             feedback through a stop light to indicate how well you are
