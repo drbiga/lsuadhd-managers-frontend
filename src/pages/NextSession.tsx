@@ -113,12 +113,6 @@ export default function NextSession() {
 
         {(sessionHasStarted && sessionProgressData) && (
           <>
-            {/* Would be better, but for now, I think I should just do it the ugly way */}
-            {/* <WalkthroughSection>
-              <Walkthrough>
-                <WalkthroughInstructionsTitle></WalkthroughInstructionsTitle>
-              </Walkthrough>
-            </WalkthroughSection> */}
             {sessionProgressData.stage === Stage.READCOMP && (
               <>
                 {sessionProgressData.remainingTimeSeconds > 5 && (
