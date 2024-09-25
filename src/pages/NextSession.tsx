@@ -280,8 +280,8 @@ export default function NextSession() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogAction>
+                            <Button className="bg-primary" onClick={() => handleStartSession()}>Start!</Button>
                           </AlertDialogAction>
-                          <Button className="bg-primary" onClick={() => handleStartSession()}>Start!</Button>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                         </AlertDialogFooter>
                       </AlertDialogContent>
