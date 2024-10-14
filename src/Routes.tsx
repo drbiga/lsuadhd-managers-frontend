@@ -12,7 +12,7 @@ import SessionProgressManagementPage from "./pages/SessionProgress/Management";
 import Students from "./pages/Management/Students";
 
 export enum RouteNames {
-    BASENAME = '/lsuadhd-frontend',
+    BASENAME = '/lsuadhd-managers-frontend',
     HOME = '/',
     LOGIN = '/login',
     SIGNUP = '/signup',
