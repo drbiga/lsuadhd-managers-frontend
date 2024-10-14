@@ -127,11 +127,12 @@ class SessionExecutionService {
                 });
             });
     
-            try {
-                await axios.post('http://localhost:8001/collection');
-            } catch {
-                toast.error('The feedback collection tool is not running. This was not supposed to happen. Please let someone know as soon as possible.')
-            }
+            // Commenting 
+            // try {
+            //     await axios.post('http://localhost:8001/collection');
+            // } catch {
+            //     toast.error('The feedback collection tool is not running. This was not supposed to happen. Please let someone know as soon as possible.')
+            // }
             return response.data;
         } catch (error) {
             if (error instanceof AxiosError) {

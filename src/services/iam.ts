@@ -69,7 +69,7 @@ class IamService {
         setLocalStorage(Item.SESSION_OBJ, JSON.stringify(this.currentSession));
         // this.localServerUpToDate = false;
         // this.updateLocalServer();
-        await axios.post('http://localhost:8001/session', this.currentSession);
+        // await axios.post('http://localhost:8001/session', this.currentSession);
         return response.data;
     }
 
