@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import api from "./api";
 import iamService from "./iam";
 import { toast } from "react-toastify";

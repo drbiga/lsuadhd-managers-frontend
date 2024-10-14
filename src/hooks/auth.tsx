@@ -12,7 +12,7 @@ import iamService from "@/services/iam";
 import api from "@/services/api";
 import { getLocalStorage, Item, removeLocalStorage, setLocalStorage } from "@/localstorage";
 import { toast } from "react-toastify";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export interface LoginCredentials {
     username: string;
