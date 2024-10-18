@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Target, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Target, Users, BarChart } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "./DarkModeButton";
@@ -82,6 +82,9 @@ export default function Sidebar() {
                 {
                     allowedContexts.includes('session_execution') &&
                     <SidebarLink active={pathname === RouteNames.SESSION_PROGRESS} to={RouteNames.SESSION_PROGRESS} collapsed={collapsed} icon={<Milestone />}>Session Progress</SidebarLink>
+                }
+                {
+                    <SidebarLink active={pathname === RouteNames.TRACKING_STATS} to={RouteNames.TRACKING_STATS} collapsed={collapsed} icon={<BarChart />}>Tracking data stats</SidebarLink>
                 }
                 {/* {
                     allowedContexts.includes('goals') &&

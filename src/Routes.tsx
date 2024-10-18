@@ -10,6 +10,7 @@ import SessionGroups from "./pages/SessionGroups";
 import { SessionGroupPage } from "./pages/SessionGroup";
 import SessionProgressManagementPage from "./pages/SessionProgress/Management";
 import Students from "./pages/Management/Students";
+import TrackingData from "./pages/TrackingData";
 
 export enum RouteNames {
     BASENAME = '/lsuadhd-managers-frontend',
@@ -20,7 +21,8 @@ export enum RouteNames {
     MANAGEMENT = '/management',
     SESSION_GROUPS = '/session_groups',
     INDIVIDUAL_SESSION_GROUP = '/session-group',
-    MANAGEMENT__STUDENTS = '/students'
+    MANAGEMENT__STUDENTS = '/students',
+    TRACKING_STATS = '/tracking'
 }
 
 export default function Routes() {
@@ -96,6 +98,14 @@ export default function Routes() {
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
                     <Students />
+                </AuthRequired>
+            )
+        },
+        {
+            path: RouteNames.TRACKING_STATS,
+            element: (
+                <AuthRequired authRoute={RouteNames.LOGIN}>
+                    <TrackingData />
                 </AuthRequired>
             )
         }
