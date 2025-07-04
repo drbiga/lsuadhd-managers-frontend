@@ -7,18 +7,16 @@ export function useSessionProgress() {
   const [allStudents, setAllStudents] = useState<StudentWithSessionData[]>([]);
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    (async () => {
       try {
-        const response = await studentService.getAllStudentsWithSessionData();
+        const response = await studentService.getAllStudentsWithSessionData();      
         setAllStudents(response);
-        setStudent(response[0] || null);
+        setStudent(response[0]);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching students:', err);
         toast.error("Failed to fetch student data");
       }
-    };
-
-    fetchStudents();
+    })();
   }, []);
 
   const handleStudentChange = useCallback((selectedStudent: StudentWithSessionData) => {
