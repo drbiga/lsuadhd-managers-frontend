@@ -15,10 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4  # Updated to v4
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          # Remove cache: "yarn" temporarily to avoid conflicts
       - name: Remove global Yarn
         run: sudo rm -rf /usr/local/bin/yarn /usr/local/bin/yarnpkg
       - name: Enable Corepack
@@ -36,10 +35,18 @@ jobs:
           VITE_BACKEND_HOST: lsuadhd.centralus.cloudapp.azure.com
           VITE_BACKEND_PORT: 443
       - name: Run tests
-        run: yarn test
+        run: |
+          if yarn run --json 2>/dev/null | grep -q '"name":"test"' || grep -q '"test"' package.json; then
+            yarn test
+          else
+            echo "No test script found, skipping tests"
+          fi
         continue-on-error: true
-      - run: |
+      - name: Deploy to GitHub Pages
+        run: |
+          git config --global user.name "github-actions-bot"
+          git config --global user.email "support+actions@github.com"
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          yarn deploy -- -u "github-actions-bot <support+actions@github.com>"
+          yarn deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
