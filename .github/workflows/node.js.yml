@@ -24,6 +24,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
+      - name: Disable Global Yarn Installation
+        run: sudo rm -rf /usr/local/bin/yarn
       - name: Enable Corepack
         run: corepack enable
       - name: Prepare Yarn 4.9.2 with Corepack
@@ -38,4 +40,6 @@ jobs:
       - run: yarn test --if-present
       - run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          yarn deploy -- -u "git
+          yarn deploy -- -u "github-actions-bot <support+actions@github.com>"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
