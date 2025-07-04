@@ -7,18 +7,6 @@ import { SessionProgressDisplay } from "@/features/students/components/SessionPr
 export default function SessionProgressManagementPage() {
   const { student, allStudents, handleStudentChange } = useSessionProgress();
 
-  if (!student) {
-    return (
-      <PageContainer>
-        <Sidebar />
-        <PageMainContent>
-          <PageTitle>Session Progress</PageTitle>
-          <p>No students yet available</p>
-        </PageMainContent>
-      </PageContainer>
-    );
-  }
-
   return (
     <PageContainer>
       <Sidebar />
