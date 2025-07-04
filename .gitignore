@@ -1,4 +1,7 @@
+# Environment files
 .env
+.env.local
+.env.*.local
 
 # Logs
 logs
@@ -9,19 +12,38 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-build
-*.local
+# Dependency folders
+node_modules/
+
+# Yarn v2+ Berry folders
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn/patches/
+.yarn/sdks/
+.pnp.cjs
+.pnp.loader.mjs
+
+.yarn/releases/
+.yarn/plugins/
+
+# Build output
+dist/
+dist-ssr/
+build/
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Misc
+*.local
+.eslintcache

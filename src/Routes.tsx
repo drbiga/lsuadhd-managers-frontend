@@ -1,76 +1,51 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
-
 import Management from "./pages/Management";
-import Login from "./pages/Login";
-import { AuthRequired, Role, useAuth } from "./hooks/auth";
-import SignUp from "./pages/SignUp";
-import NextSession from "./pages/NextSession";
-import SessionProgress from "./pages/SessionProgress";
-import SessionGroups from "./pages/SessionGroups";
-import { SessionGroupPage } from "./pages/SessionGroup";
-import SessionProgressManagementPage from "./pages/SessionProgress/Management";
+import Login from "./pages/Auth/Login";
+import { AuthRequired } from "./hooks/auth";
+import SessionGroups from "./pages/Management/SessionGroups";
+import { SessionGroupPage } from "./pages/Management/SessionGroup";
+import SessionProgressManagementPage from "./pages/Management/SessionProgress";
 import Students from "./pages/Management/Students";
-import TrackingData from "./pages/TrackingData";
-import Finances from "./pages/Management/Finances/finances";
+import TrackingData from "./pages/Management/TrackingData";
+import Budget from "./pages/Budget";
+import BudgetAnalysisPage from "./pages/Budget/Analysis";
 
 export enum RouteNames {
     BASENAME = '/lsuadhd-managers-frontend',
     HOME = '/',
     LOGIN = '/login',
-    SIGNUP = '/signup',
     SESSION_PROGRESS = '/session-progress',
     MANAGEMENT = '/management',
-    SESSION_GROUPS = '/session_groups',
+    SESSION_GROUPS = '/session-groups',
     INDIVIDUAL_SESSION_GROUP = '/session-group',
     MANAGEMENT__STUDENTS = '/students',
     TRACKING_STATS = '/tracking',
-    FINANCES = '/finances'
+    BUDGET = '/budget',
+    BUDGET_ANALYSIS = '/budget/analysis',
 }
 
 export default function Routes() {
-    const { authState } = useAuth();
-
     const router = createBrowserRouter([
-        // ============================================================
-        // Common pages
         {
             path: RouteNames.LOGIN,
             element: <Login />
         },
         {
-            path: RouteNames.SIGNUP,
-            element: <SignUp />
+            path: RouteNames.HOME,
+            element: (
+                <AuthRequired authRoute={RouteNames.LOGIN}>
+                    <Management />
+                </AuthRequired>
+            )
         },
-        // ============================================================
-        // Common conditional pages (depend on the role)
         {
             path: RouteNames.SESSION_PROGRESS,
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
-                    {
-                        (authState.session && authState.session.user.role === Role.MANAGER) ? (
-                            <SessionProgressManagementPage />
-                        ) : (
-                            <SessionProgress />
-                        )
-                    }
+                    <SessionProgressManagementPage />
                 </AuthRequired>
             )
         },
-        {
-            path: RouteNames.HOME,
-            element: (
-                <AuthRequired authRoute={RouteNames.LOGIN}>
-                    {(authState.session && authState.session.user.role === Role.STUDENT) ? (
-                        <NextSession />
-                    ) : (
-                        <Management />
-                    )}
-                </AuthRequired>
-            )
-        },
-        // ============================================================
-        // Management Only Pages
         {
             path: RouteNames.MANAGEMENT,
             element: (
@@ -112,10 +87,18 @@ export default function Routes() {
             )
         },
         {
-            path: RouteNames.FINANCES,
+            path: RouteNames.BUDGET,
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
-                    <Finances />
+                <Budget />
+                </AuthRequired>
+            )
+        },
+        {
+            path: RouteNames.BUDGET_ANALYSIS,
+            element: (
+                <AuthRequired authRoute={RouteNames.LOGIN}>
+                <BudgetAnalysisPage />
                 </AuthRequired>
             )
         },
