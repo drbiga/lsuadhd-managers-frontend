@@ -11,7 +11,7 @@ export type Student = {
 
 export type StudentWithSessionData = {
     name: string;
-    sessions: SessionExecutionSession[];
+    sessions_done: SessionExecutionSession[]; // Changed from 'sessions' to 'sessions_done'
     sessions_analytics: SessionAnalytics[];
     survey_id?: number;
 }
@@ -134,6 +134,11 @@ class StudentsService {
                     name_manager_requesting_operation: iamService.getCurrentSession().user.username
                 }
             });
+            // Add safety check to ensure response.data exists and is an array
+            if (!response.data || !Array.isArray(response.data)) {
+                console.error('Invalid response structure:', response.data);
+                return [];
+            }
             return response.data;
         } catch (error) {
             if (error instanceof AxiosError) {

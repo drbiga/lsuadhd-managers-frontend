@@ -12,9 +12,9 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
       <h2 className="text-4xl mb-8">
         {student.name.charAt(0).toUpperCase() + student.name.slice(1)}
       </h2>
-      
+
       <ul className="flex flex-col gap-8 px-2">
-        {student.sessions.map(s => (
+        {student.sessions_done?.map(s => (
           <li key={s.seqnum} className="bg-card p-4 h-[80vh] w-[70vw] rounded-lg flex">
             <div className="w-[30%]">
               <p className="text-2xl text-slate-700 dark:text-slate-300">
@@ -41,7 +41,9 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
             </div>
             <SessionItemChart feedbacks={s.feedbacks} />
           </li>
-        ))}
+        )) || (
+          <li className="text-slate-600 dark:text-slate-400">No sessions available for this student.</li>
+        )}
       </ul>
     </div>
   );
