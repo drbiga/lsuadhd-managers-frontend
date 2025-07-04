@@ -1,33 +1,30 @@
 name: Node.js CI
-
 on:
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-
 permissions:
   contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [21.x]
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4  # Updated to v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
       - name: Enable Corepack
         run: corepack enable
-      - name: Install dependencies with Yarn
-        run: yarn install --immutable
+      - name: Prepare Yarn 4.9.2 with Corepack
+        run: corepack prepare yarn@4.9.2 --activate
+      - name: Verify Yarn version
+        run: yarn --version
+      - run: yarn install --immutable
       - run: yarn build --if-present
         env:
           VITE_IS_HTTPS: "yes"
