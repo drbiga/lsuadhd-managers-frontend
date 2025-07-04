@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 import iamService from "@/services/iam";
 import api from "@/services/api";
-import { getLocalStorage, Item, removeLocalStorage, setLocalStorage } from "@/localstorage";
+import { getLocalStorage, Item, removeLocalStorage, setLocalStorage } from "@/lib/localstorage";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -34,17 +34,17 @@ interface IAuthState {
 export interface ISession {
     token: string;
     user: User;
-};
+}
 
 export interface User {
     username: string;
     role: Role;
-};
+}
 
 export enum Role {
     MANAGER = 'manager',
     STUDENT = 'student'
-};
+}
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
@@ -162,7 +162,7 @@ export function AuthRequired({ children, authRoute }: { children: ReactNode, aut
         if (!authState.isLoggedIn) {
             navigate(authRoute);
         }
-    }, [authState]);
+    }, [authState, authRoute, navigate]);
 
     return (<div>{children}</div>);
 }
