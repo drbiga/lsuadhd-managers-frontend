@@ -26,8 +26,9 @@ jobs:
           cache: "yarn"
       - name: Enable Corepack
         run: corepack enable
-      - name: Install dependencies with Yarn
-        run: yarn install --immutable
+      - name: Prepare Yarn 4.9.2 with Corepack
+        run: corepack prepare yarn@4.9.2 --activate
+      - run: yarn install --immutable
       - run: yarn build --if-present
         env:
           VITE_IS_HTTPS: "yes"
@@ -37,6 +38,4 @@ jobs:
       - run: yarn test --if-present
       - run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          yarn deploy -- -u "github-actions-bot <support+actions@github.com>"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          yarn deploy -- -u "git
