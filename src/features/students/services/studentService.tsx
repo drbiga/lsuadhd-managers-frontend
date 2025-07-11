@@ -11,7 +11,7 @@ export type Student = {
 
 export type StudentWithSessionData = {
     name: string;
-    sessions_done: SessionExecutionSession[]; // Changed from 'sessions' to 'sessions_done'
+    sessions: SessionExecutionSession[];
     sessions_analytics: SessionAnalytics[];
     survey_id?: number;
 }

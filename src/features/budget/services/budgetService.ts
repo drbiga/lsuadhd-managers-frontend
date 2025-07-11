@@ -13,12 +13,12 @@ export type CreateBudgetRequest = {
 };
 
 const getBudget = async (): Promise<Budget> => {
-    const response = await api.get('/management/budget');
+    const response = await api.get('/budget/');
     return response.data;
 };
 
 const setBudget = async (request: CreateBudgetRequest): Promise<void> => {
-    await api.post('/management/budget', request);
+    await api.post('/budget/', request);
 };
 
 export default {

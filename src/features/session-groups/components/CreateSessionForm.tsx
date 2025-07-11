@@ -6,9 +6,9 @@ import { UseFormRegister, UseFormHandleSubmit } from "react-hook-form";
 
 interface CreateSessionFormProps {
 	handleSubmit: UseFormHandleSubmit<any>;
-  register: UseFormRegister<any>;
-  onSubmit: (data: any) => void;	
-  defaultSeqnum: number;
+	register: UseFormRegister<any>;
+	onSubmit: (data: any) => void;	
+	defaultSeqnum: number;
 }
 
 export function CreateSessionForm(props: CreateSessionFormProps) { 
