@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, BarChart, Wallet, LineChart } from "lucide-react";
+import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, BarChart, Wallet, LineChart, AlertTriangle } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "@/components/common/DarkModeButton";
@@ -87,6 +87,10 @@ export default function Sidebar() {
                 {
                     allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.BUDGET_ANALYSIS} to={RouteNames.BUDGET_ANALYSIS} collapsed={collapsed} icon={<LineChart />}>Budget Analysis</SidebarLink>
+                }
+                {
+                    allowedContexts.includes('management') &&
+                    <SidebarLink active={pathname === RouteNames.FAILED_SESSIONS} to={RouteNames.FAILED_SESSIONS} collapsed={collapsed} icon={<AlertTriangle />}>Failed Sessions</SidebarLink>
                 }
             </ul>
 

@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import api from "@/services/api";
 import iamService from "@/services/iam";
 import { AxiosError } from "axios";
@@ -66,11 +65,20 @@ export enum Stage {
     FINISHED = 'finished',
 }
 
+export type FailedSession = {
+    id?: number;
+    student_name: string;
+    session_seqnum: number;
+    original_stage: string;
+    ts_started: string;
+    ts_detected: string;
+    failure_reason: string;
+}
+
 class StudentsService {
     public async createStudent(studentName: string, sessionGroupName: string, surveyId?: number): Promise<Student> {
-        let response;
         try {
-            response = await api.post('/management/student', {}, {
+            const response = await api.post('/management/student', {}, {
                 params: {
                     student_name: studentName,
                     session_group_name: sessionGroupName,
@@ -78,34 +86,48 @@ class StudentsService {
                     survey_id: surveyId || null,
                 }
             });
+            return response.data;
         } catch (error) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.detail)
-                throw new Error(error.response?.data.detail)
+                throw new Error(error.response?.data.detail || 'Failed to create student');
             } else {
-                throw new Error('There was a problem creating the student')
+                throw new Error('There was a problem creating the student');
             }
         }
-
-        return response.data;
     }
 
     public async setStudentSurveyId(studentName: string, surveyId?: number): Promise<void> {
-        await api.put(
-            `/management/student/${studentName}/survey_id`,
-            {},
-            {
-                params: {
-                    survey_id: surveyId,
-                    name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+        try {
+            await api.put(
+                `/management/student/${studentName}/survey_id`,
+                {},
+                {
+                    params: {
+                        survey_id: surveyId,
+                        name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+                    }
                 }
+            );
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                throw new Error(error.response?.data.detail || 'Failed to update survey ID');
+            } else {
+                throw new Error('Failed to update survey ID');
             }
-        );
+        }
     }
 
     public async getStudent(studentName: string): Promise<Student> {
-        const response = await api.get(`/management/student/${studentName}`);
-        return response.data;
+        try {
+            const response = await api.get(`/management/student/${studentName}`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                throw new Error(error.response?.data.detail || 'Failed to get student');
+            } else {
+                throw new Error('Failed to get student');
+            }
+        }
     }
 
     public async getAllStudents(): Promise<Student[]> {
@@ -114,15 +136,13 @@ class StudentsService {
                 params: {
                     name_manager_requesting_operation: iamService.getCurrentSession().user.username
                 }
-            })
+            });
             return response.data;
         } catch (error) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.detail.exception)
-                throw new Error(error.response?.data.detail.message)
+                throw new Error(error.response?.data.detail?.message || error.response?.data.detail || 'Failed to get students');
             } else {
-                toast.error('Unknown error while getting the students')
-                throw error
+                throw new Error('Unknown error while getting the students');
             }
         }
     }
@@ -134,19 +154,16 @@ class StudentsService {
                     name_manager_requesting_operation: iamService.getCurrentSession().user.username
                 }
             });
-            // Add safety check to ensure response.data exists and is an array
-            if (!response.data || !Array.isArray(response.data)) {
+            if (!response.data) {
                 console.error('Invalid response structure:', response.data);
                 return [];
             }
             return response.data;
         } catch (error) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.detail);
-                throw new Error(error.response?.data.detail);
+                throw new Error(error.response?.data.detail || 'Failed to get students with session data');
             } else {
-                toast.error('Unknown error while getting the students');
-                throw error;
+                throw new Error('Unknown error while getting the students');
             }
         }
     }
@@ -161,11 +178,22 @@ class StudentsService {
             return response.data;
         } catch (error) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.detail);
-                throw new Error(error.response?.data.detail);
+                throw new Error(error.response?.data.detail || 'Failed to get student session data');
             } else {
-                toast.error('Unknown error while getting the student');
-                throw error;
+                throw new Error('Unknown error while getting the student');
+            }
+        }
+    }
+
+    public async getAllFailedSessions(): Promise<FailedSession[]> {
+        try {
+            const response = await api.get('/failure_recovery/failed_sessions');
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                throw new Error(error.response?.data.detail || 'Failed to fetch failed sessions');
+            } else {
+                throw new Error('Unknown error while getting failed sessions');
             }
         }
     }

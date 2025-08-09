@@ -11,13 +11,10 @@ export function useStudents() {
     (async () => {
       try {
         const studentsResponse = await studentService.getAllStudents();
-        if (studentsResponse) {
-          setStudents(studentsResponse);
-        } else {
-          toast.error("Something went wrong while setting the students");
-        }
-      } catch {
-        toast.error("Something went wrong while getting the students");
+        setStudents(studentsResponse);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to get students";
+        toast.error(errorMessage);
       }
     })();
   }, []);
@@ -33,7 +30,8 @@ export function useStudents() {
         setStudents([...students, newStudent]);
         toast.success("Student created successfully!");
       } catch (error) {
-        toast.error("Unknown error. Please contact someone");
+        const errorMessage = error instanceof Error ? error.message : "Failed to create student";
+        toast.error(errorMessage);
       }
     },
     [students]
@@ -46,22 +44,28 @@ export function useStudents() {
         const integerSurveyVal = stringSurveyVal ? parseInt(stringSurveyVal, 10) : undefined;
 
         if (!isNaN(integerSurveyVal!)) {
-          await studentService.setStudentSurveyId(
-            studentName, integerSurveyVal
-          );
+          try {
+            await studentService.setStudentSurveyId(
+              studentName, integerSurveyVal
+            );
+            setStudents(
+              students.map((s) => {
+                if (s.name === studentName) {
+                  return {
+                    ...s,
+                    survey_id: integerSurveyVal,
+                  };
+                } else {
+                  return s;
+                }
+              })
+            );
+            toast.success("Survey ID updated successfully!");
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to update survey ID";
+            toast.error(errorMessage);
+          }
         }
-        setStudents(
-          students.map((s) => {
-            if (s.name === studentName) {
-              return {
-                ...s,
-                survey_id: integerSurveyVal,
-              };
-            } else {
-              return s;
-            }
-          })
-        );
       }
     },
     [inputRef, students]
