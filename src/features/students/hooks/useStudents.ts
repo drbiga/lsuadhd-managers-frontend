@@ -5,6 +5,7 @@ import { FieldValues } from "react-hook-form";
 
 export function useStudents() {
   const [students, setStudents] = useState<Student[]>([]);
+  const [activeStudents, setActiveStudents] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -12,6 +13,9 @@ export function useStudents() {
       try {
         const studentsResponse = await studentService.getAllStudents();
         setStudents(studentsResponse);
+
+        const activeStudentsResponse = await studentService.getActiveStudents();
+        setActiveStudents(activeStudentsResponse);
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Failed to get students";
         toast.error(errorMessage);
@@ -71,5 +75,5 @@ export function useStudents() {
     [inputRef, students]
   );
 
-  return { students, onSubmitStudent, handleSetSurveyId, inputRef };
+  return { students, activeStudents, onSubmitStudent, handleSetSurveyId, inputRef };
 }

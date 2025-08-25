@@ -197,6 +197,17 @@ class StudentsService {
             }
         }
     }
+
+    public async getActiveStudents(): Promise<string[]> {
+        try {
+            const response = await api.get('/session_execution/students/active');
+
+            return response.data.map((student: { name: string }) => student.name);
+        } catch (error) {
+            console.error('Failed to fetch active students:', error);
+            return [];
+        }
+    }
 }
 
 const studentsService = new StudentsService();

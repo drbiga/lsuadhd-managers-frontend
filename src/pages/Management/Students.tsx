@@ -6,7 +6,7 @@ import { useStudents } from "@/features/students/hooks/useStudents";
 import { useSessionGroups } from "@/features/session-groups/hooks/useSessionGroups";
 
 export default function Students() {
-  const { students, onSubmitStudent, handleSetSurveyId, inputRef } = useStudents();
+  const { students, activeStudents, onSubmitStudent, handleSetSurveyId, inputRef } = useStudents();
   const { sessionGroups } = useSessionGroups();
 
   return (
@@ -16,7 +16,7 @@ export default function Students() {
         <PageTitle>Students</PageTitle>
         <div className="w-6/12">
           <StudentForm sessionGroups={sessionGroups} onSubmitStudent={onSubmitStudent} />
-          <StudentList students={students} inputRef={inputRef} handleSetSurveyId={handleSetSurveyId} />
+          <StudentList students={students} activeStudents={activeStudents} inputRef={inputRef} handleSetSurveyId={handleSetSurveyId} />
         </div>
       </PageMainContent>
     </PageContainer>
