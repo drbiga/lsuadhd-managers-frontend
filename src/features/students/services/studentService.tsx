@@ -208,6 +208,26 @@ class StudentsService {
             return [];
         }
     }
+
+    public async getImageDescriptions(
+        studentName: string, 
+        sessionSeqnum: number, 
+        offset: number = 0, 
+        limit: number = 10
+    ): Promise<any[]> {
+        try {
+            const response = await api.get(
+                `/session_execution/student/${studentName}/session/${sessionSeqnum}/image-descriptions`,
+                {
+                    params: { offset, limit }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Unknown error while getting image descriptions');
+            return [];
+        }
+    }
 }
 
 const studentsService = new StudentsService();
