@@ -98,16 +98,28 @@ class StudentsService {
 
     public async setStudentSurveyId(studentName: string, surveyId?: number): Promise<void> {
         try {
-            await api.put(
-                `/management/student/${studentName}/survey_id`,
-                {},
-                {
-                    params: {
-                        survey_id: surveyId,
-                        name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+            await Promise.all([
+                api.put(
+                    `/management/student/${studentName}/survey_id`,
+                    {},
+                    {
+                        params: {
+                            survey_id: surveyId,
+                            name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+                        }
                     }
-                }
-            );
+                ),
+                api.put(
+                    `/session_execution/student/${studentName}/survey_id`,
+                    {},
+                    {
+                        params: {
+                            survey_id: surveyId,
+                            name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+                        }
+                    }
+                )
+            ]);
         } catch (error) {
             if (error instanceof AxiosError) {
                 throw new Error(error.response?.data.detail || 'Failed to update survey ID');
