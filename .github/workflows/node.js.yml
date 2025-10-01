@@ -33,6 +33,7 @@ jobs:
           VITE_IS_HTTPS: "yes"
           VITE_WEBSOCKET_PROTOCOL: https
           VITE_BACKEND_HOST: lsuadhd.centralus.cloudapp.azure.com
+          VITE_BACKEND_PREFIX: "/api"
           VITE_BACKEND_PORT: 443
       - name: Run tests
         run: |
