@@ -8,7 +8,6 @@ import SessionProgressManagementPage from "./pages/Management/SessionProgress";
 import Students from "./pages/Management/Students";
 import TrackingData from "./pages/Management/TrackingData";
 import Budget from "./pages/Budget";
-import BudgetAnalysisPage from "./pages/Budget/Analysis";
 import FailedSessions from "./pages/Management/FailedSessions";
 
 export enum RouteNames {
@@ -22,7 +21,6 @@ export enum RouteNames {
     MANAGEMENT__STUDENTS = '/students',
     TRACKING_STATS = '/tracking',
     BUDGET = '/budget',
-    BUDGET_ANALYSIS = '/budget/analysis',
     FAILED_SESSIONS = '/failed-sessions',
 }
 
@@ -93,14 +91,6 @@ export default function Routes() {
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
                 <Budget />
-                </AuthRequired>
-            )
-        },
-        {
-            path: RouteNames.BUDGET_ANALYSIS,
-            element: (
-                <AuthRequired authRoute={RouteNames.LOGIN}>
-                <BudgetAnalysisPage />
                 </AuthRequired>
             )
         },

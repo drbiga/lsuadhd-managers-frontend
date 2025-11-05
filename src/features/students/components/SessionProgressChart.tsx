@@ -13,7 +13,7 @@ export const SessionItemChart = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HT
     for (let i = 0; i < feedbacks.length; i++) {
       data.push({
         ...feedbacks[i],
-        seqnum: i + 1
+        seqnum: (i + 1) * 0.5
       })
     }
     return (

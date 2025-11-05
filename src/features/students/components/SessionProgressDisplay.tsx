@@ -33,7 +33,7 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
       </h2>
 
       <ul className="flex flex-col gap-8 px-2">
-        {student.sessions?.map(s => (
+        {student.sessions?.sort((a, b) => a.seqnum - b.seqnum).map(s => (
           <li key={s.seqnum} className="bg-card p-4 h-[80vh] w-[70vw] rounded-lg flex">
             <div className="w-[30%]">
               <p className="text-2xl text-slate-700 dark:text-slate-300">
