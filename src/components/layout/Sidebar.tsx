@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, BarChart, Wallet, AlertTriangle, FileText } from "lucide-react";
+import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, Wallet, AlertTriangle, FileText } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "@/components/common/DarkModeButton";
