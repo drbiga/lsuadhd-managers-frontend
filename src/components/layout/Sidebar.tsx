@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, BarChart, Wallet, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, BarChart, Wallet, AlertTriangle, FileText } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "@/components/common/DarkModeButton";
@@ -76,10 +76,10 @@ export default function Sidebar() {
                     allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.SESSION_PROGRESS} to={RouteNames.SESSION_PROGRESS} collapsed={collapsed} icon={<Milestone />}>Session Progress</SidebarLink>
                 }
-                {
+                {/* {
                     allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.TRACKING_STATS} to={RouteNames.TRACKING_STATS} collapsed={collapsed} icon={<BarChart />}>Tracking Data Stats</SidebarLink>
-                }
+                } */}
                 {
                     allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.BUDGET} to={RouteNames.BUDGET} collapsed={collapsed} icon={<Wallet />}>Budget</SidebarLink>
@@ -87,6 +87,10 @@ export default function Sidebar() {
                 {
                     allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.FAILED_SESSIONS} to={RouteNames.FAILED_SESSIONS} collapsed={collapsed} icon={<AlertTriangle />}>Failed Sessions</SidebarLink>
+                }
+                {
+                    allowedContexts.includes('management') &&
+                    <SidebarLink active={pathname === RouteNames.SESSION_SUMMARY} to={RouteNames.SESSION_SUMMARY} collapsed={collapsed} icon={<FileText />}>Session Summary</SidebarLink>
                 }
             </ul>
 

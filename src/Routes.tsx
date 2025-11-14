@@ -6,9 +6,10 @@ import SessionGroups from "./pages/Management/SessionGroups";
 import { SessionGroupPage } from "./pages/Management/SessionGroup";
 import SessionProgressManagementPage from "./pages/Management/SessionProgress";
 import Students from "./pages/Management/Students";
-import TrackingData from "./pages/Management/TrackingData";
+//import TrackingData from "./pages/Management/TrackingData";
 import Budget from "./pages/Budget";
 import FailedSessions from "./pages/Management/FailedSessions";
+import SessionSummary from "./pages/Management/SessionSummary";
 
 export enum RouteNames {
     BASENAME = '/lsuadhd-managers-frontend',
@@ -22,6 +23,7 @@ export enum RouteNames {
     TRACKING_STATS = '/tracking',
     BUDGET = '/budget',
     FAILED_SESSIONS = '/failed-sessions',
+    SESSION_SUMMARY = '/session-summary',
 }
 
 export default function Routes() {
@@ -78,14 +80,14 @@ export default function Routes() {
                 </AuthRequired>
             )
         },
-        {
-            path: RouteNames.TRACKING_STATS,
-            element: (
-                <AuthRequired authRoute={RouteNames.LOGIN}>
-                    <TrackingData />
-                </AuthRequired>
-            )
-        },
+        // deprecated
+        //     path: RouteNames.TRACKING_STATS,
+        //     element: (
+        //         <AuthRequired authRoute={RouteNames.LOGIN}>
+        //             <TrackingData />
+        //         </AuthRequired>
+        //     )
+        // },
         {
             path: RouteNames.BUDGET,
             element: (
@@ -99,6 +101,14 @@ export default function Routes() {
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
                     <FailedSessions />
+                </AuthRequired>
+            )
+        },
+        {
+            path: RouteNames.SESSION_SUMMARY,
+            element: (
+                <AuthRequired authRoute={RouteNames.LOGIN}>
+                    <SessionSummary />
                 </AuthRequired>
             )
         },

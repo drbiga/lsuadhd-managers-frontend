@@ -1,53 +1,54 @@
-name: Node.js CI
+name: Node.js CI & Deploy
+
 on:
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+
 permissions:
   contents: write
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [21.x]
+
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Remove global Yarn
-        run: sudo rm -rf /usr/local/bin/yarn /usr/local/bin/yarnpkg
-      - name: Enable Corepack
-        run: corepack enable
-      - name: Prepare Yarn 4.9.2 with Corepack
-        run: corepack prepare yarn@4.9.2 --activate
-      - name: Verify Yarn version
-        run: yarn --version
-      - run: yarn install --immutable
-      - name: Build project
-        run: yarn build
+          cache: 'yarn'
+
+      - name: Enable Corepack and prepare Yarn
+        run: corepack enable; corepack prepare yarn@4.9.2 --activate
+
+      - run: yarn install
+
+      - run: yarn build
         env:
           VITE_IS_HTTPS: "yes"
           VITE_WEBSOCKET_PROTOCOL: https
           VITE_BACKEND_HOST: lsuadhd.centralus.cloudapp.azure.com
           VITE_BACKEND_PATH: "/api"
           VITE_BACKEND_PORT: 443
-      - name: Run tests
-        run: |
-          if yarn run --json 2>/dev/null | grep -q '"name":"test"' || grep -q '"test"' package.json; then
+
+      - run: |
+          if grep -q '"test"' package.json; then
             yarn test
           else
             echo "No test script found, skipping tests"
           fi
         continue-on-error: true
-      - name: Deploy to GitHub Pages
+
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions-bot"
           git config --global user.email "support+actions@github.com"
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           yarn deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
