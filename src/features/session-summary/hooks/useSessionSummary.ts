@@ -35,5 +35,5 @@ export function useSessionSummary() {
         fetchSessionSummary();
     }, []);
 
-    return { stats, records, problematicSessions, loading };
+    return { stats, records, problematicSessions, loading, refresh: fetchSessionSummary };
 }

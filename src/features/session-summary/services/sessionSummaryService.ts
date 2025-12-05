@@ -1,12 +1,21 @@
 import api from "@/services/api";
 
 export type SessionSummaryStats = {
-    passthroughFocusedAverage: number;
-    vrOnlyFocusedAverage: number;
-    vrFeedbackFocusedAverage: number;
-    passthroughCount: number;
-    vrOnlyCount: number;
-    vrFeedbackCount: number;
+    // laptop sessions (1-2)
+    laptopPassthroughFocusedAverage: number;
+    laptopVrOnlyFocusedAverage: number;
+    laptopVrFeedbackFocusedAverage: number;
+    laptopPassthroughCount: number;
+    laptopVrOnlyCount: number;
+    laptopVrFeedbackCount: number;
+
+    // headset sessions (3-12)
+    headsetPassthroughFocusedAverage: number;
+    headsetVrOnlyFocusedAverage: number;
+    headsetVrFeedbackFocusedAverage: number;
+    headsetPassthroughCount: number;
+    headsetVrOnlyCount: number;
+    headsetVrFeedbackCount: number;
 };
 
 export type SessionRecord = {
@@ -27,12 +36,18 @@ class SessionSummaryService {
     public async getStats(): Promise<SessionSummaryStats> {
         const response = await api.get('/session-summary/stats');
         const stats: SessionSummaryStats = {
-            passthroughFocusedAverage: response.data.passthrough_focused_average,
-            vrOnlyFocusedAverage: response.data.vr_only_focused_average,
-            vrFeedbackFocusedAverage: response.data.vr_feedback_focused_average,
-            passthroughCount: response.data.passthrough_count,
-            vrOnlyCount: response.data.vr_only_count,
-            vrFeedbackCount: response.data.vr_feedback_count,
+            laptopPassthroughFocusedAverage: response.data.laptop_passthrough_focused_average,
+            laptopVrOnlyFocusedAverage: response.data.laptop_vr_only_focused_average,
+            laptopVrFeedbackFocusedAverage: response.data.laptop_vr_feedback_focused_average,
+            laptopPassthroughCount: response.data.laptop_passthrough_count,
+            laptopVrOnlyCount: response.data.laptop_vr_only_count,
+            laptopVrFeedbackCount: response.data.laptop_vr_feedback_count,
+            headsetPassthroughFocusedAverage: response.data.headset_passthrough_focused_average,
+            headsetVrOnlyFocusedAverage: response.data.headset_vr_only_focused_average,
+            headsetVrFeedbackFocusedAverage: response.data.headset_vr_feedback_focused_average,
+            headsetPassthroughCount: response.data.headset_passthrough_count,
+            headsetVrOnlyCount: response.data.headset_vr_only_count,
+            headsetVrFeedbackCount: response.data.headset_vr_feedback_count,
         };
         return stats;
     }

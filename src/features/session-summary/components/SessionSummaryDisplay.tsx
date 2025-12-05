@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SessionSummaryStats, SessionRecord, ProblematicSessionRecord } from "../services/sessionSummaryService";
 import { Button } from "@/components/ui/button";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 
 interface SessionSummaryDisplayProps {
   stats: SessionSummaryStats | null;
@@ -28,17 +29,13 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, loa
   );
 
   if (loading) {
-    return (
-      <div className="mt-4">
-        <p className="text-slate-600 dark:text-slate-400">Loading...</p>
-      </div>
-    );
+    return <LoadingScreen message="Loading session summary..." />;
   }
 
   if (!stats) {
     return (
       <div className="mt-4">
-        <p className="text-slate-600 dark:text-slate-400">No session summary data available.</p>
+        <p className="text-muted-foreground">No session summary data available.</p>
       </div>
     );
   }
@@ -46,69 +43,121 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, loa
   return (
     <div className="mt-4">
 
+      <h2 className="text-xl font-semibold text-foreground mb-4">Laptop Sessions (1-2)</h2>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-            {stats.passthroughFocusedAverage}% focused
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.laptopPassthroughFocusedAverage}% focused
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400">Average for passthrough</p>
+          <p className="text-sm text-muted-foreground">Average for passthrough</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-            {stats.vrOnlyFocusedAverage}% focused
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.laptopVrOnlyFocusedAverage}% focused
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400">Average for vr only</p>
+          <p className="text-sm text-muted-foreground">Average for vr only</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-            {stats.vrFeedbackFocusedAverage}% focused
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.laptopVrFeedbackFocusedAverage}% focused
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400">Average for vr + feedback</p>
+          <p className="text-sm text-muted-foreground">Average for vr + feedback</p>
         </div>
       </div>
 
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-            {stats.passthroughCount} sessions
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.laptopPassthroughCount} sessions
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400">count for passthrough</p>
+          <p className="text-sm text-muted-foreground">count for passthrough</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-            {stats.vrOnlyCount} sessions
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.laptopVrOnlyCount} sessions
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400">count for vr only</p>
+          <p className="text-sm text-muted-foreground">count for vr only</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-            {stats.vrFeedbackCount} sessions
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.laptopVrFeedbackCount} sessions
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400">count for vr + feedback</p>
+          <p className="text-sm text-muted-foreground">count for vr + feedback</p>
+        </div>
+      </div>
+
+
+      <h2 className="text-xl font-semibold text-foreground mb-4">Headset Sessions (3-12)</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.headsetPassthroughFocusedAverage}% focused
+          </h3>
+          <p className="text-sm text-muted-foreground">Average for passthrough</p>
+        </div>
+
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.headsetVrOnlyFocusedAverage}% focused
+          </h3>
+          <p className="text-sm text-muted-foreground">Average for vr only</p>
+        </div>
+
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.headsetVrFeedbackFocusedAverage}% focused
+          </h3>
+          <p className="text-sm text-muted-foreground">Average for vr + feedback</p>
+        </div>
+      </div>
+
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.headsetPassthroughCount} sessions
+          </h3>
+          <p className="text-sm text-muted-foreground">count for passthrough</p>
+        </div>
+
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.headsetVrOnlyCount} sessions
+          </h3>
+          <p className="text-sm text-muted-foreground">count for vr only</p>
+        </div>
+
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            {stats.headsetVrFeedbackCount} sessions
+          </h3>
+          <p className="text-sm text-muted-foreground">count for vr + feedback</p>
         </div>
       </div>
 
 
       <div className="mb-4 flex gap-4 items-center">
-        <label className="text-slate-700 dark:text-slate-300">View:</label>
+        <label className="text-foreground font-medium">View:</label>
         <Button
           onClick={() => setTypeOfView("normal")}
-          variant="outline"
-          className={typeOfView === "normal" ?"font-bold" : ""}
+          variant={typeOfView === "normal" ? "default" : "outline"}
         >
           By Student
         </Button>
         <Button
           onClick={() => setTypeOfView("problematic")}
-          variant="outline"
-          className={typeOfView === "problematic" ?"font-bold" : ""}
+          variant={typeOfView === "problematic" ? "default" : "outline"}
         >
           Most Problematic Sessions
         </Button>
@@ -127,11 +176,11 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, loa
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-slate-700">
-                <th className="p-3 text-slate-400 dark:text-slate-600">Record ID</th>
-                <th className="p-3 text-slate-400 dark:text-slate-600">Group</th>
+              <tr className="border-b border-border">
+                <th className="p-3 text-muted-foreground font-medium">Record ID</th>
+                <th className="p-3 text-muted-foreground font-medium">Group</th>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(num => (
-                  <th key={num} className="p-3 text-slate-400 dark:text-slate-600">
+                  <th key={num} className="p-3 text-muted-foreground font-medium">
                     S{num}
                   </th>
                 ))}
@@ -139,11 +188,11 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, loa
             </thead>
             <tbody>
               {sortedRecords.map((record, idx) => (
-                <tr key={idx} className="border-b border-slate-700">
-                  <td className="p-3">{record.recordId}</td>
-                  <td className="p-3">{record.group}</td>
+                <tr key={idx} className="border-b border-border">
+                  <td className="p-3 text-foreground">{record.recordId}</td>
+                  <td className="p-3 text-foreground">{record.group}</td>
                   {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(i => (
-                    <td key={i} className="p-3">
+                    <td key={i} className="p-3 text-foreground">
                       {record.sessions[i] !== undefined && record.sessions[i] !== null ? `${record.sessions[i]}%` : '-'}
                     </td>
                   ))}
@@ -156,22 +205,22 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, loa
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-slate-700">
-                <th className="p-3 text-slate-400 dark:text-slate-600">Record ID</th>
-                <th className="p-3 text-slate-400 dark:text-slate-600">Group</th>
-                <th className="p-3 text-slate-400 dark:text-slate-600">Session #</th>
-                <th className="p-3 text-slate-400 dark:text-slate-600">Feedbacks</th>
-                <th className="p-3 text-slate-400 dark:text-slate-600">Focused %</th>
+              <tr className="border-b border-border">
+                <th className="p-3 text-muted-foreground font-medium">Record ID</th>
+                <th className="p-3 text-muted-foreground font-medium">Group</th>
+                <th className="p-3 text-muted-foreground font-medium">Session #</th>
+                <th className="p-3 text-muted-foreground font-medium">Feedbacks</th>
+                <th className="p-3 text-muted-foreground font-medium">Focused %</th>
               </tr>
             </thead>
             <tbody>
               {displayProblematicSessions.map((session, idx) => (
-                <tr key={idx} className="border-b border-slate-700">
-                  <td className="p-3">{session.recordId}</td>
-                  <td className="p-3">{session.group}</td>
-                  <td className="p-3">{session.sessionNumber}</td>
-                  <td className="p-3">{session.feedbackCount}</td>
-                  <td className="p-3">
+                <tr key={idx} className="border-b border-border">
+                  <td className="p-3 text-foreground">{session.recordId}</td>
+                  <td className="p-3 text-foreground">{session.group}</td>
+                  <td className="p-3 text-foreground">{session.sessionNumber}</td>
+                  <td className="p-3 text-foreground">{session.feedbackCount}</td>
+                  <td className="p-3 text-foreground">
                     {session.focusedPercentage !== null ? `${session.focusedPercentage}%` : '-'}
                   </td>
                 </tr>

@@ -2,15 +2,23 @@ import { PageContainer, PageMainContent, PageTitle } from "@/components/layout/P
 import Sidebar from "@/components/layout/Sidebar";
 import { useSessionSummary } from "@/features/session-summary/hooks/useSessionSummary";
 import { SessionSummaryDisplay } from "@/features/session-summary/components/SessionSummaryDisplay";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 export default function SessionSummary() {
-  const { stats, records, problematicSessions, loading } = useSessionSummary();
+  const { stats, records, problematicSessions, loading, refresh } = useSessionSummary();
 
   return (
     <PageContainer>
       <Sidebar />
       <PageMainContent>
-        <PageTitle>Session Summary</PageTitle>
+        <div className="flex items-center justify-between mb-4">
+          <PageTitle>Session Summary</PageTitle>
+          <Button onClick={refresh} variant="outline" size="sm" disabled={loading}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
         <SessionSummaryDisplay 
           stats={stats} 
           records={records} 
