@@ -7,10 +7,12 @@ export function useSessionProgress() {
   const [allStudents, setAllStudents] = useState<StudentWithSessionData[]>([]);
   const [descriptions, setImageDescriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [studentsLoading, setStudentsLoading] = useState(true);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
+      setStudentsLoading(true);
       try {
         const response = await studentService.getAllStudentsWithSessionData();
         setAllStudents(response);
@@ -18,6 +20,8 @@ export function useSessionProgress() {
       } catch (err) {
         console.error('Error fetching students:', err);
         toast.error("Failed to fetch student data");
+      } finally {
+        setStudentsLoading(false);
       }
     })();
   }, []);
@@ -50,6 +54,7 @@ export function useSessionProgress() {
     handleStudentChange,
     descriptions,
     loading,
+    studentsLoading,
     selectedSession,
     fetchImageDescriptions,
   };

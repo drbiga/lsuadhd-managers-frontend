@@ -16,7 +16,7 @@ function App() {
 						pauseOnFocusLoss
 						draggable
 						pauseOnHover
-						theme="light"
+						theme={document.documentElement.classList.contains('dark') ? 'dark' : 'light'}
 				/>
 		</>
 	)

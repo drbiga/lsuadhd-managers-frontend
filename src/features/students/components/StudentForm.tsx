@@ -16,7 +16,7 @@ export function StudentForm({ sessionGroups, onSubmitStudent }: StudentFormProps
 
   return (
     <div className="mb-8 flex flex-col">
-      <h2 className="text-slate-400 dark:text-slate-600 opacity-70 text-2xl mb-8">
+      <h2 className="text-muted-foreground text-2xl mb-8 font-medium">
         Create new student
       </h2>
       <form
@@ -25,12 +25,12 @@ export function StudentForm({ sessionGroups, onSubmitStudent }: StudentFormProps
       >
         <input
           type="text"
-          className="bg-accent p-2 rounded-lg"
+          className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all"
           placeholder="Name"
           {...register("name", { required: true })}
         />
         <select
-          className="bg-primary p-1 border-[1px] border-slate-400 dark:border-slate-600 rounded-md"
+          className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all"
           id="sessionGroupName"
           aria-placeholder="Select a session group"
           {...register("sessionGroupName", { required: true })}
@@ -44,13 +44,13 @@ export function StudentForm({ sessionGroups, onSubmitStudent }: StudentFormProps
         <input
           type="number"
           placeholder="Survey ID (Optional)"
-          className="bg-accent p-2 rounded-lg"
+          className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all"
           {...register("surveyId", { required: false })}
         />
         <div>
           <button
             type="submit"
-            className="float-right bg-accent p-2 rounded-lg hover:bg-accent-foreground hover:text-accent transition-all duration-100"
+            className="float-right bg-accent text-accent-foreground hover:bg-accent/80 font-medium rounded-lg px-5 py-2.5 transition-colors duration-150"
           >
             Create
           </button>

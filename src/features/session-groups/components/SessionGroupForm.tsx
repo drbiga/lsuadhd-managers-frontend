@@ -9,22 +9,24 @@ export function SessionGroupForm({ onSubmit }: SessionGroupFormProps) {
 
   return (
     <div className="max-w-[600px]">
-      <h2 className="text-slate-400 dark:text-slate-600 opacity-70 text-2xl mb-8">
+      <h2 className="text-muted-foreground text-2xl mb-8 font-medium">
         Create new session group
       </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <input type="text"
           placeholder="Group name"
-          className="bg-primary border-[1px] border-slate-200 dark:border-slate-800 p-2 rounded-lg"
-          {...register('group_name')}
+          className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all"
+          {...register('group_name', { required: true })}
+          required
         />
         <input type="text"
           placeholder="Public Link"
-          className="bg-primary border-[1px] border-slate-200 dark:border-slate-800 p-2 rounded-lg"
-          {...register('public_link')}
+          className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all"
+          {...register('public_link', { required: true })}
+          required
         />
         <div>
-          <button type="submit" className="float-right bg-accent p-2 rounded-lg hover:bg-accent-foreground hover:text-accent transition-all duration-100">Create</button>
+          <button type="submit" className="float-right bg-accent text-accent-foreground hover:bg-accent/80 font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">Create</button>
         </div>
       </form>
     </div>

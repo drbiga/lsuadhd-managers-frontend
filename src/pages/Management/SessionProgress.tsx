@@ -3,9 +3,10 @@ import Sidebar from "@/components/layout/Sidebar";
 import { useSessionProgress } from "@/features/students/hooks/useSessionProgress";
 import { StudentSelector } from "@/features/students/components/StudentSelector";
 import { SessionProgressDisplay } from "@/features/students/components/SessionProgressDisplay";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 
 export default function SessionProgressManagementPage() {
-  const { student, allStudents, handleStudentChange } = useSessionProgress();
+  const { student, allStudents, handleStudentChange, studentsLoading } = useSessionProgress();
 
   return (
     <PageContainer>
@@ -13,7 +14,9 @@ export default function SessionProgressManagementPage() {
       <PageMainContent>
         <PageTitle>Session Progress</PageTitle>
         
-        {allStudents.length === 0 ? (
+        {studentsLoading ? (
+          <LoadingScreen message="Loading students..." />
+        ) : allStudents.length === 0 ? (
           <p className="mt-4 text-slate-600 dark:text-slate-400">No students to show.</p>
         ) : (
           <>

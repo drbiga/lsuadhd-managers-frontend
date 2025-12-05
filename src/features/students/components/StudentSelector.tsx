@@ -17,13 +17,13 @@ export function StudentSelector({ students, selectedStudent, onStudentChange }: 
       <select
         name="student_name" 
         id="student_name"
-        className="bg-primary py-2 px-4 border-[1px] border-black dark:border-white rounded-lg"
+        className="bg-background text-foreground py-2 px-4 border-[1px] border-border rounded-lg"
         onChange={handleChange}
         value={selectedStudent ? JSON.stringify(selectedStudent) : ''}
       >
         {students.map(s => (
           <option 
-            className="bg-primary p-2 text-black" 
+            className="bg-background text-foreground" 
             key={s.name} 
             value={JSON.stringify(s)}
           >

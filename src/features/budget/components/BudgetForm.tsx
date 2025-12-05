@@ -26,10 +26,10 @@ export function BudgetForm({ setBudgetValue }: BudgetFormProps) {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Set New Budget</h2>
+      <h2 className="text-xl font-semibold text-foreground mb-4">Set New Budget</h2>
       <form className="max-w-sm space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="max-w-sm space-y-4">
-          <Label htmlFor="budget" className="block mb-3 text-base">Budget ($):</Label>
+          <Label htmlFor="budget" className="block mb-3 text-base text-foreground font-medium">Budget ($):</Label>
           <Input
             id="budget"
             type="number"
@@ -38,7 +38,6 @@ export function BudgetForm({ setBudgetValue }: BudgetFormProps) {
           />
           <Button 
             type="submit"
-            variant="outline" 
           >
             Submit
           </Button>

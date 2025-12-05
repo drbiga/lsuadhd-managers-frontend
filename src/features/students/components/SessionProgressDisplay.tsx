@@ -34,28 +34,47 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
 
       <ul className="flex flex-col gap-8 px-2">
         {student.sessions?.sort((a, b) => a.seqnum - b.seqnum).map(s => (
-          <li key={s.seqnum} className="bg-card p-4 h-[80vh] w-[70vw] rounded-lg flex">
-            <div className="w-[30%]">
-              <p className="text-2xl text-slate-700 dark:text-slate-300">
+          <li key={s.seqnum} className="bg-card border border-border p-6 h-[80vh] w-[70vw] rounded-xl flex shadow-sm">
+            <div className="w-[35%] pr-6">
+              <p className="text-2xl font-semibold text-foreground mb-4">
                 Session #{s.seqnum}
               </p>
-              <p>
-                <span className="text-slate-600 dark:text-slate-400 border-b-[1px]">Overview</span>
-              </p>
-              <p className="text-sm text-slate-400 dark:text-slate-600">
-                Stage: {s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}
-              </p>
-              <div className="text-sm text-slate-400 dark:text-slate-600">
-                Number of feedbacks given: {s.feedbacks.length}
+              <div className="mb-4">
+                <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                  Overview
+                </span>
               </div>
-              <div className="text-sm text-slate-800 dark:text-slate-200">
-                Percentage of time focused: {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_focused || 0)}
-              </div>
-              <div className="text-sm text-slate-400 dark:text-slate-600">
-                Percentage of time normal: {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_normal || 0)}
-              </div>
-              <div className="text-sm text-slate-400 dark:text-slate-600">
-                Percentage of time distracted: {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_distracted || 0)}
+              <div className="flex flex-col gap-3">
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Stage:</span>{" "}
+                  <span className="text-foreground font-medium">
+                    {s.stage.charAt(0).toUpperCase() + s.stage.slice(1)}
+                  </span>
+                </div>
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Feedbacks:</span>{" "}
+                  <span className="text-foreground font-medium">{s.feedbacks.length}</span>
+                </div>
+                <div className="mt-2 pt-3 border-t border-border">
+                  <div className="text-sm mb-2">
+                    <span className="text-muted-foreground">Time focused:</span>{" "}
+                    <span className="text-accent font-semibold">
+                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_focused || 0)}
+                    </span>
+                  </div>
+                  <div className="text-sm mb-2">
+                    <span className="text-muted-foreground">Time normal:</span>{" "}
+                    <span className="text-foreground font-medium">
+                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_normal || 0)}
+                    </span>
+                  </div>
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Time distracted:</span>{" "}
+                    <span className="text-foreground font-medium">
+                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_distracted || 0)}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <AlertDialog>

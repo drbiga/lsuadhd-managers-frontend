@@ -2,14 +2,14 @@ import { PropsWithChildren } from "react";
 
 export function PageContainer({ children }: PropsWithChildren) {
     return (
-        <div className="h-[100vh] w-[100vw] flex bg-background">{children}</div>
+        <div className="h-[100vh] w-[100vw] flex bg-background relative">{children}</div>
     )
 }
 
 
 export function PageTitle({ children }: PropsWithChildren) {
     return (
-        <h1 className="text-4xl text-slate-800 dark:text-slate-200">{children}</h1>
+        <h1 className="text-4xl font-semibold text-foreground tracking-tight">{children}</h1>
     )
 }
 
@@ -21,5 +21,5 @@ export function PageMainContent({ children }: PropsWithChildren) {
 
 
 export function PageSectionTitle({ children }: PropsWithChildren) {
-    return <h2 className="text-slate-400 dark:text-slate-600 opacity-70 text-2xl mb-8">{children}</h2>
+    return <h2 className="text-muted-foreground text-2xl mb-8 font-medium">{children}</h2>
 }
