@@ -240,6 +240,24 @@ class StudentsService {
             return [];
         }
     }
+
+    public async unlockUser(username: string): Promise<void> {
+        await api.post(`/iam/user/${username}/unlock`);
+    }
+
+    public async lockUser(username: string): Promise<void> {
+        await api.post(`/iam/user/${username}/lock`);
+    }
+
+    public async isUserLocked(username: string): Promise<boolean> {
+        const response = await api.get(`/iam/user/${username}/locked`);
+        return response.data;
+    }
+
+    public async getUsersLockStatus(usernames: string[]): Promise<Record<string, boolean>> {
+        const response = await api.post('/iam/users/locked', { usernames });
+        return response.data;
+    }
 }
 
 const studentsService = new StudentsService();

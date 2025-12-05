@@ -14,26 +14,30 @@ import { Student } from "../services/studentService";
 interface StudentListProps {
   students: Student[];
   activeStudents: string[];
+  lockedUsers: Record<string, boolean>;
   inputRef: RefObject<HTMLInputElement>;
   handleSetSurveyId: (studentName: string) => void;
+  handleUnlockUser: (studentName: string) => void;
+  handleLockUser: (studentName: string) => void;
 }
 
-export function StudentList({ students, activeStudents, inputRef, handleSetSurveyId }: StudentListProps) {
+export function StudentList({ students, activeStudents, lockedUsers, inputRef, handleSetSurveyId, handleUnlockUser, handleLockUser}: StudentListProps) {
   return (
     <div>
-      <h2 className="text-slate-400 dark:text-slate-600 opacity-70 text-2xl mb-8">
+      <h2 className="text-muted-foreground text-2xl mb-8 font-medium">
         Existing students
       </h2>
       <ul>
         {students.map((s) => {
           const isActive = activeStudents.includes(s.name);
+          const isLocked = lockedUsers[s.name] || false;
           return (
             <li
-              className="mb-6 p-4 border border-slate-700 rounded-xl bg-slate-800"
+              className="mb-6 p-6 border border-border rounded-xl bg-card shadow-sm"
               key={s.name}
             >
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-bold">Student Name:</span> {s.name}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="font-semibold text-foreground">Student Name:</span> <span className="text-foreground">{s.name}</span>
                 <span 
                   className={`px-2 py-1 rounded-full text-xs font-medium ${
                     isActive 
@@ -44,12 +48,12 @@ export function StudentList({ students, activeStudents, inputRef, handleSetSurve
                   {isActive ? 'Active' : 'Inactive'}
                 </span>
               </div>
-              <p>
-                <span className="font-bold">Session Group:</span> {s.group}
+              <p className="text-foreground mb-2">
+                <span className="font-semibold">Session Group:</span> {s.group}
               </p>
             {typeof s.survey_id === 'number' ? (
-              <p>
-                <span className="font-bold">Survey ID:</span> {s.survey_id} &nbsp;
+              <p className="text-foreground">
+                <span className="font-semibold">Survey ID:</span> {s.survey_id} &nbsp;
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button className="p-1">Edit ID</Button>
@@ -69,7 +73,7 @@ export function StudentList({ students, activeStudents, inputRef, handleSetSurve
                 </Dialog>
               </p>
             ) : (
-              <p>
+              <p className="text-foreground">
                 Survey ID: &nbsp;
                 <Dialog>
                   <DialogTrigger asChild>
@@ -90,6 +94,19 @@ export function StudentList({ students, activeStudents, inputRef, handleSetSurve
                 </Dialog>
               </p>
             )}
+            <div className="relative">
+              <div className="absolute bottom-20 right-0">
+                {isLocked ? (
+                  <Button onClick={() => handleUnlockUser(s.name)} className="text-sm py-1 px-3">
+                    Unlock
+                  </Button>
+                ) : (
+                  <Button onClick={() => handleLockUser(s.name)} className="text-sm py-1 px-3">
+                    Lock
+                  </Button>
+                )}
+              </div>
+            </div>
           </li>
           );
         })}

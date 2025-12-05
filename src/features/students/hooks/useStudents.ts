@@ -6,22 +6,32 @@ import { FieldValues } from "react-hook-form";
 export function useStudents() {
   const [students, setStudents] = useState<Student[]>([]);
   const [activeStudents, setActiveStudents] = useState<string[]>([]);
+  const [lockedUsers, setLockedUsers] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const studentsResponse = await studentService.getAllStudents();
-        setStudents(studentsResponse);
+  const fetchStudents = useCallback(async () => {
+    try {
+      setLoading(true);
+      const studentsResponse = await studentService.getAllStudents();
+      setStudents(studentsResponse);
 
-        const activeStudentsResponse = await studentService.getActiveStudents();
-        setActiveStudents(activeStudentsResponse);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to get students";
-        toast.error(errorMessage);
-      }
-    })();
+      const activeStudentsResponse = await studentService.getActiveStudents();
+      setActiveStudents(activeStudentsResponse);
+
+      const usernames = studentsResponse.map(s => s.name);
+      const locked = await studentService.getUsersLockStatus(usernames);
+      setLockedUsers(locked);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to get students");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
 
   const onSubmitStudent = useCallback(
     async (data: FieldValues) => {
@@ -75,5 +85,44 @@ export function useStudents() {
     [inputRef, students]
   );
 
-  return { students, activeStudents, onSubmitStudent, handleSetSurveyId, inputRef };
+  const handleUnlockUser = useCallback(async (studentName: string) => {
+    try {
+      await studentService.unlockUser(studentName);
+      setLockedUsers(prev => {
+        const updated = { ...prev };
+        updated[studentName] = false;
+        return updated;
+      });
+      toast.success(`Unlocked ${studentName}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to unlock user");
+    }
+  }, []);
+
+  const handleLockUser = useCallback(async (studentName: string) => {
+    try {
+      await studentService.lockUser(studentName);
+      setLockedUsers(prev => {
+        const updated = { ...prev };
+        updated[studentName] = true;
+        return updated;
+      });
+      toast.success(`Locked ${studentName}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to lock user");
+    }
+  }, []);
+
+  return {
+    students,
+    activeStudents,
+    lockedUsers,
+    loading,
+    onSubmitStudent,
+    handleSetSurveyId,
+    handleUnlockUser,
+    handleLockUser,
+    inputRef,
+    refresh: fetchStudents
+  };
 }
