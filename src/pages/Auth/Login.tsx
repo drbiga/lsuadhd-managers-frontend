@@ -66,7 +66,6 @@ export default function Login() {
         <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">Manager Login</h1>
-            <p className="text-muted-foreground text-sm">Enter your credentials to access the management portal</p>
           </div>
 
           <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>

@@ -1,15 +1,15 @@
-import { StudentWithSessionData } from "../services/studentService";
+import { Student } from "../services/studentService";
 
 interface StudentSelectorProps {
-  students: StudentWithSessionData[];
-  selectedStudent: StudentWithSessionData;
-  onStudentChange: (student: StudentWithSessionData) => void;
+  students: Student[];
+  selectedStudentName: string | null;
+  onStudentChange: (studentName: string | null) => void;
 }
 
-export function StudentSelector({ students, selectedStudent, onStudentChange }: StudentSelectorProps) {
+export function StudentSelector({ students, selectedStudentName, onStudentChange }: StudentSelectorProps) {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const student = JSON.parse(e.target.value);
-    onStudentChange(student);
+    const value = e.target.value;
+    onStudentChange(value === '' ? null : value);
   };
 
   return (
@@ -19,13 +19,19 @@ export function StudentSelector({ students, selectedStudent, onStudentChange }: 
         id="student_name"
         className="bg-background text-foreground py-2 px-4 border-[1px] border-border rounded-lg"
         onChange={handleChange}
-        value={selectedStudent ? JSON.stringify(selectedStudent) : ''}
+        value={selectedStudentName || ''}
       >
+        <option 
+          className="bg-background text-foreground" 
+          value=""
+        >
+          Select a student
+        </option>
         {students.map(s => (
           <option 
             className="bg-background text-foreground" 
             key={s.name} 
-            value={JSON.stringify(s)}
+            value={s.name}
           >
             {s.name}
           </option>

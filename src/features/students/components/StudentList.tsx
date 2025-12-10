@@ -94,18 +94,16 @@ export function StudentList({ students, activeStudents, lockedUsers, inputRef, h
                 </Dialog>
               </p>
             )}
-            <div className="relative">
-              <div className="absolute bottom-20 right-0">
-                {isLocked ? (
-                  <Button onClick={() => handleUnlockUser(s.name)} className="text-sm py-1 px-3">
-                    Unlock
-                  </Button>
-                ) : (
-                  <Button onClick={() => handleLockUser(s.name)} className="text-sm py-1 px-3">
-                    Lock
-                  </Button>
-                )}
-              </div>
+            <div className="mt-3 flex justify-end">
+              {isLocked ? (
+                <Button onClick={() => handleUnlockUser(s.name)} className="text-sm py-1 px-3">
+                  Unlock
+                </Button>
+              ) : (
+                <Button onClick={() => handleLockUser(s.name)} className="text-sm py-1 px-3">
+                  Lock
+                </Button>
+              )}
             </div>
           </li>
           );

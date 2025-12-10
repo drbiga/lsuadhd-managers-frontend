@@ -6,7 +6,7 @@ import { SessionProgressDisplay } from "@/features/students/components/SessionPr
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 
 export default function SessionProgressManagementPage() {
-  const { student, allStudents, handleStudentChange, studentsLoading } = useSessionProgress();
+  const { student, allStudents, handleStudentChange, studentsLoading, studentDataLoading } = useSessionProgress();
 
   return (
     <PageContainer>
@@ -22,14 +22,16 @@ export default function SessionProgressManagementPage() {
           <>
             <StudentSelector 
               students={allStudents}
-              selectedStudent={student || allStudents[0]}
+              selectedStudentName={student?.name || null}
               onStudentChange={handleStudentChange}
             />
-            {student ? (
+            {studentDataLoading ? (
+              <LoadingScreen message="Loading student data..." />
+            ) : student ? (
               <SessionProgressDisplay student={student} />
             ) : (
               <p className="mt-4 text-slate-600 dark:text-slate-400">
-                Please select a student to view their session progress.
+                Select a student to view their session progress.
               </p>
             )}
           </>

@@ -26,10 +26,10 @@ export function FailedSessionsList({ failedSessions, loading }: FailedSessionsLi
             {failedSessions.length === 0 ? (
                 <p className="text-muted-foreground">No failed sessions found.</p>
             ) : (
-                <ul>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {failedSessions.map((session) => (
-                        <li
-                            className="mb-6 p-6 border border-border rounded-xl bg-card hover:shadow-md transition-shadow max-w-md"
+                        <div
+                            className="p-6 border border-border rounded-xl bg-card hover:shadow-md transition-shadow"
                             key={`${session.student_name}-${session.session_seqnum}-${session.ts_detected}`}
                         >
                             <p className="mb-2 text-foreground"><span className="font-semibold">Student:</span> {session.student_name}</p>
@@ -38,9 +38,9 @@ export function FailedSessionsList({ failedSessions, loading }: FailedSessionsLi
                             <p className="mb-2 text-foreground"><span className="font-semibold">Failure Reason:</span> {session.failure_reason}</p>
                             <p className="mb-2 text-muted-foreground text-sm"><span className="font-medium">Started:</span> {formatDateTime(session.ts_started)}</p>
                             <p className="text-muted-foreground text-sm"><span className="font-medium">Detected:</span> {formatDateTime(session.ts_detected)}</p>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             )}
         </div>
     );
