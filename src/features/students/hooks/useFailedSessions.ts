@@ -10,7 +10,10 @@ export function useFailedSessions() {
         try {
             setLoading(true);
             const sessions = await studentsService.getAllFailedSessions();
-            setFailedSessions(sessions);
+            const sortedSessions = sessions.sort((a, b) =>
+                new Date(b.ts_detected).getTime() - new Date(a.ts_detected).getTime()
+            );
+            setFailedSessions(sortedSessions);
         } catch (err) {
             toast.error('Failed to fetch failed sessions');
         } finally {

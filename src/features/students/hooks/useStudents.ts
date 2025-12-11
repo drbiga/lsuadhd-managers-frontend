@@ -88,30 +88,26 @@ export function useStudents() {
   const handleUnlockUser = useCallback(async (studentName: string) => {
     try {
       await studentService.unlockUser(studentName);
-      setLockedUsers(prev => {
-        const updated = { ...prev };
-        updated[studentName] = false;
-        return updated;
-      });
+      const usernames = students.map(s => s.name);
+      const locked = await studentService.getUsersLockStatus(usernames);
+      setLockedUsers(locked);
       toast.success(`Unlocked ${studentName}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to unlock user");
     }
-  }, []);
+  }, [students]);
 
   const handleLockUser = useCallback(async (studentName: string) => {
     try {
       await studentService.lockUser(studentName);
-      setLockedUsers(prev => {
-        const updated = { ...prev };
-        updated[studentName] = true;
-        return updated;
-      });
+      const usernames = students.map(s => s.name);
+      const locked = await studentService.getUsersLockStatus(usernames);
+      setLockedUsers(locked);
       toast.success(`Locked ${studentName}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to lock user");
     }
-  }, []);
+  }, [students]);
 
   return {
     students,
