@@ -222,9 +222,9 @@ class StudentsService {
     }
 
     public async getImageDescriptions(
-        studentName: string, 
-        sessionSeqnum: number, 
-        offset: number = 0, 
+        studentName: string,
+        sessionSeqnum: number,
+        offset: number = 0,
         limit: number = 10
     ): Promise<any[]> {
         try {
@@ -256,6 +256,11 @@ class StudentsService {
 
     public async getUsersLockStatus(usernames: string[]): Promise<Record<string, boolean>> {
         const response = await api.post('/iam/users/locked', { usernames });
+        return response.data;
+    }
+
+    public async getAnalytics(studentName: string, sessionNum: number): Promise<SessionAnalytics> {
+        const response = await api.get(`/session_execution/student/${studentName}/session/${sessionNum}/analytics`);
         return response.data;
     }
 }
