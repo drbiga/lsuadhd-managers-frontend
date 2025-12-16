@@ -6,18 +6,18 @@ function App() {
 	return (
 		<>
 			<Routes />
-				<ToastContainer
-						position="top-right"
-						autoClose={5000}
-						hideProgressBar={false}
-						newestOnTop={false}
-						closeOnClick
-						rtl={false}
-						pauseOnFocusLoss
-						draggable
-						pauseOnHover
-						theme={document.documentElement.classList.contains('dark') ? 'dark' : 'light'}
-				/>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme={document.documentElement.classList.contains('dark') ? 'dark' : 'light'}
+			/>
 		</>
 	)
 }
