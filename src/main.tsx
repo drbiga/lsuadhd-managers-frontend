@@ -4,7 +4,7 @@ import './index.css'
 import { AuthProvider } from './hooks/auth.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+  <AuthProvider>
+    <App />
+  </AuthProvider>
 )
