@@ -14,17 +14,35 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+import studentsService from "../services/studentService";
+import { useCallback, useState } from "react";
+import { useStudents } from "../hooks/useStudents";
+
 interface SessionProgressDisplayProps {
   student: StudentWithSessionData;
 }
 
-export function SessionProgressDisplay({ student }: SessionProgressDisplayProps) {
+export function SessionProgressDisplay({ student: _student }: SessionProgressDisplayProps) {
+  const [student, setStudent] = useState(_student);
+
   const {
     descriptions,
     loading,
-    selectedSession,             
+    selectedSession,
     fetchImageDescriptions,
   } = useSessionProgress();
+
+  const getMissingAnalytics = useCallback(async (studentName: string, sessionNum: number) => {
+    const analytics = await studentsService.getAnalytics(studentName, sessionNum);
+    const newStudent: StudentWithSessionData = {
+      ...student,
+      sessions_analytics: [
+        ...(student.sessions_analytics),
+        analytics
+      ]
+    }
+    setStudent(newStudent);
+  }, [student]);
 
   return (
     <div className="mt-8">
@@ -55,32 +73,46 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
                   <span className="text-muted-foreground">Feedbacks:</span>{" "}
                   <span className="text-foreground font-medium">{s.feedbacks.length}</span>
                 </div>
-                <div className="mt-2 pt-3 border-t border-border">
-                  <div className="text-sm mb-2">
-                    <span className="text-muted-foreground">Time focused:</span>{" "}
-                    <span className="text-accent font-semibold">
-                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_focused || 0)}
-                    </span>
+                <div className="mt-2 pt-3 border-t border-border grid grid-cols-2">
+                  <div className="">
+                    <div className="text-sm mb-2">
+                      <span className="text-muted-foreground">Time focused:</span>{" "}
+                      <span className="text-accent font-semibold">
+                        {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_focused || 0)}
+                      </span>
+                    </div>
+                    <div className="text-sm mb-2">
+                      <span className="text-muted-foreground">Time normal:</span>{" "}
+                      <span className="text-foreground font-medium">
+                        {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_normal || 0)}
+                      </span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">Time distracted:</span>{" "}
+                      <span className="text-foreground font-medium">
+                        {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_distracted || 0)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-sm mb-2">
-                    <span className="text-muted-foreground">Time normal:</span>{" "}
-                    <span className="text-foreground font-medium">
-                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_normal || 0)}
-                    </span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Time distracted:</span>{" "}
-                    <span className="text-foreground font-medium">
-                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_distracted || 0)}
-                    </span>
+                  <div>
+                    {!findAnalytics(student.sessions_analytics, s) && (
+                      // <button className="float-right bg-background p-2 rounded-md outline-10 outline-black">Calculate</button>
+                      <Button
+                        variant="outline"
+                        className="float-right"
+                        onClick={() => getMissingAnalytics(student.name, s.seqnum)}
+                      >
+                        Calculate
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
 
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="mt-4"
                     onClick={() => fetchImageDescriptions(student.name, s.seqnum)}
                   >
@@ -94,7 +126,7 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
                       OpenAI-generated descriptions ({descriptions.length} loaded)
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  
+
                   <div className="space-y-4 max-h-96 overflow-y-auto">
                     {loading && descriptions.length === 0 ? (
                       <p>Loading...</p>
@@ -116,9 +148,9 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
                           </div>
                         ))}
                         <div className="flex justify-center mt-4">
-                          <Button 
-                            variant="outline" 
-                            onClick={() => selectedSession && fetchImageDescriptions(student.name, selectedSession, true)} 
+                          <Button
+                            variant="outline"
+                            onClick={() => selectedSession && fetchImageDescriptions(student.name, selectedSession, true)}
                             disabled={loading}
                           >
                             {loading ? "Loading..." : "Load More"}
@@ -137,8 +169,8 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
             <SessionItemChart feedbacks={s.feedbacks} />
           </li>
         )) || (
-          <li className="text-slate-600 dark:text-slate-400">No sessions available for this student.</li>
-        )}
+            <li className="text-slate-600 dark:text-slate-400">No sessions available for this student.</li>
+          )}
       </ul>
     </div>
   );
