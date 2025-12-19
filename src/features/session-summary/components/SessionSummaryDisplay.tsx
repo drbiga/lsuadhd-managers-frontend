@@ -1,18 +1,21 @@
 import { useState } from "react";
-import { SessionSummaryStats, SessionRecord, ProblematicSessionRecord } from "../services/sessionSummaryService";
+import { SessionSummaryStats, SessionRecord, ProblematicSessionRecord, WeeklyFailureData } from "../services/sessionSummaryService";
 import { Button } from "@/components/ui/button";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { WeeklyFailures } from "./WeeklyFailures";
 
 interface SessionSummaryDisplayProps {
   stats: SessionSummaryStats | null;
   records: SessionRecord[];
   problematicSessions: ProblematicSessionRecord[];
+  weeklyFailures: WeeklyFailureData[];
   loading: boolean;
 }
 
 type TypeOfView = "normal" | "problematic";
 
-export function SessionSummaryDisplay({ stats, records, problematicSessions, loading }: SessionSummaryDisplayProps) {
+export function SessionSummaryDisplay({ stats, records, problematicSessions, weeklyFailures, loading }: SessionSummaryDisplayProps) {
   const [typeOfView, setTypeOfView] = useState<TypeOfView>("normal");
   const [hideTestStudents, setHideTestStudents] = useState(true);
 
@@ -42,8 +45,14 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, loa
 
   return (
     <div className="mt-4">
+      <Tabs defaultValue="summary" className="w-full">
+        <TabsList>
+          <TabsTrigger value="summary">Summary Statistics</TabsTrigger>
+          <TabsTrigger value="weekly-failures">Weekly Failures</TabsTrigger>
+        </TabsList>
 
-      <h2 className="text-xl font-semibold text-foreground mb-4">Laptop Sessions (1-2)</h2>
+        <TabsContent value="summary">
+          <h2 className="text-xl font-semibold text-foreground mb-4 mt-4">Laptop Sessions (1-2)</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
 
@@ -229,6 +238,12 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, loa
           </table>
         </div>
       )}
+        </TabsContent>
+
+        <TabsContent value="weekly-failures">
+          <WeeklyFailures data={weeklyFailures} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

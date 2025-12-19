@@ -32,6 +32,15 @@ export type ProblematicSessionRecord = {
     focusedPercentage: number | null;
 };
 
+export type WeeklyFailureData = {
+    weekNum: number;
+    successCount: number;
+    failedCount: number;
+    totalCount: number;
+    successPercentage: number;
+    failedPercentage: number;
+};
+
 class SessionSummaryService {
     public async getStats(): Promise<SessionSummaryStats> {
         const response = await api.get('/session-summary/stats');
@@ -72,6 +81,19 @@ class SessionSummaryService {
             focusedPercentage: record.focused_percentage,
         }));
         return problematicSessions;
+    }
+
+    public async getWeeklyFailures(): Promise<WeeklyFailureData[]> {
+        const response = await api.get('/session-summary/weekly-failures');
+        const weeklyFailures: WeeklyFailureData[] = response.data.map((record: any) => ({
+            weekNum: record.week_num,
+            successCount: record.success_count,
+            failedCount: record.failed_count,
+            totalCount: record.total_count,
+            successPercentage: record.success_percentage,
+            failedPercentage: record.failed_percentage,
+        }));
+        return weeklyFailures;
     }
 }
 const sessionSummaryService = new SessionSummaryService();
