@@ -62,6 +62,10 @@ export default function Sidebar() {
             <ul className="flex flex-col justify-around gap-3 mt-16 w-full px-4">
                 {
                     allowedContexts.includes('management') &&
+                    <SidebarLink active={pathname === RouteNames.SESSION_SUMMARY || pathname === RouteNames.HOME} to={RouteNames.SESSION_SUMMARY} collapsed={collapsed} icon={<FileText />}>Session Summary</SidebarLink>
+                }
+                {
+                    allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.MANAGEMENT} to={RouteNames.MANAGEMENT} collapsed={collapsed} icon={<LayoutGrid />}>Management</SidebarLink>
                 }
                 {
@@ -87,10 +91,6 @@ export default function Sidebar() {
                 {
                     allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.FAILED_SESSIONS} to={RouteNames.FAILED_SESSIONS} collapsed={collapsed} icon={<AlertTriangle />}>Failed Sessions</SidebarLink>
-                }
-                {
-                    allowedContexts.includes('management') &&
-                    <SidebarLink active={pathname === RouteNames.SESSION_SUMMARY} to={RouteNames.SESSION_SUMMARY} collapsed={collapsed} icon={<FileText />}>Session Summary</SidebarLink>
                 }
             </ul>
 

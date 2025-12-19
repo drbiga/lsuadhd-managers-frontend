@@ -36,7 +36,7 @@ export default function Routes() {
             path: RouteNames.HOME,
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
-                    <Management />
+                    <SessionSummary />
                 </AuthRequired>
             )
         },

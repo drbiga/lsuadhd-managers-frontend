@@ -17,16 +17,22 @@ export function useSessionSummary() {
     const fetchSessionSummary = async () => {
         try {
             setLoading(true);
-            const [statsData, recordsData, problematicData, weeklyData] = await Promise.all([
+
+            const [statsData, recordsData, problematicData] = await Promise.all([
                 sessionSummaryService.getStats(),
                 sessionSummaryService.getRecords(),
                 sessionSummaryService.getProblematicSessions(),
-                sessionSummaryService.getWeeklyFailures(),
             ]);
             setStats(statsData);
             setRecords(recordsData);
             setProblematicSessions(problematicData);
-            setWeeklyFailures(weeklyData);
+            try {
+                const weeklyData = await sessionSummaryService.getWeeklyFailures();
+                setWeeklyFailures(weeklyData);
+            } catch (weeklyError) {
+                console.error('Error fetching weekly failures:', weeklyError);
+                setWeeklyFailures([]);
+            }
         } catch (error) {
             console.error('Error fetching session summary:', error);
             toast.error("Failed to fetch session summary");
