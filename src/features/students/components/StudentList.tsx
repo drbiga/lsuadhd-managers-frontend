@@ -22,13 +22,28 @@ interface StudentListProps {
 }
 
 export function StudentList({ students, activeStudents, lockedUsers, inputRef, handleSetSurveyId, handleUnlockUser, handleLockUser}: StudentListProps) {
+  const sortedStudents = [...students].sort((a, b) => {
+    const aIsActive = activeStudents.includes(a.name);
+    const bIsActive = activeStudents.includes(b.name);
+    const aIsTest = a.name.startsWith('test.');
+    const bIsTest = b.name.startsWith('test.');
+    
+    if (aIsActive && !bIsActive) return -1;
+    if (!aIsActive && bIsActive) return 1;
+  
+    if (!aIsTest && bIsTest) return -1;
+    if (aIsTest && !bIsTest) return 1;
+    
+    return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+  });
+
   return (
     <div>
       <h2 className="text-muted-foreground text-2xl mb-8 font-medium">
         Existing students
       </h2>
       <ul>
-        {students.map((s) => {
+        {sortedStudents.map((s) => {
           const isActive = activeStudents.includes(s.name);
           const isLocked = lockedUsers[s.name] || false;
           return (
