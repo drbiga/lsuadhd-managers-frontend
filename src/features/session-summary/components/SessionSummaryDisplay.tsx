@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SessionSummaryStats, SessionRecord, ProblematicSessionRecord, WeeklyFailureData } from "../services/sessionSummaryService";
+import { SessionSummaryStats, SessionRecord, DetailedSessionRecord, WeeklyFailureData } from "../services/sessionSummaryService";
 import { Button } from "@/components/ui/button";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,24 +8,37 @@ import { WeeklyFailures } from "./WeeklyFailures";
 interface SessionSummaryDisplayProps {
   stats: SessionSummaryStats | null;
   records: SessionRecord[];
-  problematicSessions: ProblematicSessionRecord[];
+  detailedSessions: DetailedSessionRecord[];
   weeklyFailures: WeeklyFailureData[];
   loading: boolean;
 }
 
-type TypeOfView = "normal" | "problematic";
+type TypeOfView = "student-view" | "session-view";
 
-export function SessionSummaryDisplay({ stats, records, problematicSessions, weeklyFailures, loading }: SessionSummaryDisplayProps) {
-  const [typeOfView, setTypeOfView] = useState<TypeOfView>("normal");
+export function SessionSummaryDisplay({ stats, records, detailedSessions, weeklyFailures, loading }: SessionSummaryDisplayProps) {
+  const [typeOfView, setTypeOfView] = useState<TypeOfView>("student-view");
   const [hideTestStudents, setHideTestStudents] = useState(true);
+  const [sortByUserThenSession, setSortByUserThenSession] = useState(false);
 
   let displayRecords = records;
-  let displayProblematicSessions = problematicSessions;
+  let displayDetailedSessions = detailedSessions;
 
   if (hideTestStudents) {
     displayRecords = records.filter(r => !r.recordId.startsWith("test."));
-    displayProblematicSessions = problematicSessions.filter(s => !s.recordId.startsWith("test."));
+    displayDetailedSessions = detailedSessions.filter(s => !s.recordId.startsWith("test."));
   }
+
+  const sortedDetailedSessions = sortByUserThenSession
+    ? [...displayDetailedSessions].sort((a, b) => {
+        const userCompare = a.recordId.localeCompare(b.recordId, undefined, { numeric: true, sensitivity: "base" });
+        if (userCompare !== 0) return userCompare;
+        return a.sessionNumber - b.sessionNumber;
+      })
+    : [...displayDetailedSessions].sort((a, b) => {
+        const aDeviation = Math.abs(100 - a.feedbackCount);
+        const bDeviation = Math.abs(100 - b.feedbackCount);
+        return bDeviation - aDeviation;
+      });
 
   const sortedRecords = [...displayRecords].sort((a, b) => 
     a.recordId.localeCompare(b.recordId, undefined, { numeric: true, sensitivity: 'base' })
@@ -156,32 +169,50 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, wee
       </div>
 
 
-      <div className="mb-4 flex gap-4 items-center">
-        <label className="text-foreground font-medium">View:</label>
-        <Button
-          onClick={() => setTypeOfView("normal")}
-          variant={typeOfView === "normal" ? "default" : "outline"}
-        >
-          By Student
-        </Button>
-        <Button
-          onClick={() => setTypeOfView("problematic")}
-          variant={typeOfView === "problematic" ? "default" : "outline"}
-        >
-          Most Problematic Sessions
-        </Button>
-        
-        <div className="ml-auto pr-3">
+      <div className="mb-4 flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-foreground font-medium">View:</span>
           <Button
-            onClick={() => setHideTestStudents(!hideTestStudents)}
-            variant="outline"
+            size="sm"
+            onClick={() => setTypeOfView("student-view")}
+            variant={typeOfView === "student-view" ? "default" : "outline"}
           >
-            {hideTestStudents ? "Show Test Students" : "Hide Test Students"}
+            By Student
           </Button>
+          <Button
+            size="sm"
+            onClick={() => setTypeOfView("session-view")}
+            variant={typeOfView === "session-view" ? "default" : "outline"}
+          >
+            All Sessions
+          </Button>
+
+          <div className="ml-auto">
+            <Button
+              size="sm"
+              onClick={() => setHideTestStudents(!hideTestStudents)}
+              variant="outline"
+            >
+              {hideTestStudents ? "Show Test Students" : "Hide Test Students"}
+            </Button>
+          </div>
         </div>
+
+        {typeOfView === "session-view" && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-foreground font-medium">Filters:</span>
+            <Button
+              size="sm"
+              onClick={() => setSortByUserThenSession(!sortByUserThenSession)}
+              variant={sortByUserThenSession ? "default" : "outline"}
+            >
+              {sortByUserThenSession ? "User + Session" : "Sort by User + Session"}
+            </Button>
+          </div>
+        )}
       </div>
 
-      {typeOfView === "normal" ? (
+      {typeOfView === "student-view" ? (
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
@@ -202,7 +233,11 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, wee
                   <td className="p-3 text-foreground">{record.group}</td>
                   {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(i => (
                     <td key={i} className="p-3 text-foreground">
-                      {record.sessions[i] !== undefined && record.sessions[i] !== null ? `${record.sessions[i]}%` : '-'}
+                      {record.focusedPercentages[i] === "n/a"
+                        ? "n/a"
+                        : record.focusedPercentages[i] !== null
+                        ? `${record.focusedPercentages[i]}%`
+                        : "-"}
                     </td>
                   ))}
                 </tr>
@@ -223,14 +258,18 @@ export function SessionSummaryDisplay({ stats, records, problematicSessions, wee
               </tr>
             </thead>
             <tbody>
-              {displayProblematicSessions.map((session, idx) => (
+              {sortedDetailedSessions.map((session, idx) => (
                 <tr key={idx} className="border-b border-border">
                   <td className="p-3 text-foreground">{session.recordId}</td>
                   <td className="p-3 text-foreground">{session.group}</td>
                   <td className="p-3 text-foreground">{session.sessionNumber}</td>
                   <td className="p-3 text-foreground">{session.feedbackCount}</td>
                   <td className="p-3 text-foreground">
-                    {session.focusedPercentage !== null ? `${session.focusedPercentage}%` : '-'}
+                    {session.focusedPercentage === "n/a"
+                      ? "n/a"
+                      : session.focusedPercentage !== null
+                      ? `${session.focusedPercentage}%`
+                      : "-"}
                   </td>
                 </tr>
               ))}

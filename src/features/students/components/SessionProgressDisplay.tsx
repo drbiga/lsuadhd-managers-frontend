@@ -1,5 +1,7 @@
+import { useCallback } from "react";
 import { useSessionProgress } from "../hooks/useSessionProgress";
 import { StudentWithSessionData } from "../services/studentService";
+import studentsService from "../services/studentService";
 import { SessionItemChart } from "./SessionProgressChart";
 import { findAnalytics, presentPercentage } from "../lib/sessionProgress";
 import {
@@ -56,24 +58,32 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
                   <span className="text-foreground font-medium">{s.feedbacks.length}</span>
                 </div>
                 <div className="mt-2 pt-3 border-t border-border">
-                  <div className="text-sm mb-2">
-                    <span className="text-muted-foreground">Time focused:</span>{" "}
-                    <span className="text-accent font-semibold">
-                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_focused || 0)}
-                    </span>
-                  </div>
-                  <div className="text-sm mb-2">
-                    <span className="text-muted-foreground">Time normal:</span>{" "}
-                    <span className="text-foreground font-medium">
-                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_normal || 0)}
-                    </span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Time distracted:</span>{" "}
-                    <span className="text-foreground font-medium">
-                      {presentPercentage(findAnalytics(student.sessions_analytics, s)?.percentage_time_distracted || 0)}
-                    </span>
-                  </div>
+                  {(() => {
+                    const analytics = findAnalytics(student.sessions_analytics, s);
+                    const hasAnalytics = analytics !== null;
+                    return (
+                      <>
+                        <div className="text-sm mb-2">
+                          <span className="text-muted-foreground">Time focused:</span>{" "}
+                          <span className="text-accent font-semibold">
+                            {presentPercentage(analytics?.percentage_time_focused, hasAnalytics)}
+                          </span>
+                        </div>
+                        <div className="text-sm mb-2">
+                          <span className="text-muted-foreground">Time normal:</span>{" "}
+                          <span className="text-foreground font-medium">
+                            {presentPercentage(analytics?.percentage_time_normal, hasAnalytics)}
+                          </span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="text-muted-foreground">Time distracted:</span>{" "}
+                          <span className="text-foreground font-medium">
+                            {presentPercentage(analytics?.percentage_time_distracted, hasAnalytics)}
+                          </span>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 

@@ -27,9 +27,9 @@ export type SessionExecutionSession = {
 
 export type SessionAnalytics = {
     session_seqnum: number;
-    percentage_time_distracted: number;
-    percentage_time_normal: number;
-    percentage_time_focused: number;
+    percentage_time_distracted: number | null;
+    percentage_time_normal: number | null;
+    percentage_time_focused: number | null;
 }
 
 export type Feedback = {
