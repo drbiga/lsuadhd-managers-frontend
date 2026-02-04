@@ -197,6 +197,10 @@ class StudentsService {
         }
     }
 
+    public async getAnalytics(studentName: string, sessionNum: number): Promise<void> {
+        await api.get(`/session_execution/student/${studentName}/session/${sessionNum}/analytics`);
+    }
+
     public async getAllFailedSessions(): Promise<FailedSession[]> {
         try {
             const response = await api.get('/failure_recovery/failed_sessions');

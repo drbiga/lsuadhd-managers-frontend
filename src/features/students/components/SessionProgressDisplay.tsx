@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useSessionProgress } from "../hooks/useSessionProgress";
 import { StudentWithSessionData } from "../services/studentService";
 import studentsService from "../services/studentService";
@@ -20,13 +20,20 @@ interface SessionProgressDisplayProps {
   student: StudentWithSessionData;
 }
 
-export function SessionProgressDisplay({ student }: SessionProgressDisplayProps) {
+export function SessionProgressDisplay({ student: initialStudent }: SessionProgressDisplayProps) {
+  const [student, setStudent] = useState(initialStudent);
   const {
     descriptions,
     loading,
     selectedSession,             
     fetchImageDescriptions,
   } = useSessionProgress();
+
+  const getMissingAnalytics = useCallback(async (sessionNum: number) => {
+    await studentsService.getAnalytics(student.name, sessionNum);
+    const updatedStudent = await studentsService.getStudentWithSessionData(student.name);
+    setStudent(updatedStudent);
+  }, [student.name]);
 
   return (
     <div className="mt-8">
@@ -143,6 +150,16 @@ export function SessionProgressDisplay({ student }: SessionProgressDisplayProps)
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+
+              {!findAnalytics(student.sessions_analytics, s) && (
+                <Button 
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => getMissingAnalytics(s.seqnum)}
+                >
+                  Calculate Analytics
+                </Button>
+              )}
             </div>
             <SessionItemChart feedbacks={s.feedbacks} />
           </li>

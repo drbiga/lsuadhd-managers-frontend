@@ -18,6 +18,7 @@ type TypeOfView = "student-view" | "session-view";
 export function SessionSummaryDisplay({ stats, records, detailedSessions, weeklyFailures, loading }: SessionSummaryDisplayProps) {
   const [typeOfView, setTypeOfView] = useState<TypeOfView>("student-view");
   const [hideTestStudents, setHideTestStudents] = useState(true);
+  const [showOnlyMissingAnalytics, setShowOnlyMissingAnalytics] = useState(false);
   const [sortByUserThenSession, setSortByUserThenSession] = useState(false);
 
   let displayRecords = records;
@@ -26,6 +27,10 @@ export function SessionSummaryDisplay({ stats, records, detailedSessions, weekly
   if (hideTestStudents) {
     displayRecords = records.filter(r => !r.recordId.startsWith("test."));
     displayDetailedSessions = detailedSessions.filter(s => !s.recordId.startsWith("test."));
+  }
+
+  if (showOnlyMissingAnalytics) {
+    displayDetailedSessions = displayDetailedSessions.filter(s => s.focusedPercentage === null);
   }
 
   const sortedDetailedSessions = sortByUserThenSession
@@ -201,6 +206,13 @@ export function SessionSummaryDisplay({ stats, records, detailedSessions, weekly
         {typeOfView === "session-view" && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-foreground font-medium">Filters:</span>
+            <Button
+              size="sm"
+              onClick={() => setShowOnlyMissingAnalytics(!showOnlyMissingAnalytics)}
+              variant={showOnlyMissingAnalytics ? "default" : "outline"}
+            >
+              {showOnlyMissingAnalytics ? "Missing Analytics" : "Missing Analytics Only"}
+            </Button>
             <Button
               size="sm"
               onClick={() => setSortByUserThenSession(!sortByUserThenSession)}
