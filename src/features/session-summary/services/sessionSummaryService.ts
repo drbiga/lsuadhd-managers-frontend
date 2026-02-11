@@ -66,7 +66,7 @@ class SessionSummaryService {
         const records: SessionRecord[] = response.data.map((record: any) => ({
             recordId: record.record_id,
             group: record.group,
-            focusedPercentages: record.sessions,
+            focusedPercentages: record.focused_percentages,
         }));
         return records;
     }
