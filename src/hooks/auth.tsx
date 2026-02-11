@@ -73,36 +73,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })();
     }, []);
 
-    // useEffect(() => {
-    //     initializeLocalServer();
-    // }, []);
-
-    // const initializeLocalServer = useCallback(async () => {
-    //     try {
-    //         if (!authState.isLoggedIn) {
-    //             return;
-    //         }
-    //         const response = await axios.get('http://localhost:8001/session');
-    //         const localServerSession: ISession = response.data;
-    //         if (authState.session && localServerSession.token !== authState.session?.token) {
-    //             axios.post('http://localhost:8001/session', authState.session);
-    //         }
-    //         return authState;
-    //     } catch (error) {
-    //         if (error instanceof AxiosError) {
-    //             if (error.response?.status === 412) {
-    //                 // No session set in the local server yet, so we just set normally
-    //                 if (authState.session) {
-    //                     axios.post('http://localhost:8001/session', authState.session);
-    //                     return authState;
-    //                 }
-    //             }
-    //             // toast.error("Something went wrong when initializing the local server")
-    //         }
-    //     }
-    // }, [authState]);
-
-
     const login = useCallback(async (credentials: LoginCredentials) => {
         try {
             removeLocalStorage(Item.SESSION_OBJ);

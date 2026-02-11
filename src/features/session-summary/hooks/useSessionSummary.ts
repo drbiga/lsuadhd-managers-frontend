@@ -3,14 +3,14 @@ import { toast } from "react-toastify";
 import sessionSummaryService, {
     SessionSummaryStats,
     SessionRecord,
-    ProblematicSessionRecord,
+    DetailedSessionRecord,
     WeeklyFailureData,
 } from "../services/sessionSummaryService";
 
 export function useSessionSummary() {
     const [stats, setStats] = useState<SessionSummaryStats | null>(null);
     const [records, setRecords] = useState<SessionRecord[]>([]);
-    const [problematicSessions, setProblematicSessions] = useState<ProblematicSessionRecord[]>([]);
+    const [detailedSessions, setDetailedSessions] = useState<DetailedSessionRecord[]>([]);
     const [weeklyFailures, setWeeklyFailures] = useState<WeeklyFailureData[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -18,14 +18,14 @@ export function useSessionSummary() {
         try {
             setLoading(true);
 
-            const [statsData, recordsData, problematicData] = await Promise.all([
+            const [statsData, recordsData, detailedData] = await Promise.all([
                 sessionSummaryService.getStats(),
                 sessionSummaryService.getRecords(),
-                sessionSummaryService.getProblematicSessions(),
+                sessionSummaryService.getDetailedSessions(),
             ]);
             setStats(statsData);
             setRecords(recordsData);
-            setProblematicSessions(problematicData);
+            setDetailedSessions(detailedData);
             try {
                 const weeklyData = await sessionSummaryService.getWeeklyFailures();
                 setWeeklyFailures(weeklyData);
@@ -45,5 +45,5 @@ export function useSessionSummary() {
         fetchSessionSummary();
     }, []);
 
-    return { stats, records, problematicSessions, weeklyFailures, loading, refresh: fetchSessionSummary };
+    return { stats, records, detailedSessions, weeklyFailures, loading, refresh: fetchSessionSummary };
 }

@@ -12,6 +12,10 @@ export function StudentSelector({ students, selectedStudentName, onStudentChange
     onStudentChange(value === '' ? null : value);
   };
 
+  const sortedStudents = [...students].sort((a, b) => 
+    a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
+  );
+
   return (
     <div className="mb-4">
       <select
@@ -27,7 +31,7 @@ export function StudentSelector({ students, selectedStudentName, onStudentChange
         >
           Select a student
         </option>
-        {students.map(s => (
+        {sortedStudents.map(s => (
           <option 
             className="bg-background text-foreground" 
             key={s.name} 

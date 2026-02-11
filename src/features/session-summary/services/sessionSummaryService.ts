@@ -21,15 +21,15 @@ export type SessionSummaryStats = {
 export type SessionRecord = {
     recordId: string;
     group: string;
-    sessions: (number | null)[];
+    focusedPercentages: (number | null | "n/a")[];  // number = %, "n/a" = no feedbacks, null = no analytics
 };
 
-export type ProblematicSessionRecord = {
+export type DetailedSessionRecord = {
     recordId: string;
     group: string;
     sessionNumber: number;
     feedbackCount: number;
-    focusedPercentage: number | null;
+    focusedPercentage: number | null | "n/a";
 };
 
 export type WeeklyFailureData = {
@@ -66,21 +66,21 @@ class SessionSummaryService {
         const records: SessionRecord[] = response.data.map((record: any) => ({
             recordId: record.record_id,
             group: record.group,
-            sessions: record.sessions,
+            focusedPercentages: record.focused_percentages,
         }));
         return records;
     }
 
-    public async getProblematicSessions(): Promise<ProblematicSessionRecord[]> {
-        const response = await api.get('/session-summary/problematic-sessions');
-        const problematicSessions: ProblematicSessionRecord[] = response.data.map((record: any) => ({
+    public async getDetailedSessions(): Promise<DetailedSessionRecord[]> {
+        const response = await api.get('/session-summary/detailed-sessions');
+        const detailedSessions: DetailedSessionRecord[] = response.data.map((record: any) => ({
             recordId: record.record_id,
             group: record.group,
             sessionNumber: record.session_number,
             feedbackCount: record.feedback_count,
             focusedPercentage: record.focused_percentage,
         }));
-        return problematicSessions;
+        return detailedSessions;
     }
 
     public async getWeeklyFailures(): Promise<WeeklyFailureData[]> {
