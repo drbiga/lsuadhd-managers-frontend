@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useSessionProgress } from "../hooks/useSessionProgress";
 import { StudentWithSessionData } from "../services/studentService";
 import studentsService from "../services/studentService";
@@ -15,25 +15,41 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Trash2Icon } from "lucide-react";
+import { AlertDialogAction } from "@/components/ui/alert-dialog";
 
 interface SessionProgressDisplayProps {
   student: StudentWithSessionData;
 }
 
 export function SessionProgressDisplay({ student: initialStudent }: SessionProgressDisplayProps) {
-  const [student, setStudent] = useState(initialStudent);
+  // const [student, setStudent] = useState(initialStudent);
   const {
+    student,
+    // setStudent,
     descriptions,
     loading,
-    selectedSession,             
+    selectedSession,
     fetchImageDescriptions,
+    handleDeleteSession,
   } = useSessionProgress();
+
+  if (student === null) {
+    return (
+      <p>Please select a student</p>
+    )
+  }
 
   const getMissingAnalytics = useCallback(async (sessionNum: number) => {
     await studentsService.getAnalytics(student.name, sessionNum);
     const updatedStudent = await studentsService.getStudentWithSessionData(student.name);
-    setStudent(updatedStudent);
+    // setStudent(updatedStudent);
+    // TODO: move this update into the session progress hook
   }, [student.name]);
+
+  useEffect(() => {
+    console.log('[ SessioProgressDisplay ] New student detected')
+  }, [student]);
 
   return (
     <div className="mt-8">
@@ -45,9 +61,41 @@ export function SessionProgressDisplay({ student: initialStudent }: SessionProgr
         {student.sessions?.sort((a, b) => a.seqnum - b.seqnum).map(s => (
           <li key={s.seqnum} className="bg-card border border-border p-6 h-[80vh] w-[70vw] rounded-xl flex shadow-sm">
             <div className="w-[35%] pr-6">
-              <p className="text-2xl font-semibold text-foreground mb-4">
-                Session #{s.seqnum}
-              </p>
+              <div className="flex justify-between items-center pb-4">
+                <p className="text-2xl font-semibold text-foreground">
+                  Session #{s.seqnum}
+                </p>
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <Trash2Icon
+                      className="cursor-pointer p-2 outline outline-1 rounded-sm transition-all duration-200 hover:outline-red-600 hover:bg-red-600"
+
+                      size={35}
+                    />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Delete session {s.seqnum}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="grid gap-4">
+                        <p>You are about to delete student {student.name}'s session {s.seqnum}.</p>
+                        <p>This is an <b>irreversible</b> action.</p>
+                        <p>Are you SURE you want to do this?</p>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="">
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="transition-all duration-100 hover:bg-red-600 hover:text-white"
+                        onClick={() => handleDeleteSession(s.seqnum)}
+                      >
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
               <div className="mb-4">
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   Overview
@@ -96,8 +144,8 @@ export function SessionProgressDisplay({ student: initialStudent }: SessionProgr
 
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="mt-4"
                     onClick={() => fetchImageDescriptions(student.name, s.seqnum)}
                   >
@@ -111,7 +159,7 @@ export function SessionProgressDisplay({ student: initialStudent }: SessionProgr
                       OpenAI-generated descriptions ({descriptions.length} loaded)
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  
+
                   <div className="space-y-4 max-h-96 overflow-y-auto">
                     {loading && descriptions.length === 0 ? (
                       <p>Loading...</p>
@@ -133,9 +181,9 @@ export function SessionProgressDisplay({ student: initialStudent }: SessionProgr
                           </div>
                         ))}
                         <div className="flex justify-center mt-4">
-                          <Button 
-                            variant="outline" 
-                            onClick={() => selectedSession && fetchImageDescriptions(student.name, selectedSession, true)} 
+                          <Button
+                            variant="outline"
+                            onClick={() => selectedSession && fetchImageDescriptions(student.name, selectedSession, true)}
                             disabled={loading}
                           >
                             {loading ? "Loading..." : "Load More"}
@@ -152,7 +200,7 @@ export function SessionProgressDisplay({ student: initialStudent }: SessionProgr
               </AlertDialog>
 
               {!findAnalytics(student.sessions_analytics, s) && (
-                <Button 
+                <Button
                   variant="outline"
                   className="mt-4"
                   onClick={() => getMissingAnalytics(s.seqnum)}
@@ -164,8 +212,8 @@ export function SessionProgressDisplay({ student: initialStudent }: SessionProgr
             <SessionItemChart feedbacks={s.feedbacks} />
           </li>
         )) || (
-          <li className="text-slate-600 dark:text-slate-400">No sessions available for this student.</li>
-        )}
+            <li className="text-slate-600 dark:text-slate-400">No sessions available for this student.</li>
+          )}
       </ul>
     </div>
   );
