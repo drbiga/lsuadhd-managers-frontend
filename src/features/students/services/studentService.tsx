@@ -226,9 +226,9 @@ class StudentsService {
     }
 
     public async getImageDescriptions(
-        studentName: string, 
-        sessionSeqnum: number, 
-        offset: number = 0, 
+        studentName: string,
+        sessionSeqnum: number,
+        offset: number = 0,
         limit: number = 10
     ): Promise<any[]> {
         try {
@@ -261,6 +261,10 @@ class StudentsService {
     public async getUsersLockStatus(usernames: string[]): Promise<Record<string, boolean>> {
         const response = await api.post('/iam/users/locked', { usernames });
         return response.data;
+    }
+
+    public async deleteSession(studentName: string, sessionNum: number): Promise<void> {
+        const response = await api.delete(`/session_execution/student/${studentName}/session/${sessionNum}`);
     }
 }
 
