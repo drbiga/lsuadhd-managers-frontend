@@ -264,7 +264,7 @@ class StudentsService {
     }
 
     public async deleteSession(studentName: string, sessionNum: number): Promise<void> {
-        const response = await api.delete(`/session_execution/student/${studentName}/session/${sessionNum}`);
+        await api.delete(`/session_execution/student/${studentName}/session/${sessionNum}`);
     }
 }
 
