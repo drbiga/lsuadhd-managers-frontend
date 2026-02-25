@@ -28,7 +28,7 @@ export default function SessionProgressManagementPage() {
             {studentDataLoading ? (
               <LoadingScreen message="Loading student data..." />
             ) : student ? (
-              <SessionProgressDisplay student={student} />
+              <SessionProgressDisplay />
             ) : (
               <p className="mt-4 text-slate-600 dark:text-slate-400">
                 Select a student to view their session progress.
