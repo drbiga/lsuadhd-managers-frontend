@@ -5,6 +5,9 @@ export type SessionSummaryStats = {
     laptopPassthroughFocusedAverage: number;
     laptopVrOnlyFocusedAverage: number;
     laptopVrFeedbackFocusedAverage: number;
+    laptopPassthroughFocusedStdev: number;
+    laptopVrOnlyFocusedStdev: number;
+    laptopVrFeedbackFocusedStdev: number;
     laptopPassthroughCount: number;
     laptopVrOnlyCount: number;
     laptopVrFeedbackCount: number;
@@ -13,6 +16,9 @@ export type SessionSummaryStats = {
     headsetPassthroughFocusedAverage: number;
     headsetVrOnlyFocusedAverage: number;
     headsetVrFeedbackFocusedAverage: number;
+    headsetPassthroughFocusedStdev: number;
+    headsetVrOnlyFocusedStdev: number;
+    headsetVrFeedbackFocusedStdev: number;
     headsetPassthroughCount: number;
     headsetVrOnlyCount: number;
     headsetVrFeedbackCount: number;
@@ -48,12 +54,18 @@ class SessionSummaryService {
             laptopPassthroughFocusedAverage: response.data.laptop_passthrough_focused_average,
             laptopVrOnlyFocusedAverage: response.data.laptop_vr_only_focused_average,
             laptopVrFeedbackFocusedAverage: response.data.laptop_vr_feedback_focused_average,
+            laptopPassthroughFocusedStdev: response.data.laptop_passthrough_focused_stdev,
+            laptopVrOnlyFocusedStdev: response.data.laptop_vr_only_focused_stdev,
+            laptopVrFeedbackFocusedStdev: response.data.laptop_vr_feedback_focused_stdev,
             laptopPassthroughCount: response.data.laptop_passthrough_count,
             laptopVrOnlyCount: response.data.laptop_vr_only_count,
             laptopVrFeedbackCount: response.data.laptop_vr_feedback_count,
             headsetPassthroughFocusedAverage: response.data.headset_passthrough_focused_average,
             headsetVrOnlyFocusedAverage: response.data.headset_vr_only_focused_average,
             headsetVrFeedbackFocusedAverage: response.data.headset_vr_feedback_focused_average,
+            headsetPassthroughFocusedStdev: response.data.headset_passthrough_focused_stdev,
+            headsetVrOnlyFocusedStdev: response.data.headset_vr_only_focused_stdev,
+            headsetVrFeedbackFocusedStdev: response.data.headset_vr_feedback_focused_stdev,
             headsetPassthroughCount: response.data.headset_passthrough_count,
             headsetVrOnlyCount: response.data.headset_vr_only_count,
             headsetVrFeedbackCount: response.data.headset_vr_feedback_count,
