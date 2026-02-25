@@ -1,6 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSessionProgress } from "../hooks/useSessionProgress";
-import { StudentWithSessionData } from "../services/studentService";
 import studentsService from "../services/studentService";
 import { SessionItemChart } from "./SessionProgressChart";
 import { findAnalytics, presentPercentage } from "../lib/sessionProgress";
@@ -18,18 +17,14 @@ import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import { AlertDialogAction } from "@/components/ui/alert-dialog";
 
-interface SessionProgressDisplayProps {
-  student: StudentWithSessionData;
-}
-
-export function SessionProgressDisplay({ student: initialStudent }: SessionProgressDisplayProps) {
-  // const [student, setStudent] = useState(initialStudent);
+export function SessionProgressDisplay() {
   const {
     student,
     // setStudent,
     descriptions,
     loading,
     selectedSession,
+    handleStudentChange,
     fetchImageDescriptions,
     handleDeleteSession,
   } = useSessionProgress();
@@ -42,9 +37,13 @@ export function SessionProgressDisplay({ student: initialStudent }: SessionProgr
 
   const getMissingAnalytics = useCallback(async (sessionNum: number) => {
     await studentsService.getAnalytics(student.name, sessionNum);
-    const updatedStudent = await studentsService.getStudentWithSessionData(student.name);
-    // setStudent(updatedStudent);
+
     // TODO: move this update into the session progress hook
+    // const updatedStudent = await studentsService.getStudentWithSessionData(student.name);
+    // setStudent(updatedStudent);
+
+    const updatedStudent = await studentsService.getStudentWithSessionData(student.name);
+    handleStudentChange(updatedStudent.name);
   }, [student.name]);
 
   useEffect(() => {
