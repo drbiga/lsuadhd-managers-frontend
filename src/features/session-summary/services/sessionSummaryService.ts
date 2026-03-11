@@ -36,6 +36,7 @@ export type DetailedSessionRecord = {
     sessionNumber: number;
     feedbackCount: number;
     focusedPercentage: number | null | "n/a";
+    thisWeek: boolean;
 };
 
 export type WeeklyFailureData = {
@@ -91,6 +92,7 @@ class SessionSummaryService {
             sessionNumber: record.session_number,
             feedbackCount: record.feedback_count,
             focusedPercentage: record.focused_percentage,
+            thisWeek: record.this_week,
         }));
         return detailedSessions;
     }
