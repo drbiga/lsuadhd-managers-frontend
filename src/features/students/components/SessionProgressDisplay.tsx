@@ -95,6 +95,26 @@ export function SessionProgressDisplay() {
                   </AlertDialogContent>
                 </AlertDialog>
               </div>
+              <div className="mb-4 text-sm text-muted-foreground space-y-0.5">
+                <div>
+                  <span className="font-medium text-foreground">Completed on:</span>{' '}
+                  {s.ts_start
+                    ? new Date(s.ts_start).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'No date recorded'}
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Started:</span>{' '}
+                  {s.ts_start
+                    ? new Date(s.ts_start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true })
+                    : 'No start time recorded'}
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Ended:</span>{' '}
+                  {s.ts_end
+                    ? new Date(s.ts_end).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true })
+                    : 'No end time recorded'}
+                </div>
+              </div>
               <div className="mb-4">
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   Overview

@@ -23,6 +23,8 @@ export type SessionExecutionSession = {
     no_equipment?: boolean;
     stage: Stage;
     feedbacks: Feedback[];
+    ts_start?: string | null;
+    ts_end?: string | null;
 }
 
 export type SessionAnalytics = {
