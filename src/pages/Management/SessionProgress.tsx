@@ -13,14 +13,14 @@ export default function SessionProgressManagementPage() {
       <Sidebar />
       <PageMainContent>
         <PageTitle>Session Progress</PageTitle>
-        
+
         {studentsLoading ? (
           <LoadingScreen message="Loading students..." />
         ) : allStudents.length === 0 ? (
           <p className="mt-4 text-slate-600 dark:text-slate-400">No students to show.</p>
         ) : (
           <>
-            <StudentSelector 
+            <StudentSelector
               students={allStudents}
               selectedStudentName={student?.name || null}
               onStudentChange={handleStudentChange}
@@ -28,7 +28,7 @@ export default function SessionProgressManagementPage() {
             {studentDataLoading ? (
               <LoadingScreen message="Loading student data..." />
             ) : student ? (
-              <SessionProgressDisplay student={student} />
+              <SessionProgressDisplay />
             ) : (
               <p className="mt-4 text-slate-600 dark:text-slate-400">
                 Select a student to view their session progress.
