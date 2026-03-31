@@ -33,18 +33,18 @@ export default function Students() {
             Refresh
           </Button>
         </div>
-        <div className="w-6/12">
+        <div className="w-6/12 mb-8">
           <StudentForm sessionGroups={sessionGroups} onSubmitStudent={onSubmitStudent} />
-          <StudentList 
-            students={students} 
-            activeStudents={activeStudents} 
-            lockedUsers={lockedUsers}
-            inputRef={inputRef} 
-            handleSetSurveyId={handleSetSurveyId}
-            handleUnlockUser={handleUnlockUser}
-            handleLockUser={handleLockUser}
-          />
         </div>
+        <StudentList
+          students={students}
+          activeStudents={activeStudents}
+          lockedUsers={lockedUsers}
+          inputRef={inputRef}
+          handleSetSurveyId={handleSetSurveyId}
+          handleUnlockUser={handleUnlockUser}
+          handleLockUser={handleLockUser}
+        />
       </PageMainContent>
     </PageContainer>
   );
