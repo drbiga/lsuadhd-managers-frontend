@@ -41,7 +41,7 @@ export default function Routes() {
             )
         },
         {
-            path: RouteNames.SESSION_PROGRESS,
+            path: `${RouteNames.SESSION_PROGRESS}/:studentName?`,
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
                     <SessionProgressManagementPage />
