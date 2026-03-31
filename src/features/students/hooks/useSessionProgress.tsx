@@ -17,6 +17,8 @@ export type SessionProgressState = {
   handleDeleteSession: (
     sessionNum: number,
   ) => Promise<void>
+  isLocked: boolean,
+  handleToggleLock: () => Promise<void>
 }
 
 const SessionProgressContext = createContext<SessionProgressState>({} as SessionProgressState);
@@ -30,6 +32,7 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
   const [studentsLoading, setStudentsLoading] = useState(true);
   const [studentDataLoading, setStudentDataLoading] = useState(false);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
+  const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
     if (!authState.isLoggedIn) {
@@ -54,17 +57,23 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
   const handleStudentChange = useCallback(async (selectedStudentName: string | null) => {
     if (!selectedStudentName) {
       setStudent(null);
+      setIsLocked(false);
       return;
     }
 
     setStudentDataLoading(true);
     try {
-      const studentData = await studentService.getStudentWithSessionData(selectedStudentName);
+      const [studentData, locked] = await Promise.all([
+        studentService.getStudentWithSessionData(selectedStudentName),
+        studentService.isUserLocked(selectedStudentName)
+      ]);
       setStudent(studentData);
+      setIsLocked(locked);
     } catch (err) {
       console.error('Error fetching student data:', err);
       toast.error("Failed to fetch student session data");
       setStudent(null);
+      setIsLocked(false);
     } finally {
       setStudentDataLoading(false);
     }
@@ -117,6 +126,24 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
       }
     }, [student]);
 
+  const handleToggleLock = useCallback(async () => {
+    if (!student) return;
+
+    try {
+      if (isLocked) {
+        await studentService.unlockUser(student.name);
+        setIsLocked(false);
+        toast.success(`Unlocked ${student.name}`);
+      } else {
+        await studentService.lockUser(student.name);
+        setIsLocked(true);
+        toast.success(`Locked ${student.name}`);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to toggle lock");
+    }
+  }, [student, isLocked]);
+
   // return {
   //   student,
   //   allStudents,
@@ -141,7 +168,9 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
       studentDataLoading,
       selectedSession,
       fetchImageDescriptions,
-      handleDeleteSession
+      handleDeleteSession,
+      isLocked,
+      handleToggleLock
     }}>
       {children}
     </SessionProgressContext.Provider>

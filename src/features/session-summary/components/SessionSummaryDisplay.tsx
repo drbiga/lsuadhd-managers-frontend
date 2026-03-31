@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WeeklyFailures } from "./WeeklyFailures";
+import { Link } from "react-router-dom";
+import { RouteNames } from "@/Routes";
 
 interface SessionSummaryDisplayProps {
   stats: SessionSummaryStats | null;
@@ -238,7 +240,14 @@ export function SessionSummaryDisplay({ stats, records, detailedSessions, weekly
                     const thisWeekSessions = recordSessions.filter(session => session.thisWeek);
                     return (
                       <tr key={recordIdx} className="border-b border-border">
-                        <td className="p-3 text-foreground">{record.recordId}</td>
+                        <td className="p-3">
+                          <Link
+                            to={`${RouteNames.SESSION_PROGRESS}/${encodeURIComponent(record.recordId)}`}
+                            className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                          >
+                            {record.recordId}
+                          </Link>
+                        </td>
                         <td className="p-3 text-foreground">{record.group}</td>
                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(sessionIdx => {
                           const sessionDetail = recordSessions.find(session => session.sessionNumber === sessionIdx + 1);
@@ -291,7 +300,14 @@ export function SessionSummaryDisplay({ stats, records, detailedSessions, weekly
                     const isHealthy = Math.abs(session.feedbackCount - 100) < 50;
                     return (
                       <tr key={idx} className="border-b border-border">
-                        <td className="p-3 text-foreground">{session.recordId}</td>
+                        <td className="p-3">
+                          <Link
+                            to={`${RouteNames.SESSION_PROGRESS}/${encodeURIComponent(session.recordId)}`}
+                            className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                          >
+                            {session.recordId}
+                          </Link>
+                        </td>
                         <td className="p-3 text-foreground">{session.group}</td>
                         <td className="p-3 text-foreground">{session.sessionNumber}</td>
                         <td className="p-3 text-foreground">{session.feedbackCount}</td>
