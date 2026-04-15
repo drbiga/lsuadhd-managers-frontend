@@ -48,9 +48,19 @@ export type WeeklyFailureData = {
     failedPercentage: number;
 };
 
+export type SessionExclusion = {
+    studentName: string;
+    sessionNumbers: number[];
+};
+
 class SessionSummaryService {
-    public async getStats(): Promise<SessionSummaryStats> {
-        const response = await api.get('/session-summary/stats');
+    public async getStats(exclusions: SessionExclusion[] = []): Promise<SessionSummaryStats> {
+        const response = await api.post('/session-summary/stats', {
+            exclusions: exclusions.map(e => ({
+                student_name: e.studentName,
+                session_numbers: e.sessionNumbers,
+            })),
+        });
         const stats: SessionSummaryStats = {
             laptopPassthroughFocusedAverage: response.data.laptop_passthrough_focused_average,
             laptopVrOnlyFocusedAverage: response.data.laptop_vr_only_focused_average,
@@ -74,8 +84,13 @@ class SessionSummaryService {
         return stats;
     }
 
-    public async getRecords(): Promise<SessionRecord[]> {
-        const response = await api.get('/session-summary/records');
+    public async getRecords(exclusions: SessionExclusion[] = []): Promise<SessionRecord[]> {
+        const response = await api.post('/session-summary/records', {
+            exclusions: exclusions.map(e => ({
+                student_name: e.studentName,
+                session_numbers: e.sessionNumbers,
+            })),
+        });
         const records: SessionRecord[] = response.data.map((record: any) => ({
             recordId: record.record_id,
             group: record.group,
@@ -84,8 +99,13 @@ class SessionSummaryService {
         return records;
     }
 
-    public async getDetailedSessions(): Promise<DetailedSessionRecord[]> {
-        const response = await api.get('/session-summary/detailed-sessions');
+    public async getDetailedSessions(exclusions: SessionExclusion[] = []): Promise<DetailedSessionRecord[]> {
+        const response = await api.post('/session-summary/detailed-sessions', {
+            exclusions: exclusions.map(e => ({
+                student_name: e.studentName,
+                session_numbers: e.sessionNumbers,
+            })),
+        });
         const detailedSessions: DetailedSessionRecord[] = response.data.map((record: any) => ({
             recordId: record.record_id,
             group: record.group,

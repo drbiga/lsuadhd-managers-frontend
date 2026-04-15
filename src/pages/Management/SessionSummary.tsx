@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 
 export default function SessionSummary() {
-  const { stats, records, detailedSessions, weeklyFailures, loading, refresh } = useSessionSummary();
+  const { stats, records, detailedSessions, weeklyFailures, loading, refresh, exclusions, setExclusions } = useSessionSummary();
 
   return (
     <PageContainer>
@@ -24,7 +24,9 @@ export default function SessionSummary() {
           records={records} 
           detailedSessions={detailedSessions}
           weeklyFailures={weeklyFailures}
-          loading={loading} 
+          loading={loading}
+          exclusions={exclusions}
+          onExclusionsChange={setExclusions}
         />
       </PageMainContent>
     </PageContainer>

@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import sessionSummaryService, {
     SessionSummaryStats,
     SessionRecord,
     DetailedSessionRecord,
     WeeklyFailureData,
+    SessionExclusion,
 } from "../services/sessionSummaryService";
 
 export function useSessionSummary() {
@@ -13,15 +14,16 @@ export function useSessionSummary() {
     const [detailedSessions, setDetailedSessions] = useState<DetailedSessionRecord[]>([]);
     const [weeklyFailures, setWeeklyFailures] = useState<WeeklyFailureData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [exclusions, setExclusions] = useState<SessionExclusion[]>([]);
 
-    const fetchSessionSummary = async () => {
+    const fetchSessionSummary = useCallback(async (currentExclusions: SessionExclusion[]) => {
         try {
             setLoading(true);
 
             const [statsData, recordsData, detailedData] = await Promise.all([
-                sessionSummaryService.getStats(),
-                sessionSummaryService.getRecords(),
-                sessionSummaryService.getDetailedSessions(),
+                sessionSummaryService.getStats(currentExclusions),
+                sessionSummaryService.getRecords(currentExclusions),
+                sessionSummaryService.getDetailedSessions(currentExclusions),
             ]);
             setStats(statsData);
             setRecords(recordsData);
@@ -39,11 +41,28 @@ export function useSessionSummary() {
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchSessionSummary();
     }, []);
 
-    return { stats, records, detailedSessions, weeklyFailures, loading, refresh: fetchSessionSummary };
+    useEffect(() => {
+        fetchSessionSummary(exclusions);
+    }, [exclusions, fetchSessionSummary]);
+
+    const handleExclusionsChange = useCallback((newExclusions: SessionExclusion[]) => {
+        setExclusions(newExclusions);
+    }, []);
+
+    const refresh = useCallback(() => {
+        fetchSessionSummary(exclusions);
+    }, [exclusions, fetchSessionSummary]);
+
+    return {
+        stats,
+        records,
+        detailedSessions,
+        weeklyFailures,
+        loading,
+        refresh,
+        exclusions,
+        setExclusions: handleExclusionsChange,
+    };
 }
