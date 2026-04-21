@@ -13,7 +13,10 @@ export type SessionProgressState = {
   studentsLoading: boolean,
   studentDataLoading: boolean,
   selectedSession: number | null,
-  fetchImageDescriptions: (studentName: string, sessionSeqnum: number, loadMore?: boolean) => Promise<void>
+  currentImagePage: number,
+  previousImagePage: () => void,
+  nextImagePage: () => void,
+  fetchImageDescriptions: (studentName: string, sessionSeqnum: number, loadMore?: boolean) => Promise<void>,
   handleDeleteSession: (
     sessionNum: number,
   ) => Promise<void>
@@ -33,6 +36,7 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
   const [studentDataLoading, setStudentDataLoading] = useState(false);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
   const [isLocked, setIsLocked] = useState(false);
+  const [currentImagePage, setCurrentImagePage] = useState<number>(0);
 
   useEffect(() => {
     if (!authState.isLoggedIn) {
@@ -89,13 +93,28 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
     try {
       const offset = loadMore ? descriptions.length : 0;
       const data = await studentService.getImageDescriptions(studentName, sessionSeqnum, offset, 10);
-      setImageDescriptions(prev => loadMore ? [...prev, ...data] : data);
+      setImageDescriptions(prev => {
+        if (loadMore) {
+          const newData = [...prev, ...data];
+          newData.sort((a, b) => a.image_path - b.image_path);
+          return newData;
+        }
+        data.sort((a, b) => a.image_path - b.image_path);
+        return data;
+      });
     } catch (error) {
       console.error('Error:', error);
       if (!loadMore) setImageDescriptions([]);
     }
     setLoading(false);
   }, [descriptions]);
+
+  const nextImagePage = useCallback(() => {
+    setCurrentImagePage(currentImagePage + 1);
+  }, [currentImagePage]);
+  const previousImagePage = useCallback(() => {
+    setCurrentImagePage(currentImagePage - 1);
+  }, [currentImagePage]);
 
   const handleDeleteSession = useCallback(
     async (
@@ -167,6 +186,9 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
       studentsLoading,
       studentDataLoading,
       selectedSession,
+      currentImagePage,
+      previousImagePage,
+      nextImagePage,
       fetchImageDescriptions,
       handleDeleteSession,
       isLocked,
