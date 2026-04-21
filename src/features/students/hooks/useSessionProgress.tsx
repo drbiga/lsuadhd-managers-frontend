@@ -17,6 +17,7 @@ export type SessionProgressState = {
   handleDeleteSession: (
     sessionNum: number,
   ) => Promise<void>
+  handleStopSession: (sessionNum: number) => Promise<void>
   isLocked: boolean,
   handleToggleLock: () => Promise<void>
 }
@@ -126,6 +127,22 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
       }
     }, [student]);
 
+  const handleStopSession = useCallback(async (sessionNum: number) => {
+    if (student === null) {
+      toast.error('You need to choose a student before stopping a session. This should not happen!')
+      return;
+    }
+
+    try {
+      await studentService.forceCloseSession(student.name);
+      const updatedStudent = await studentService.getStudentWithSessionData(student.name);
+      setStudent(updatedStudent);
+      toast.success(`Stopped session ${sessionNum} for student ${student.name}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to stop session');
+    }
+  }, [student]);
+
   const handleToggleLock = useCallback(async () => {
     if (!student) return;
 
@@ -169,6 +186,7 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
       selectedSession,
       fetchImageDescriptions,
       handleDeleteSession,
+      handleStopSession,
       isLocked,
       handleToggleLock
     }}>

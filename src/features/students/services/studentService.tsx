@@ -268,6 +268,10 @@ class StudentsService {
     public async deleteSession(studentName: string, sessionNum: number): Promise<void> {
         await api.delete(`/session_execution/student/${studentName}/session/${sessionNum}`);
     }
+
+    public async forceCloseSession(studentName: string): Promise<void> {
+        await api.post(`/session_execution/student/${studentName}/session/force_close`);
+    }
 }
 
 const studentsService = new StudentsService();
