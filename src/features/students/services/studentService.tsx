@@ -36,7 +36,7 @@ export type SessionAnalytics = {
 
 export type Feedback = {
     personal_analytics_data: PersonalAnalyticsData;
-    classifier_data: ClassifierData;
+    classifier_data?: ClassifierData;
     output?: FeedbackType;
 }
 
