@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Student } from "../services/studentService";
+import { Link } from "react-router-dom";
+import { RouteNames } from "@/Routes";
 
 interface StudentListProps {
   students: Student[];
@@ -91,7 +93,14 @@ export function StudentList({ students, activeStudents, lockedUsers, inputRef, h
               const isLocked = lockedUsers[s.name] || false;
               return (
                 <tr key={s.name} className="border-b border-border">
-                  <td className="p-3 text-foreground">{s.name}</td>
+                  <td className="p-3">
+                    <Link
+                      to={`${RouteNames.SESSION_PROGRESS}/${encodeURIComponent(s.name)}`}
+                      className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                    >
+                      {s.name}
+                    </Link>
+                  </td>
                   <td className="p-3 text-foreground">{s.group}</td>
                   <td className="p-3 text-foreground">
                     {typeof s.survey_id === 'number' ? (
