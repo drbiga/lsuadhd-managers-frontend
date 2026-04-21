@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSessionProgress } from "../hooks/useSessionProgress";
 import studentsService from "../services/studentService";
 import { SessionItemChart } from "./SessionProgressChart";
@@ -14,8 +14,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Trash2Icon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Trash2Icon } from "lucide-react";
 import { AlertDialogAction } from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
+import managementService from "../services/managementService";
 
 export function SessionProgressDisplay() {
   const {
@@ -26,8 +28,33 @@ export function SessionProgressDisplay() {
     selectedSession,
     handleStudentChange,
     fetchImageDescriptions,
+    currentImagePage,
+    previousImagePage,
+    nextImagePage,
     handleDeleteSession,
   } = useSessionProgress();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  // TODO: DELETE
+  useEffect(() => {
+    (async () => {
+      if (student)
+      console.log(
+        await managementService.getSessionProgressList(student?.name)
+      )
+      })()
+  }, []);
+
+  const previousImageWrapper = useCallback(() => {
+    setIsLoading(true);
+    previousImagePage();
+  }, [currentImagePage]);
+
+  const nextImageWrapper = useCallback(() => {
+    setIsLoading(true);
+    nextImagePage();
+  }, [currentImagePage]);
 
   if (student === null) {
     return (
@@ -167,19 +194,91 @@ export function SessionProgressDisplay() {
                     variant="outline"
                     className="mt-4"
                     onClick={() => fetchImageDescriptions(student.name, s.seqnum)}
+                    // onClick={() => fetchImage(student.name, s.seqnum, '00832a24-c537-4587-bc9e-1f6e8615905b.jpg')}
                   >
-                    View Image Descriptions
+                    View Images
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Image Descriptions - Session #{s.seqnum}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      OpenAI-generated descriptions ({descriptions.length} loaded)
+                      Generated descriptions ({descriptions.length} loaded)
                     </AlertDialogDescription>
                   </AlertDialogHeader>
+                  <div className="w-full flex gap-8 justify-center items-center">
+                    {isLoading && (
+                      <div className="w-[400px] h-[200px] flex justify-center items-center">
+                        <Loader2 className="animate-spin" width={400} />
+                      </div>
+                    )}
+                    <div>
+                      <img
+                        // height={50}
+                        className={cn(isLoading ? 'hidden' : '')}
+                        width={400}
+                        // height={200}
+                        src={`http://localhost:8000/session_execution/student/session/feedback/screenshot?student_name=${student.name}&session_num=${s.seqnum}&screenshot_path=${s.feedbacks[currentImagePage].classifier_data?.screenshot}`}
+                        alt=""
+                        onLoad={() => setIsLoading(false)}
+                      />
+                      <p>{s.feedbacks[currentImagePage].classifier_data?.screenshot}</p>
+                    </div>
+                    <div className="h-full w-full flex flex-col justify-between">
+                      <div>
+                        <div className="flex mb-4 items-center gap-4">
+                          <h3 className="text-2xl">
+                            Screenshot #{currentImagePage}
+                          </h3>
+                          <div className="flex gap-2">
+                            <p className={cn("text-xs rounded-full text-center h-4 px-2",
+                              s.feedbacks[currentImagePage].output === 'focused' ? 'bg-green-600' : '',
+                              s.feedbacks[currentImagePage].output === 'normal' ? 'bg-yellow-600' : '',
+                              s.feedbacks[currentImagePage].output === 'distracted' ? 'bg-red-600' : '',
+                            )}>combined</p>
+                            <p className={cn("text-xs rounded-full text-center h-4 px-2",
+                              s.feedbacks[currentImagePage].classifier_data ? 'bg-gray-900' : '',
+                              s.feedbacks[currentImagePage].classifier_data?.prediction === 'focused' ? 'bg-green-600' : '',
+                              s.feedbacks[currentImagePage].classifier_data?.prediction === 'normal' ? 'bg-yellow-600' : '',
+                              s.feedbacks[currentImagePage].classifier_data?.prediction === 'distracted' ? 'bg-red-600' : '',
+                            )}>classifier</p>
+                          </div>
+                        </div>
 
-                  <div className="space-y-4 max-h-96 overflow-y-auto">
+                        {loading && descriptions.length === 0 && (
+                          <p>Loading...</p>
+                        )}
+                        {!loading && descriptions.length === 0 && (
+                          <p className="outline outline-1 outline-slate-600 p-2 rounded-md min-h-[100px] text-slate-400">No description found</p>
+                        )}
+                        {!loading && descriptions.length > 0 && (
+                          <>
+                          <p>{descriptions.filter(d => d.image_path === s.feedbacks[currentImagePage].classifier_data?.screenshot)[0].image_path}</p>
+                            <p
+                              className="outline outline-1 outline-slate-600 p-2 rounded-md h-[150px] overflow-y-scroll text-slate-400"
+                            >
+                              {descriptions.filter(d => d.image_path === s.feedbacks[currentImagePage].classifier_data?.screenshot)[0].response}
+                            </p>
+                          </>
+                        )}
+                      </div>
+
+                      <div className="flex gap-4">
+                        {currentImagePage > 0 && (
+                          <ChevronLeft
+                            className="p-1 outline-1 outline-gray-300 outline rounded-sm cursor-pointer transition-all duration-100 hover:bg-gray-300 hover:text-black"
+                            onClick={() => previousImageWrapper()} />
+                        )}
+                        {currentImagePage < s.feedbacks.length && (
+                          <ChevronRight
+                            className="p-1 outline-1 outline-gray-300 outline rounded-sm cursor-pointer transition-all duration-100 hover:bg-gray-300 hover:text-black"
+                            onClick={() => nextImageWrapper()} />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="space-y-4 max-h-96 overflow-y-auto">
                     {loading && descriptions.length === 0 ? (
                       <p>Loading...</p>
                     ) : descriptions.length === 0 ? (
@@ -210,7 +309,7 @@ export function SessionProgressDisplay() {
                         </div>
                       </>
                     )}
-                  </div>
+                  </div> */}
 
                   <AlertDialogFooter>
                     <AlertDialogCancel>Close</AlertDialogCancel>
