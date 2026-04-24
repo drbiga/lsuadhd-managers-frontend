@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useSessionProgress } from "../hooks/useSessionProgress";
-import studentsService from "../services/studentService";
+import studentsService, { Stage } from "../services/studentService";
 import { SessionItemChart } from "./SessionProgressChart";
 import { findAnalytics, presentPercentage } from "../lib/sessionProgress";
 import {
@@ -27,6 +27,7 @@ export function SessionProgressDisplay() {
     handleStudentChange,
     fetchImageDescriptions,
     handleDeleteSession,
+    handleStopSession,
   } = useSessionProgress();
 
   if (student === null) {
@@ -64,36 +65,47 @@ export function SessionProgressDisplay() {
                 <p className="text-2xl font-semibold text-foreground">
                   Session #{s.seqnum}
                 </p>
-                <AlertDialog>
-                  <AlertDialogTrigger>
-                    <Trash2Icon
-                      className="cursor-pointer p-2 outline outline-1 rounded-sm transition-all duration-200 hover:outline-red-600 hover:bg-red-600"
+                <div className="flex items-center gap-2">
+                  {s.stage !== Stage.FINISHED && (
+                    <Button
+                      variant="outline"
+                      className="transition-all duration-100 hover:bg-red-600 hover:text-white"
+                      onClick={() => handleStopSession(s.seqnum)}
+                    >
+                      Stop Session
+                    </Button>
+                  )}
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <Trash2Icon
+                        className="cursor-pointer p-2 outline outline-1 rounded-sm transition-all duration-200 hover:outline-red-600 hover:bg-red-600"
 
-                      size={35}
-                    />
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Delete session {s.seqnum}
-                      </AlertDialogTitle>
-                      <AlertDialogDescription className="grid gap-4">
-                        <p>You are about to delete student {student.name}'s session {s.seqnum}.</p>
-                        <p>This is an <b>irreversible</b> action.</p>
-                        <p>Are you SURE you want to do this?</p>
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter className="">
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        className="transition-all duration-100 hover:bg-red-600 hover:text-white"
-                        onClick={() => handleDeleteSession(s.seqnum)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                        size={35}
+                      />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Delete session {s.seqnum}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="grid gap-4">
+                          <p>You are about to delete student {student.name}'s session {s.seqnum}.</p>
+                          <p>This is an <b>irreversible</b> action.</p>
+                          <p>Are you SURE you want to do this?</p>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter className="">
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          className="transition-all duration-100 hover:bg-red-600 hover:text-white"
+                          onClick={() => handleDeleteSession(s.seqnum)}
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
               <div className="mb-4 text-sm text-muted-foreground space-y-0.5">
                 <div>

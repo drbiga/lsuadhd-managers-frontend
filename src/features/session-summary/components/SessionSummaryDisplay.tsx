@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { SessionSummaryStats, SessionRecord, DetailedSessionRecord, WeeklyFailureData } from "../services/sessionSummaryService";
+import { useMemo, useState } from "react";
+import { SessionSummaryStats, SessionRecord, DetailedSessionRecord, WeeklyFailureData, SessionExclusion } from "../services/sessionSummaryService";
 import { Button } from "@/components/ui/button";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WeeklyFailures } from "./WeeklyFailures";
+import { SessionExclusionFilter } from "./SessionExclusionFilter";
 import { Link } from "react-router-dom";
 import { RouteNames } from "@/Routes";
 
@@ -13,16 +14,42 @@ interface SessionSummaryDisplayProps {
   detailedSessions: DetailedSessionRecord[];
   weeklyFailures: WeeklyFailureData[];
   loading: boolean;
+  exclusions: SessionExclusion[];
+  onExclusionsChange: (exclusions: SessionExclusion[]) => void;
 }
 
 type TypeOfView = "student-view" | "session-view";
 
-export function SessionSummaryDisplay({ stats, records, detailedSessions, weeklyFailures, loading }: SessionSummaryDisplayProps) {
+export function SessionSummaryDisplay({ stats, records, detailedSessions, weeklyFailures, loading, exclusions, onExclusionsChange }: SessionSummaryDisplayProps) {
   const [typeOfView, setTypeOfView] = useState<TypeOfView>("student-view");
   const [hideTestStudents, setHideTestStudents] = useState(true);
   const [showOnlyMissingAnalytics, setShowOnlyMissingAnalytics] = useState(false);
   const [showOnlyThisWeek, setShowOnlyThisWeek] = useState(false);
   const [sortByUserThenSession, setSortByUserThenSession] = useState(false);
+
+  const sessionsForExclusionFilter = useMemo(() => {
+    const sessionMap = new Map(
+      detailedSessions.map((session) => [`${session.recordId}-${session.sessionNumber}`, session])
+    );
+
+    exclusions.forEach((excl) => {
+      excl.sessionNumbers.forEach((sessionNum) => {
+        const key = `${excl.studentName}-${sessionNum}`;
+        if (!sessionMap.has(key)) {
+          sessionMap.set(key, {
+            recordId: excl.studentName,
+            group: "",
+            sessionNumber: sessionNum,
+            feedbackCount: 0,
+            focusedPercentage: null,
+            thisWeek: false,
+          });
+        }
+      });
+    });
+
+    return Array.from(sessionMap.values());
+  }, [detailedSessions, exclusions]);
 
   let displayRecords = records;
   let displayDetailedSessions = detailedSessions;
@@ -77,6 +104,12 @@ export function SessionSummaryDisplay({ stats, records, detailedSessions, weekly
         </TabsList>
 
         <TabsContent value="summary">
+          <SessionExclusionFilter
+            detailedSessions={sessionsForExclusionFilter}
+            exclusions={exclusions}
+            onExclusionsChange={onExclusionsChange}
+          />
+
           <h2 className="text-xl font-semibold text-foreground mb-4 mt-4">Laptop Sessions (1-2)</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
