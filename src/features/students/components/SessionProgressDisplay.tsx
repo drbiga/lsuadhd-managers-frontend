@@ -1,8 +1,7 @@
-import { useCallback, useEffect } from "react";
 import { useSessionProgress } from "../hooks/useSessionProgress";
-import studentsService, { Stage } from "../services/studentService";
+import { Stage } from "../services/studentService";
 import { SessionItemChart } from "./SessionProgressChart";
-import { findAnalytics, presentPercentage } from "../lib/sessionProgress";
+import { ImageDescriptionsDialog } from "./ImageDescriptionsDialog";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -20,15 +19,16 @@ import { AlertDialogAction } from "@/components/ui/alert-dialog";
 export function SessionProgressDisplay() {
   const {
     student,
-    // setStudent,
-    descriptions,
-    loading,
-    selectedSession,
-    handleStudentChange,
-    fetchImageDescriptions,
+    sessionProgress,
     handleDeleteSession,
     handleStopSession,
+    handleCalculateAnalytics,
   } = useSessionProgress();
+
+  const presentPercentage = (pct: number | null | undefined, isFinished: boolean): string => {
+    if (pct != null) return Math.round(pct * 100) + '%';
+    return isFinished ? 'N/A' : '-';
+  };
 
   if (student === null) {
     return (
@@ -36,20 +36,6 @@ export function SessionProgressDisplay() {
     )
   }
 
-  const getMissingAnalytics = useCallback(async (sessionNum: number) => {
-    await studentsService.getAnalytics(student.name, sessionNum);
-
-    // TODO: move this update into the session progress hook
-    // const updatedStudent = await studentsService.getStudentWithSessionData(student.name);
-    // setStudent(updatedStudent);
-
-    const updatedStudent = await studentsService.getStudentWithSessionData(student.name);
-    handleStudentChange(updatedStudent.name);
-  }, [student.name]);
-
-  useEffect(() => {
-    console.log('[ SessioProgressDisplay ] New student detected')
-  }, [student]);
 
   return (
     <div className="mt-8">
@@ -58,53 +44,55 @@ export function SessionProgressDisplay() {
       </h2>
 
       <ul className="flex flex-col gap-8 px-2">
-        {student.sessions?.sort((a, b) => a.seqnum - b.seqnum).map(s => (
-          <li key={s.seqnum} className="bg-card border border-border p-6 h-[80vh] w-[70vw] rounded-xl flex shadow-sm">
+        {sessionProgress.length > 0 ? sessionProgress.map(s => (
+          <li key={s.session_num} className="bg-card border border-border p-6 h-[80vh] w-[70vw] rounded-xl flex shadow-sm">
             <div className="w-[35%] pr-6">
               <div className="flex justify-between items-center pb-4">
                 <p className="text-2xl font-semibold text-foreground">
-                  Session #{s.seqnum}
+                  Session #{s.session_num}
                 </p>
                 <div className="flex items-center gap-2">
-                  {s.stage !== Stage.FINISHED && (
+                  {s.is_stoppable && (
                     <Button
                       variant="outline"
                       className="transition-all duration-100 hover:bg-red-600 hover:text-white"
-                      onClick={() => handleStopSession(s.seqnum)}
+                      onClick={() => handleStopSession(s.session_num)}
                     >
                       Stop Session
                     </Button>
                   )}
-                  <AlertDialog>
-                    <AlertDialogTrigger>
-                      <Trash2Icon
-                        className="cursor-pointer p-2 outline outline-1 rounded-sm transition-all duration-200 hover:outline-red-600 hover:bg-red-600"
+                  {s.is_deleteable && (
+                    <AlertDialog>
+                      <AlertDialogTrigger>
+                        <Trash2Icon
+                          className="cursor-pointer p-2 outline outline-1 rounded-sm transition-all duration-200 hover:outline-red-600 hover:bg-red-600"
 
-                        size={35}
-                      />
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Delete session {s.seqnum}
-                        </AlertDialogTitle>
-                        <AlertDialogDescription className="grid gap-4">
-                          <p>You are about to delete student {student.name}'s session {s.seqnum}.</p>
-                          <p>This is an <b>irreversible</b> action.</p>
-                          <p>Are you SURE you want to do this?</p>
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter className="">
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="transition-all duration-100 hover:bg-red-600 hover:text-white"
-                          onClick={() => handleDeleteSession(s.seqnum)}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                          size={35}
+                        />
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Delete session {s.session_num}
+                          </AlertDialogTitle>
+                          <AlertDialogDescription className="grid gap-4">
+                            <p>You are about to delete student {student.name}'s session {s.session_num}.</p>
+                            <p>This is an <b>irreversible</b> action.</p>
+                            <p>Are you SURE you want to do this?</p>
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="">
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="transition-all duration-100 hover:bg-red-600 hover:text-white"
+                            onClick={() => handleDeleteSession(s.session_num)}
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               </div>
               <div className="mb-4 text-sm text-muted-foreground space-y-0.5">
@@ -144,97 +132,34 @@ export function SessionProgressDisplay() {
                   <span className="text-foreground font-medium">{s.feedbacks.length}</span>
                 </div>
                 <div className="mt-2 pt-3 border-t border-border">
-                  {(() => {
-                    const analytics = findAnalytics(student.sessions_analytics, s);
-                    const hasAnalytics = analytics !== null;
-                    return (
-                      <>
-                        <div className="text-sm mb-2">
-                          <span className="text-muted-foreground">Time focused:</span>{" "}
-                          <span className="text-accent font-semibold">
-                            {presentPercentage(analytics?.percentage_time_focused, hasAnalytics)}
-                          </span>
-                        </div>
-                        <div className="text-sm mb-2">
-                          <span className="text-muted-foreground">Time normal:</span>{" "}
-                          <span className="text-foreground font-medium">
-                            {presentPercentage(analytics?.percentage_time_normal, hasAnalytics)}
-                          </span>
-                        </div>
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">Time distracted:</span>{" "}
-                          <span className="text-foreground font-medium">
-                            {presentPercentage(analytics?.percentage_time_distracted, hasAnalytics)}
-                          </span>
-                        </div>
-                      </>
-                    );
-                  })()}
+                  <div className="text-sm mb-2">
+                    <span className="text-muted-foreground">Time focused:</span>{" "}
+                    <span className="text-accent font-semibold">
+                      {presentPercentage(s.analytics?.percentage_focused, s.stage === Stage.FINISHED)}
+                    </span>
+                  </div>
+                  <div className="text-sm mb-2">
+                    <span className="text-muted-foreground">Time normal:</span>{" "}
+                    <span className="text-foreground font-medium">
+                      {presentPercentage(s.analytics?.percentage_normal, s.stage === Stage.FINISHED)}
+                    </span>
+                  </div>
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Time distracted:</span>{" "}
+                    <span className="text-foreground font-medium">
+                      {presentPercentage(s.analytics?.percentage_distracted, s.stage === Stage.FINISHED)}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => fetchImageDescriptions(student.name, s.seqnum)}
-                  >
-                    View Image Descriptions
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Image Descriptions - Session #{s.seqnum}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      OpenAI-generated descriptions ({descriptions.length} loaded)
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
+              <ImageDescriptionsDialog studentName={student.name} sessionNum={s.session_num} />
 
-                  <div className="space-y-4 max-h-96 overflow-y-auto">
-                    {loading && descriptions.length === 0 ? (
-                      <p>Loading...</p>
-                    ) : descriptions.length === 0 ? (
-                      <p>No descriptions found.</p>
-                    ) : (
-                      <>
-                        {descriptions.map((desc, index) => (
-                          <div key={index} className="border rounded p-4">
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-                                #{index + 1}
-                              </span>
-                              <span className="text-sm text-gray-500">
-                                {new Date(desc.created_at).toLocaleString()}
-                              </span>
-                            </div>
-                            <p>{desc.response}</p>
-                          </div>
-                        ))}
-                        <div className="flex justify-center mt-4">
-                          <Button
-                            variant="outline"
-                            onClick={() => selectedSession && fetchImageDescriptions(student.name, selectedSession, true)}
-                            disabled={loading}
-                          >
-                            {loading ? "Loading..." : "Load More"}
-                          </Button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Close</AlertDialogCancel>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-
-              {!findAnalytics(student.sessions_analytics, s) && (
+              {s.analytics === null && (
                 <Button
                   variant="outline"
                   className="mt-4"
-                  onClick={() => getMissingAnalytics(s.seqnum)}
+                  onClick={() => handleCalculateAnalytics(s.session_num)}
                 >
                   Calculate Analytics
                 </Button>
@@ -242,9 +167,9 @@ export function SessionProgressDisplay() {
             </div>
             <SessionItemChart feedbacks={s.feedbacks} />
           </li>
-        )) || (
-            <li className="text-slate-600 dark:text-slate-400">No sessions available for this student.</li>
-          )}
+        )) : (
+          <li className="text-slate-600 dark:text-slate-400">No sessions available for this student.</li>
+        )}
       </ul>
     </div>
   );

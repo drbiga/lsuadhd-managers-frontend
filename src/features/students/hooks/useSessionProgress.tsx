@@ -1,6 +1,6 @@
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useCallback, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import studentService, { Student, StudentWithSessionData } from "../services/studentService";
+import studentService, { Student, StudentWithSessionData, SessionProgress } from "../services/studentService";
 import { useAuth } from "@/hooks/auth";
 
 export type SessionProgressState = {
@@ -8,16 +8,14 @@ export type SessionProgressState = {
   setStudent: Dispatch<SetStateAction<StudentWithSessionData | null>>;
   allStudents: Student[],
   handleStudentChange: (selectedStudentName: string | null) => Promise<void>,
-  descriptions: any[],
-  loading: boolean,
+  sessionProgress: SessionProgress[],
   studentsLoading: boolean,
   studentDataLoading: boolean,
-  selectedSession: number | null,
-  fetchImageDescriptions: (studentName: string, sessionSeqnum: number, loadMore?: boolean) => Promise<void>
   handleDeleteSession: (
     sessionNum: number,
   ) => Promise<void>
   handleStopSession: (sessionNum: number) => Promise<void>
+  handleCalculateAnalytics: (sessionNum: number) => Promise<void>
   isLocked: boolean,
   handleToggleLock: () => Promise<void>
 }
@@ -28,11 +26,9 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
   const { authState } = useAuth();
   const [student, setStudent] = useState<StudentWithSessionData | null>(null);
   const [allStudents, setAllStudents] = useState<Student[]>([]);
-  const [descriptions, setImageDescriptions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [sessionProgress, setSessionProgress] = useState<SessionProgress[]>([]);
   const [studentsLoading, setStudentsLoading] = useState(true);
   const [studentDataLoading, setStudentDataLoading] = useState(false);
-  const [selectedSession, setSelectedSession] = useState<number | null>(null);
   const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
@@ -58,45 +54,31 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
   const handleStudentChange = useCallback(async (selectedStudentName: string | null) => {
     if (!selectedStudentName) {
       setStudent(null);
+      setSessionProgress([]);
       setIsLocked(false);
       return;
     }
 
     setStudentDataLoading(true);
     try {
-      const [studentData, locked] = await Promise.all([
+      const [studentData, locked, progress] = await Promise.all([
         studentService.getStudentWithSessionData(selectedStudentName),
-        studentService.isUserLocked(selectedStudentName)
+        studentService.isUserLocked(selectedStudentName),
+        studentService.getSessionProgress(selectedStudentName)
       ]);
       setStudent(studentData);
       setIsLocked(locked);
+      setSessionProgress(progress);
     } catch (err) {
       console.error('Error fetching student data:', err);
       toast.error("Failed to fetch student session data");
       setStudent(null);
+      setSessionProgress([]);
       setIsLocked(false);
     } finally {
       setStudentDataLoading(false);
     }
   }, []);
-
-  const fetchImageDescriptions = useCallback(async (studentName: string, sessionSeqnum: number, loadMore = false) => {
-    setLoading(true);
-    if (!loadMore) {
-      setSelectedSession(sessionSeqnum);
-      setImageDescriptions([]);
-    }
-
-    try {
-      const offset = loadMore ? descriptions.length : 0;
-      const data = await studentService.getImageDescriptions(studentName, sessionSeqnum, offset, 10);
-      setImageDescriptions(prev => loadMore ? [...prev, ...data] : data);
-    } catch (error) {
-      console.error('Error:', error);
-      if (!loadMore) setImageDescriptions([]);
-    }
-    setLoading(false);
-  }, [descriptions]);
 
   const handleDeleteSession = useCallback(
     async (
@@ -108,11 +90,8 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
       }
       try {
         await studentService.deleteSession(student.name, sessionNum);
-        console.log('==============================================')
-        console.log('[ handleDeleteSession ] Updating student object')
         setStudent(previousStudent => {
           if (previousStudent === null) {
-            toast.error('You need to choose a student before deleting. This should not happen?!')
             return previousStudent;
           }
           return {
@@ -120,7 +99,7 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
             sessions: previousStudent?.sessions.filter(s => s.seqnum !== sessionNum)
           }
         });
-        console.log('==============================================')
+        setSessionProgress(previous => previous.filter(p => p.session_num !== sessionNum));
         toast.success(`Deleted session ${sessionNum} for student ${student.name}`);
       } catch (error) {
         toast.error(error instanceof Error ? error.message : "Failed to lock user");
@@ -135,11 +114,31 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
 
     try {
       await studentService.forceCloseSession(student.name);
-      const updatedStudent = await studentService.getStudentWithSessionData(student.name);
+      const [updatedStudent, updatedProgress] = await Promise.all([
+        studentService.getStudentWithSessionData(student.name),
+        studentService.getSessionProgress(student.name)
+      ]);
       setStudent(updatedStudent);
+      setSessionProgress(updatedProgress);
       toast.success(`Stopped session ${sessionNum} for student ${student.name}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to stop session');
+    }
+  }, [student]);
+
+  const handleCalculateAnalytics = useCallback(async (sessionNum: number) => {
+    if (student === null) {
+      toast.error('You need to choose a student before calculating analytics. This should not happen!')
+      return;
+    }
+
+    try {
+      await studentService.getAnalytics(student.name, sessionNum);
+      const updatedProgress = await studentService.getSessionProgress(student.name);
+      setSessionProgress(updatedProgress);
+      toast.success(`Calculated analytics for session ${sessionNum}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to calculate analytics');
     }
   }, [student]);
 
@@ -161,32 +160,18 @@ export function SessionProgressProvider({ children }: PropsWithChildren) {
     }
   }, [student, isLocked]);
 
-  // return {
-  //   student,
-  //   allStudents,
-  //   handleStudentChange,
-  //   descriptions,
-  //   loading,
-  //   studentsLoading,
-  //   studentDataLoading,
-  //   selectedSession,
-  //   fetchImageDescriptions,
-  //   handleDeleteSession
-  // };
   return (
     <SessionProgressContext.Provider value={{
       student,
       setStudent,
       allStudents,
       handleStudentChange,
-      descriptions,
-      loading,
+      sessionProgress,
       studentsLoading,
       studentDataLoading,
-      selectedSession,
-      fetchImageDescriptions,
       handleDeleteSession,
       handleStopSession,
+      handleCalculateAnalytics,
       isLocked,
       handleToggleLock
     }}>

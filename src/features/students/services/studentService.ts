@@ -67,6 +67,36 @@ export enum Stage {
     FINISHED = 'finished',
 }
 
+export type SessionProgressFeedback = {
+    ensemble_label: string | null;
+    classifier_label: string | null;
+    screenshot_path: string;
+}
+
+export type ImageDescription = {
+    image_path: string;
+    response: string;
+    created_at: string;
+}
+
+export type SessionProgressAnalytics = {
+    percentage_focused: number | null;
+    percentage_normal: number | null;
+    percentage_distracted: number | null;
+}
+
+export type SessionProgress = {
+    student_name: string;
+    session_num: number;
+    ts_start: string;
+    ts_end: string | null;
+    stage: Stage;
+    feedbacks: SessionProgressFeedback[];
+    analytics: SessionProgressAnalytics | null;
+    is_deleteable: boolean;
+    is_stoppable: boolean;
+}
+
 export type FailedSession = {
     id?: number;
     student_name: string;
@@ -199,6 +229,28 @@ class StudentsService {
         }
     }
 
+    public async getSessionProgress(studentName: string): Promise<SessionProgress[]> {
+        const response = await api.get(`/management/student/${studentName}/session_progress`, {
+            params: {
+                name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+            }
+        });
+        return response.data;
+    }
+
+    public async getImageDescriptionsForSession(
+        studentName: string,
+        sessionSeqnum: number,
+        offset: number = 0,
+        limit: number = 1000
+    ): Promise<ImageDescription[]> {
+        const response = await api.get(
+            `/session_execution/student/${studentName}/session/${sessionSeqnum}/image-descriptions`,
+            { params: { offset, limit } }
+        );
+        return response.data;
+    }
+
     public async getAnalytics(studentName: string, sessionNum: number): Promise<void> {
         await api.get(`/session_execution/student/${studentName}/session/${sessionNum}/analytics`);
     }
@@ -223,26 +275,6 @@ class StudentsService {
             return response.data.map((student: { name: string }) => student.name);
         } catch (error) {
             console.error('Failed to fetch active students:', error);
-            return [];
-        }
-    }
-
-    public async getImageDescriptions(
-        studentName: string,
-        sessionSeqnum: number,
-        offset: number = 0,
-        limit: number = 10
-    ): Promise<any[]> {
-        try {
-            const response = await api.get(
-                `/session_execution/student/${studentName}/session/${sessionSeqnum}/image-descriptions`,
-                {
-                    params: { offset, limit }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            console.error('Unknown error while getting image descriptions');
             return [];
         }
     }
