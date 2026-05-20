@@ -19,11 +19,12 @@ interface StudentListProps {
   lockedUsers: Record<string, boolean>;
   inputRef: RefObject<HTMLInputElement>;
   handleSetSurveyId: (studentName: string) => void;
+  handleSetMeds: (studentName: string, meds: boolean) => void;
   handleUnlockUser: (studentName: string) => void;
   handleLockUser: (studentName: string) => void;
 }
 
-export function StudentList({ students, activeStudents, lockedUsers, inputRef, handleSetSurveyId, handleUnlockUser, handleLockUser}: StudentListProps) {
+export function StudentList({ students, activeStudents, lockedUsers, inputRef, handleSetSurveyId, handleSetMeds, handleUnlockUser, handleLockUser}: StudentListProps) {
   const [hideTestStudents, setHideTestStudents] = useState(true);
   const [showActiveOnly, setShowActiveOnly] = useState(false);
 
@@ -83,6 +84,7 @@ export function StudentList({ students, activeStudents, lockedUsers, inputRef, h
               <th className="p-3 text-muted-foreground font-medium">Student Name</th>
               <th className="p-3 text-muted-foreground font-medium">Session Group</th>
               <th className="p-3 text-muted-foreground font-medium">Survey ID</th>
+              <th className="p-3 text-muted-foreground font-medium">Meds</th>
               <th className="p-3 text-muted-foreground font-medium">Status</th>
               <th className="p-3 text-muted-foreground font-medium">Actions</th>
             </tr>
@@ -143,6 +145,14 @@ export function StudentList({ students, activeStudents, lockedUsers, inputRef, h
                         </DialogContent>
                       </Dialog>
                     )}
+                  </td>
+                  <td className="p-3 text-foreground">
+                    <Button
+                      onClick={() => handleSetMeds(s.name, !s.meds)}
+                      className="text-sm py-1 px-3"
+                    >
+                      {s.meds ? "On meds" : "No meds"}
+                    </Button>
                   </td>
                   <td className="p-3 text-foreground">
                     <span

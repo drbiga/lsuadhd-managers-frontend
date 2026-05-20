@@ -54,12 +54,13 @@ export type SessionExclusion = {
 };
 
 class SessionSummaryService {
-    public async getStats(exclusions: SessionExclusion[] = []): Promise<SessionSummaryStats> {
+    public async getStats(exclusions: SessionExclusion[] = [], medsFilter: boolean | null = null): Promise<SessionSummaryStats> {
         const response = await api.post('/session-summary/stats', {
             exclusions: exclusions.map(e => ({
                 student_name: e.studentName,
                 session_numbers: e.sessionNumbers,
             })),
+            meds_filter: medsFilter,
         });
         const stats: SessionSummaryStats = {
             laptopPassthroughFocusedAverage: response.data.laptop_passthrough_focused_average,
@@ -84,12 +85,13 @@ class SessionSummaryService {
         return stats;
     }
 
-    public async getRecords(exclusions: SessionExclusion[] = []): Promise<SessionRecord[]> {
+    public async getRecords(exclusions: SessionExclusion[] = [], medsFilter: boolean | null = null): Promise<SessionRecord[]> {
         const response = await api.post('/session-summary/records', {
             exclusions: exclusions.map(e => ({
                 student_name: e.studentName,
                 session_numbers: e.sessionNumbers,
             })),
+            meds_filter: medsFilter,
         });
         const records: SessionRecord[] = response.data.map((record: any) => ({
             recordId: record.record_id,
@@ -99,12 +101,13 @@ class SessionSummaryService {
         return records;
     }
 
-    public async getDetailedSessions(exclusions: SessionExclusion[] = []): Promise<DetailedSessionRecord[]> {
+    public async getDetailedSessions(exclusions: SessionExclusion[] = [], medsFilter: boolean | null = null): Promise<DetailedSessionRecord[]> {
         const response = await api.post('/session-summary/detailed-sessions', {
             exclusions: exclusions.map(e => ({
                 student_name: e.studentName,
                 session_numbers: e.sessionNumbers,
             })),
+            meds_filter: medsFilter,
         });
         const detailedSessions: DetailedSessionRecord[] = response.data.map((record: any) => ({
             recordId: record.record_id,

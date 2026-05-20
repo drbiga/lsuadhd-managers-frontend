@@ -6,6 +6,7 @@ export type Student = {
     name: string;
     group: string;
     survey_id?: number;
+    meds: boolean;
 }
 
 export type StudentWithSessionData = {
@@ -157,6 +158,27 @@ class StudentsService {
                 throw new Error(error.response?.data.detail || 'Failed to update survey ID');
             } else {
                 throw new Error('Failed to update survey ID');
+            }
+        }
+    }
+
+    public async setStudentMeds(studentName: string, meds: boolean): Promise<void> {
+        try {
+            await api.put(
+                `/management/student/${studentName}/meds`,
+                {},
+                {
+                    params: {
+                        meds,
+                        name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+                    }
+                }
+            );
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                throw new Error(error.response?.data.detail || 'Failed to update meds status');
+            } else {
+                throw new Error('Failed to update meds status');
             }
         }
     }

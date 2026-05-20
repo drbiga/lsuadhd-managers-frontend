@@ -85,6 +85,31 @@ export function useStudents() {
     [inputRef, students]
   );
 
+  const handleSetMeds = useCallback(
+    async (studentName: string, meds: boolean) => {
+      try {
+        await studentService.setStudentMeds(studentName, meds);
+        setStudents(
+          students.map((s) => {
+            if (s.name === studentName) {
+              return {
+                ...s,
+                meds,
+              };
+            } else {
+              return s;
+            }
+          })
+        );
+        toast.success(`${studentName} marked as ${meds ? "on meds" : "no meds"}`);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to update meds status";
+        toast.error(errorMessage);
+      }
+    },
+    [students]
+  );
+
   const handleUnlockUser = useCallback(async (studentName: string) => {
     try {
       await studentService.unlockUser(studentName);
@@ -116,6 +141,7 @@ export function useStudents() {
     loading,
     onSubmitStudent,
     handleSetSurveyId,
+    handleSetMeds,
     handleUnlockUser,
     handleLockUser,
     inputRef,

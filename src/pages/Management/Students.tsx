@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 
 export default function Students() {
-  const { 
-    students, 
-    activeStudents, 
+  const {
+    students,
+    activeStudents,
     lockedUsers,
     loading,
-    onSubmitStudent, 
-    handleSetSurveyId, 
+    onSubmitStudent,
+    handleSetSurveyId,
+    handleSetMeds,
     handleUnlockUser,
     handleLockUser,
     inputRef,
@@ -42,6 +43,7 @@ export default function Students() {
           lockedUsers={lockedUsers}
           inputRef={inputRef}
           handleSetSurveyId={handleSetSurveyId}
+          handleSetMeds={handleSetMeds}
           handleUnlockUser={handleUnlockUser}
           handleLockUser={handleLockUser}
         />

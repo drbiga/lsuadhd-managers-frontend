@@ -16,11 +16,13 @@ interface SessionSummaryDisplayProps {
   loading: boolean;
   exclusions: SessionExclusion[];
   onExclusionsChange: (exclusions: SessionExclusion[]) => void;
+  medsFilter: boolean | null;
+  onMedsFilterChange: (medsFilter: boolean | null) => void;
 }
 
 type TypeOfView = "student-view" | "session-view";
 
-export function SessionSummaryDisplay({ stats, records, detailedSessions, weeklyFailures, loading, exclusions, onExclusionsChange }: SessionSummaryDisplayProps) {
+export function SessionSummaryDisplay({ stats, records, detailedSessions, weeklyFailures, loading, exclusions, onExclusionsChange, medsFilter, onMedsFilterChange }: SessionSummaryDisplayProps) {
   const [typeOfView, setTypeOfView] = useState<TypeOfView>("student-view");
   const [hideTestStudents, setHideTestStudents] = useState(true);
   const [showOnlyMissingAnalytics, setShowOnlyMissingAnalytics] = useState(false);
@@ -199,6 +201,30 @@ export function SessionSummaryDisplay({ stats, records, detailedSessions, weekly
           </div>
 
           <div className="mb-4 flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-foreground font-medium">Meds:</span>
+              <Button
+                size="sm"
+                onClick={() => onMedsFilterChange(null)}
+                variant={medsFilter === null ? "default" : "outline"}
+              >
+                All students
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => onMedsFilterChange(false)}
+                variant={medsFilter === false ? "default" : "outline"}
+              >
+                No meds only
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => onMedsFilterChange(true)}
+                variant={medsFilter === true ? "default" : "outline"}
+              >
+                Meds only
+              </Button>
+            </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-foreground font-medium">View:</span>
               <Button

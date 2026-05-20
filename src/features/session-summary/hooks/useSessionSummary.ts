@@ -15,15 +15,16 @@ export function useSessionSummary() {
     const [weeklyFailures, setWeeklyFailures] = useState<WeeklyFailureData[]>([]);
     const [loading, setLoading] = useState(true);
     const [exclusions, setExclusions] = useState<SessionExclusion[]>([]);
+    const [medsFilter, setMedsFilter] = useState<boolean | null>(null);
 
-    const fetchSessionSummary = useCallback(async (currentExclusions: SessionExclusion[]) => {
+    const fetchSessionSummary = useCallback(async (currentExclusions: SessionExclusion[], currentMedsFilter: boolean | null) => {
         try {
             setLoading(true);
 
             const [statsData, recordsData, detailedData] = await Promise.all([
-                sessionSummaryService.getStats(currentExclusions),
-                sessionSummaryService.getRecords(currentExclusions),
-                sessionSummaryService.getDetailedSessions(currentExclusions),
+                sessionSummaryService.getStats(currentExclusions, currentMedsFilter),
+                sessionSummaryService.getRecords(currentExclusions, currentMedsFilter),
+                sessionSummaryService.getDetailedSessions(currentExclusions, currentMedsFilter),
             ]);
             setStats(statsData);
             setRecords(recordsData);
@@ -44,16 +45,20 @@ export function useSessionSummary() {
     }, []);
 
     useEffect(() => {
-        fetchSessionSummary(exclusions);
-    }, [exclusions, fetchSessionSummary]);
+        fetchSessionSummary(exclusions, medsFilter);
+    }, [exclusions, medsFilter, fetchSessionSummary]);
 
     const handleExclusionsChange = useCallback((newExclusions: SessionExclusion[]) => {
         setExclusions(newExclusions);
     }, []);
 
+    const handleMedsFilterChange = useCallback((newMedsFilter: boolean | null) => {
+        setMedsFilter(newMedsFilter);
+    }, []);
+
     const refresh = useCallback(() => {
-        fetchSessionSummary(exclusions);
-    }, [exclusions, fetchSessionSummary]);
+        fetchSessionSummary(exclusions, medsFilter);
+    }, [exclusions, medsFilter, fetchSessionSummary]);
 
     return {
         stats,
@@ -64,5 +69,7 @@ export function useSessionSummary() {
         refresh,
         exclusions,
         setExclusions: handleExclusionsChange,
+        medsFilter,
+        setMedsFilter: handleMedsFilterChange,
     };
 }
