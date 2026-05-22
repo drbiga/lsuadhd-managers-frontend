@@ -2,6 +2,7 @@ import { useSessionProgress } from "../hooks/useSessionProgress";
 import { Stage } from "../services/studentService";
 import { SessionItemChart } from "./SessionProgressChart";
 import { ImageDescriptionsDialog } from "./ImageDescriptionsDialog";
+import { ScreenshotCarouselDialog } from "./ScreenshotCarouselDialog";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -154,6 +155,8 @@ export function SessionProgressDisplay() {
               </div>
 
               <ImageDescriptionsDialog studentName={student.name} sessionNum={s.session_num} />
+              
+              <ScreenshotCarouselDialog studentName={student.name} sessionNum={s.session_num} />
 
               {s.analytics === null && (
                 <Button

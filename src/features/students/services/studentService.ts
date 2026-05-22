@@ -80,6 +80,11 @@ export type ImageDescription = {
     created_at: string;
 }
 
+export type ScreenshotListItem = {
+    name: string;
+    last_modified: string;
+}
+
 export type SessionProgressAnalytics = {
     percentage_focused: number | null;
     percentage_normal: number | null;
@@ -271,6 +276,28 @@ class StudentsService {
             { params: { offset, limit } }
         );
         return response.data;
+    }
+
+    public async getScreenshotsForSession(
+        studentName: string,
+        sessionSeqnum: number
+    ): Promise<ScreenshotListItem[]> {
+        const response = await api.get(
+            `/session_execution/student/${studentName}/session/${sessionSeqnum}/screenshots`
+        );
+        return response.data;
+    }
+
+    public async getScreenshotForSession(
+        studentName: string,
+        sessionSeqnum: number,
+        screenshotName: string
+    ): Promise<string> {
+        const response = await api.get(
+            `/session_execution/student/${studentName}/session/${sessionSeqnum}/screenshot/${screenshotName}`,
+            { responseType: 'blob' }
+        );
+        return URL.createObjectURL(response.data);
     }
 
     public async getAnalytics(studentName: string, sessionNum: number): Promise<void> {
