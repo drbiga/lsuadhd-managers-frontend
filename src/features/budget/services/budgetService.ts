@@ -12,16 +12,17 @@ export type CreateBudgetRequest = {
     manager_name: string;
 };
 
-const getBudget = async (): Promise<Budget> => {
-    const response = await api.get('/budget/');
-    return response.data;
-};
+class BudgetService {
+    public async getBudget(): Promise<Budget> {
+        const response = await api.get('/budget/');
+        return response.data;
+    }
 
-const setBudget = async (request: CreateBudgetRequest): Promise<void> => {
-    await api.post('/budget/', request);
-};
+    public async setBudget(request: CreateBudgetRequest): Promise<void> {
+        await api.post('/budget/', request);
+    }
+}
 
-export default {
-    getBudget,
-    setBudget,
-};
+const budgetService = new BudgetService();
+
+export default budgetService;

@@ -1,15 +1,15 @@
 import { forwardRef, HtmlHTMLAttributes } from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
-import { Feedback, FeedbackType } from "../services/studentService";
+import { SessionProgressFeedback } from "../services/studentService";
 import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
 type SessionItemChartExtraProps = {
-  feedbacks: Feedback[];
+  feedbacks: SessionProgressFeedback[];
 }
 
 export const SessionItemChart = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HTMLDivElement> & SessionItemChartExtraProps>(
   ({ feedbacks }) => {
-    const data: ({ seqnum: number } & Feedback)[] = []
+    const data: ({ seqnum: number } & SessionProgressFeedback)[] = []
     for (let i = 0; i < feedbacks.length; i++) {
       data.push({
         ...feedbacks[i],
@@ -25,8 +25,8 @@ export const SessionItemChart = forwardRef<HTMLDivElement, HtmlHTMLAttributes<HT
             <ResponsiveContainer height="100%" width="100%">
               <LineChart height={500} width={600} data={data} >
                 <XAxis dataKey="seqnum" />
-                <YAxis type="category" domain={[FeedbackType.DISTRACTED, FeedbackType.NORMAL, FeedbackType.FOCUSED]} width={100} />
-                <Line type="monotone" dataKey="output" />
+                <YAxis type="category" domain={['distracted', 'normal', 'focused']} width={100} />
+                <Line type="monotone" dataKey="ensemble_label" />
                 <Tooltip content={LineChartTooltip} />
               </LineChart>
             </ResponsiveContainer>

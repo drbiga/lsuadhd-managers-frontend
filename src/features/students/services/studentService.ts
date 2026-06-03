@@ -6,6 +6,7 @@ export type Student = {
     name: string;
     group: string;
     survey_id?: number;
+    meds: boolean;
 }
 
 export type StudentWithSessionData = {
@@ -65,6 +66,42 @@ export enum Stage {
     HOMEWORK = 'homework',
     SURVEY = 'survey',
     FINISHED = 'finished',
+}
+
+export type SessionProgressFeedback = {
+    ensemble_label: string | null;
+    classifier_label: string | null;
+    screenshot_path: string;
+}
+
+export type ImageDescription = {
+    image_path: string;
+    response: string;
+    created_at: string;
+}
+
+export type ScreenshotListItem = {
+    name: string;
+    last_modified: string;
+}
+
+export type SessionProgressAnalytics = {
+    percentage_focused: number | null;
+    percentage_normal: number | null;
+    percentage_distracted: number | null;
+}
+
+export type SessionProgress = {
+    student_name: string;
+    session_num: number;
+    ts_start: string;
+    ts_end: string | null;
+    stage: Stage;
+    feedbacks: SessionProgressFeedback[];
+    analytics: SessionProgressAnalytics | null;
+    is_deleteable: boolean;
+    is_stoppable: boolean;
+    is_analytics_calculable: boolean;
 }
 
 export type FailedSession = {
@@ -127,6 +164,27 @@ class StudentsService {
                 throw new Error(error.response?.data.detail || 'Failed to update survey ID');
             } else {
                 throw new Error('Failed to update survey ID');
+            }
+        }
+    }
+
+    public async setStudentMeds(studentName: string, meds: boolean): Promise<void> {
+        try {
+            await api.put(
+                `/management/student/${studentName}/meds`,
+                {},
+                {
+                    params: {
+                        meds,
+                        name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+                    }
+                }
+            );
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                throw new Error(error.response?.data.detail || 'Failed to update meds status');
+            } else {
+                throw new Error('Failed to update meds status');
             }
         }
     }
@@ -199,6 +257,50 @@ class StudentsService {
         }
     }
 
+    public async getSessionProgress(studentName: string): Promise<SessionProgress[]> {
+        const response = await api.get(`/management/student/${studentName}/session_progress`, {
+            params: {
+                name_manager_requesting_operation: iamService.getCurrentSession().user.username,
+            }
+        });
+        return response.data;
+    }
+
+    public async getImageDescriptionsForSession(
+        studentName: string,
+        sessionSeqnum: number,
+        offset: number = 0,
+        limit: number = 1000
+    ): Promise<ImageDescription[]> {
+        const response = await api.get(
+            `/session_execution/student/${studentName}/session/${sessionSeqnum}/image-descriptions`,
+            { params: { offset, limit } }
+        );
+        return response.data;
+    }
+
+    public async getScreenshotsForSession(
+        studentName: string,
+        sessionSeqnum: number
+    ): Promise<ScreenshotListItem[]> {
+        const response = await api.get(
+            `/session_execution/student/${studentName}/session/${sessionSeqnum}/screenshots`
+        );
+        return response.data;
+    }
+
+    public async getScreenshotForSession(
+        studentName: string,
+        sessionSeqnum: number,
+        screenshotName: string
+    ): Promise<string> {
+        const response = await api.get(
+            `/session_execution/student/${studentName}/session/${sessionSeqnum}/screenshot/${screenshotName}`,
+            { responseType: 'blob' }
+        );
+        return URL.createObjectURL(response.data);
+    }
+
     public async getAnalytics(studentName: string, sessionNum: number): Promise<void> {
         await api.get(`/session_execution/student/${studentName}/session/${sessionNum}/analytics`);
     }
@@ -223,26 +325,6 @@ class StudentsService {
             return response.data.map((student: { name: string }) => student.name);
         } catch (error) {
             console.error('Failed to fetch active students:', error);
-            return [];
-        }
-    }
-
-    public async getImageDescriptions(
-        studentName: string,
-        sessionSeqnum: number,
-        offset: number = 0,
-        limit: number = 10
-    ): Promise<any[]> {
-        try {
-            const response = await api.get(
-                `/session_execution/student/${studentName}/session/${sessionSeqnum}/image-descriptions`,
-                {
-                    params: { offset, limit }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            console.error('Unknown error while getting image descriptions');
             return [];
         }
     }

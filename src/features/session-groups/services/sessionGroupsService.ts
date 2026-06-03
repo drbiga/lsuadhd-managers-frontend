@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import api from "@/services/api";
 import iamService from "@/services/iam";
 import { AxiosError } from "axios";
@@ -70,11 +69,9 @@ class SessionGroupsService {
             return response.data;
         } catch (err) {
             if (err instanceof AxiosError) {
-                toast.error(err.response?.data.detail.exception)
-                throw new Error(err.response?.data.detail.exception);
+                throw new Error(err.response?.data.detail?.exception || 'Failed to create session');
             } else {
-                toast.error('Something went wrong when trying to create a session')
-                throw new Error("Unknown error")
+                throw new Error('Something went wrong when trying to create a session');
             }
         }
     }

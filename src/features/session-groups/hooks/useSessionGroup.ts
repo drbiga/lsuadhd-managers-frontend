@@ -44,7 +44,7 @@ export function useSessionGroup(sessionGroupName: string) {
 
         toast.success("Session created successfully!");
       } catch (err) {
-        toast.error("Failed to create session");
+        toast.error(err instanceof Error ? err.message : "Failed to create session");
       }
     },
     [sessionGroup]
