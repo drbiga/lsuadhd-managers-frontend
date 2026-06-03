@@ -101,6 +101,7 @@ export type SessionProgress = {
     analytics: SessionProgressAnalytics | null;
     is_deleteable: boolean;
     is_stoppable: boolean;
+    is_analytics_calculable: boolean;
 }
 
 export type FailedSession = {

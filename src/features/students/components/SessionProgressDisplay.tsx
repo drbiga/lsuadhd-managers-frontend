@@ -158,7 +158,7 @@ export function SessionProgressDisplay() {
               
               <ScreenshotCarouselDialog studentName={student.name} sessionNum={s.session_num} />
 
-              {s.analytics === null && (
+              {s.is_analytics_calculable && (
                 <Button
                   variant="outline"
                   className="mt-4"
