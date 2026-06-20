@@ -10,6 +10,7 @@ import Students from "./pages/Management/Students";
 import Budget from "./pages/Budget";
 import FailedSessions from "./pages/Management/FailedSessions";
 import SessionSummary from "./pages/Management/SessionSummary";
+import Telemetry from "./pages/Management/Telemetry";
 
 export enum RouteNames {
     BASENAME = '/lsuadhd-managers-frontend',
@@ -24,6 +25,7 @@ export enum RouteNames {
     BUDGET = '/budget',
     FAILED_SESSIONS = '/failed-sessions',
     SESSION_SUMMARY = '/session-summary',
+    TELEMETRY = '/telemetry',
 }
 
 export default function Routes() {
@@ -109,6 +111,14 @@ export default function Routes() {
             element: (
                 <AuthRequired authRoute={RouteNames.LOGIN}>
                     <SessionSummary />
+                </AuthRequired>
+            )
+        },
+        {
+            path: RouteNames.TELEMETRY,
+            element: (
+                <AuthRequired authRoute={RouteNames.LOGIN}>
+                    <Telemetry />
                 </AuthRequired>
             )
         },
