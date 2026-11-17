@@ -1,5 +1,4 @@
-import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, Wallet, AlertTriangle, FileText, Activity } from "lucide-react";
-import { ReactNode, useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Group, LayoutGrid, Milestone, Users, Wallet, AlertTriangle, FileText, Activity, Tags } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { DarkModeButton } from "@/components/common/DarkModeButton";
 import { useAuth } from "@/hooks/auth";
@@ -7,6 +6,7 @@ import iamService from "@/services/iam";
 import { LogOutButton } from "@/components/common/LogOutButton";
 import { Button } from "@/components/common/Button";
 import { RouteNames } from "@/Routes";
+import { ReactNode, useEffect, useState } from "react";
 
 function SidebarLink({ active, collapsed, children, icon, to }: { active?: boolean; collapsed: boolean, icon: ReactNode, to: string, children: ReactNode }) {
     return (
@@ -95,6 +95,9 @@ export default function Sidebar() {
                 {
                     allowedContexts.includes('management') &&
                     <SidebarLink active={pathname === RouteNames.FAILED_SESSIONS} to={RouteNames.FAILED_SESSIONS} collapsed={collapsed} icon={<AlertTriangle />}>Failed Sessions</SidebarLink>
+                }
+                {
+                    <SidebarLink active={pathname === RouteNames.IMAGE_CODING} to={RouteNames.IMAGE_CODING} collapsed={collapsed} icon={<Tags />}>Image Coding</SidebarLink>
                 }
             </ul>
 
