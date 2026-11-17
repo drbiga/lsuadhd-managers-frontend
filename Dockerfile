@@ -1,7 +1,7 @@
 FROM node:21 AS build
 WORKDIR /app
 COPY . .
-RUN corepack enable && corepack prepare yarn@4.9.2 --activate
+RUN corepack enable && corepack prepare yarn@4.9.2
 RUN yarn install
 RUN yarn build
 
